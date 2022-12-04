@@ -19,7 +19,7 @@ namespace InnoGotchiGame.Application.Models
 		public User()
 		{
 			UnconfirmedRequest = new List<ColaborationRequest>();
-			CollaboratedFarms = new List<ColaborationRequest>();
+			CollaboratedFarms = new List<PetFarm?>();
 		}
 	}
 }

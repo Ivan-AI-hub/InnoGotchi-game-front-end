@@ -1,7 +1,4 @@
-﻿using InnoGotchiGame.Domain;
-using System.Text.Json.Serialization;
-
-namespace InnoGotchiGame.Application.Models
+﻿namespace InnoGotchiGame.Application.Models
 {
 	public class PetFarm
 	{
