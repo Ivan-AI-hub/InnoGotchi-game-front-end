@@ -1,8 +1,22 @@
-﻿@{
+﻿@using InnoGotchiGameFrontEnd.Web.Models.Authorize;
+@{
     ViewData["Title"] = "Home Page";
 }
+@inject AuthorizeModel authModel;
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+    @if (authModel.IsAuthorized)
+    {
+        @if (@authModel.User.PhotoFileLink != null)
+        {
+            <div class="col-3">
+                <p>Аватар</p>
+                <img src="@authModel.User.PhotoFileLink" height="150" width="150"/>
+            </div>
+        }
+        <div class="col">
+            <h1 class="col-sm">@authModel.User.FirstName @authModel.User.LastName</h1>
+        </div>
+
+    }
 </div>

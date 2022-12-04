@@ -1,19 +1,28 @@
-﻿@using InnoGotchiGame.Application.Models;
+﻿@using InnoGotchiGameFrontEnd.Web.Models.Authorize;
+@using InnoGotchiGameFrontEnd.Web.Models.Users;
 
+@inject AuthorizeModel User
 
 @model IEnumerable<User>;
 
-<table class="table">
-    <tr>
-        <td>Имя</td>
-        <td>Отчество</td>
-    </tr>
-
-    @foreach (var user in Model)
-    {
+@if (User.IsAuthorized)
+{
+    <table class="table">
         <tr>
-            <td>@user.FirstName</td>
-            <td>@user.LastName</td>
+            <td>Имя</td>
+            <td>Отчество</td>
         </tr>
-    }
-</table>
+
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <h4>Для просмотра содержимого необходимо авторизироватся</h4>
+}
