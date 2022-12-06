@@ -1,14 +1,45 @@
 ﻿@using InnoGotchiGameFrontEnd.Web.Models.Authorize;
 @using InnoGotchiGameFrontEnd.Web.Models.Users;
+@using InnoGotchiGameFrontEnd.Web.ViewModels.Users;
 
 @inject AuthorizeModel User
 
-@model IEnumerable<User>;
+@model AllUsersViewModel;
 
 @if (User.IsAuthorized)
 {
     <div>
-        @foreach (var user in Model)
+        <form>
+            <div class="form-group">
+                <label>Сортировка</label>
+                <select class="form-control" name="sortRule">
+                    @if (Model.SortRule == "Email")
+                    {
+                        <option selected="selected" value="Email">Email</option>
+                    }
+                    else
+                    {
+                        <option value="Email">Email</option>
+                    }
+                    @if (Model.SortRule == "FirstName")
+                    {
+                        <option selected="selected" value="FirstName">Имя</option>
+                    }
+                    else
+                    {
+                        <option value="FirstName">Имя</option>
+                    }
+                </select>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">Обратная сортировка</label>
+                @Html.CheckBox("isDescendingSort", Model.IsDescendingSort, new{@class ="form-check-input"})
+            </div>
+            <input type="submit" class="btn btn-primary"/>
+        </form>
+    </div>
+    <div>
+        @foreach (var user in Model.Users)
         {
             <div class="border row">
                 @if (user.PhotoFileLink != null)

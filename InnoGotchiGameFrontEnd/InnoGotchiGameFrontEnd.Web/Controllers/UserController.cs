@@ -2,7 +2,9 @@
 using InnoGotchiGameFrontEnd.Web.Models.Authorize;
 using InnoGotchiGameFrontEnd.Web.Models.Users;
 using InnoGotchiGameFrontEnd.Web.Services;
+using InnoGotchiGameFrontEnd.Web.ViewModels.Users;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.Web.Controllers
@@ -25,10 +27,17 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
         }
 
         [HttpGet("users")]
-		public async Task<IActionResult> Users()
+		public async Task<IActionResult> Users(string sortRule, bool isDescendingSort)
 		{
-			var users = await _userService.OnGet();
-			return View(users);
+            sortRule = GetValueFromCookie(Request, "UserSortRule", nameof(sortRule), "");
+            var sorter = GetSorter(sortRule);
+            sorter.IsDescendingSort = isDescendingSort;
+
+            Response.Cookies.Append("UserSortRule", sortRule);
+
+			var users = await _userService.OnGet(sorter);
+            var viewModel = new AllUsersViewModel(users, sortRule, sorter.IsDescendingSort);
+			return View(viewModel);
 		}
 
 		[HttpGet]
@@ -122,6 +131,22 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
         {
             var authorizeModel = new AuthorizeModel() { AccessToken = token };
             HttpContext.Session.SetString("token", JsonSerializer.Serialize(authorizeModel));
+        }
+
+        private UserSorter GetSorter(string sortRule)
+        {
+            var sorter = new UserSorter();
+            switch (sortRule)
+            {
+                case "Email":
+                    sorter.IsEmailSort = true;
+                    break;
+                case "FirstName":
+                    sorter.IsFirstNameSort = true;
+                    break;
+            }
+
+            return sorter;
         }
     }
 }

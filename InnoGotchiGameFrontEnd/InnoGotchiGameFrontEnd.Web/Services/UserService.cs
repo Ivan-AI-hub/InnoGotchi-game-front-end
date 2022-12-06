@@ -16,10 +16,55 @@ namespace InnoGotchiGameFrontEnd.Web.Services
             _clientName = "Users";
         }
 
-        public async Task<IEnumerable<User>> OnGet()
+        public async Task<IEnumerable<User>> OnGet(UserSorter? sorter = null, UserFiltrator? filtrator = null)
         {
             var httpClient = GetHttpClient(_clientName);
-            var httpResponseMessage = await httpClient.GetAsync("");
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, httpClient.BaseAddress);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            var content = JsonSerializer.Serialize(new
+            {
+                sorter,
+                filtrator
+            }, options);
+            using StringContent jsonContent = new(
+                         JsonSerializer.Serialize(new
+                         {
+                             sorter,
+                             filtrator
+                         }),
+                         Encoding.UTF8,
+                         "application/json");
+            request.Content = jsonContent;
+            var httpResponseMessage = await httpClient.SendAsync(request);
+
+            IEnumerable<User> users = new List<User>();
+
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+                users = await JsonSerializer.DeserializeAsync<IEnumerable<User>>(contentStream, options);
+            }
+            return users;
+        }
+
+        public async Task<IEnumerable<User>> OnGetPage(int pageSize, int pageNumber, UserSorter sorter, UserFiltrator filtrator)
+        {
+            var httpClient = GetHttpClient(_clientName);
+
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, httpClient.BaseAddress + $"/{pageSize}/{pageNumber}");
+            using StringContent jsonContent = new(
+                         JsonSerializer.Serialize(new 
+                         {
+                             sorter,
+                             filtrator
+                         }),
+                         Encoding.UTF8,
+                         "application/json");
+            request.Content = jsonContent;
+            var httpResponseMessage = await httpClient.SendAsync(request);
 
             IEnumerable<User> users = new List<User>();
 
