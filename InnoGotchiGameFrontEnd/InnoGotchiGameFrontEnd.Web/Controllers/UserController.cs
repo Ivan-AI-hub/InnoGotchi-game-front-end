@@ -74,15 +74,22 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
         [HttpGet("UpdatePassword")]
         public IActionResult UpdatePassword()
         {
-            return View();
+            return View("UpdatePassword", "");
         }
 
         [HttpPost("UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(UpdateUserPasswordModel updateModel)
         {
             updateModel.UpdatedId = _authorizeModel.User.Id;
-            await _userService.OnUpdatePassword(updateModel);
-            return Redirect("/");
+            var isComplite = await _userService.OnUpdatePassword(updateModel);
+            if (isComplite)
+            {
+                return Redirect("/");
+            }
+            else
+            {
+                return View("UpdatePassword", "Старый пароль неверен");
+            }
         }
 
         [HttpGet("Register")]
