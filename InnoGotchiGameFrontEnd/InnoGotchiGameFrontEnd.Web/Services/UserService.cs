@@ -87,7 +87,7 @@ namespace InnoGotchiGameFrontEnd.Web.Services
             }
             else return false;
         }
-        public async Task<bool> OnPut(UpdateUserModel updateModel)
+        public async Task<bool> OnUpdateData(UpdateUserDataModel updateModel)
         {
             var httpClient = GetHttpClient(_clientName);
 
@@ -96,7 +96,24 @@ namespace InnoGotchiGameFrontEnd.Web.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await httpClient.PutAsync("", jsonContent);
+            var httpResponseMessage = await httpClient.PutAsync(httpClient.BaseAddress +"/data", jsonContent);
+
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else return false;
+        }
+        public async Task<bool> OnUpdatePassword(UpdateUserPasswordModel updateModel)
+        {
+            var httpClient = GetHttpClient(_clientName);
+
+            using StringContent jsonContent = new(
+                                     JsonSerializer.Serialize(updateModel),
+                                     Encoding.UTF8,
+                                     "application/json");
+
+            var httpResponseMessage = await httpClient.PutAsync(httpClient.BaseAddress + "/password", jsonContent);
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {

@@ -1,41 +1,51 @@
 ﻿using InnoGotchiGame.Web.Models.Users;
 using InnoGotchiGameFrontEnd.Web.Models.Authorize;
+using InnoGotchiGameFrontEnd.Web.Models.Users;
 using InnoGotchiGameFrontEnd.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.Web.Controllers
 {
+    [Route("/")]
 	public class UserController : BaseController
 	{
 		private UserService _userService;
-        public UserController(UserService userService)
+        private AuthorizeModel _authorizeModel;
+        public UserController(UserService userService, AuthorizeModel authorizeModel)
         {
 			_userService = userService;
+            _authorizeModel = authorizeModel;
 		}
 
         [HttpGet]
-		public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet("users")]
+		public async Task<IActionResult> Users()
 		{
 			var users = await _userService.OnGet();
 			return View(users);
 		}
 
 		[HttpGet]
-		[Route("users/{userId}")]
+		[Route("{userId}")]
         public async Task<IActionResult> UserPage(int userId)
         {
             var user = await _userService.OnGet(userId);
             return View(user);
         }
 
-        [HttpGet]
+        [HttpGet("LogIn")]
 		public IActionResult LogIn()
 		{
 			return View();
 		}
 
-        [HttpPost]
+        [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn(string email, string password)
         {
 			var token = await _userService.Authorize(email, password);
@@ -46,13 +56,42 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
 			return Redirect("/");
         }
 
-        [HttpGet]
+        [HttpGet("UpdateData")]
+        public IActionResult UpdateData()
+        {
+            return View();
+        }
+
+        [HttpPost("UpdateData")]
+        public async Task<IActionResult> UpdateData(UpdateUserDataModel updateModel)
+        {
+            updateModel.UpdatedId = _authorizeModel.User.Id;
+            var isComplite = await _userService.OnUpdateData(updateModel);
+
+            return Redirect("/");
+        }
+
+        [HttpGet("UpdatePassword")]
+        public IActionResult UpdatePassword()
+        {
+            return View();
+        }
+
+        [HttpPost("UpdatePassword")]
+        public async Task<IActionResult> UpdatePassword(UpdateUserPasswordModel updateModel)
+        {
+            updateModel.UpdatedId = _authorizeModel.User.Id;
+            await _userService.OnUpdatePassword(updateModel);
+            return Redirect("/");
+        }
+
+        [HttpGet("Register")]
         public IActionResult Register()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register(AddUserModel addModel)
         {
             var complite = await _userService.OnPost(addModel);
@@ -63,7 +102,8 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
             }
             return Redirect("/");
         }
-        [HttpGet]
+
+        [HttpGet("LogOut")]
         public IActionResult LogOut()
 		{
             HttpContext.Session.Remove("token");
@@ -73,7 +113,7 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
 
         private async Task SaveUserInSession(string token)
         {
-            var authorizeModel = new AuthorizeModel() { AccessToken = token, User = await _userService.OnGetAuthodizedUser() };
+            var authorizeModel = new AuthorizeModel() { AccessToken = token };
             HttpContext.Session.SetString("token", JsonSerializer.Serialize(authorizeModel));
         }
     }

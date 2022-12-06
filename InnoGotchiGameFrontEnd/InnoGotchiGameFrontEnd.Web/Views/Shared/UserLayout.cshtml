@@ -1,0 +1,27 @@
+﻿@using InnoGotchiGameFrontEnd.Web.Models.Authorize;
+@{
+    Layout = "_Layout";
+}
+
+@inject AuthorizeModel authModel
+
+@if (authModel.IsAuthorized)
+{
+    <div class="row">
+        <div class="col-3">
+            <div class="list-group">
+                @Html.ActionLink("Изменить данные", "UpdateData", "User", null, new {@class = "list-group-item list-group-item-action"})
+            </div>
+        </div>
+        <div class="col">
+            @RenderBody()
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        @RenderBody()
+    </div>
+}
+

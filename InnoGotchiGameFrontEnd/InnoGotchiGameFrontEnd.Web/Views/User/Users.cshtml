@@ -1,0 +1,48 @@
+﻿@using InnoGotchiGameFrontEnd.Web.Models.Authorize;
+@using InnoGotchiGameFrontEnd.Web.Models.Users;
+
+@inject AuthorizeModel User
+
+@model IEnumerable<User>;
+
+@if (User.IsAuthorized)
+{
+    <div>
+        @foreach (var user in Model)
+        {
+            <div class="border row">
+                @if (user.PhotoFileLink != null)
+                {
+                    <div class="col-2">
+                        <img src="@user.PhotoFileLink" height="150" width="150" class="img-thumbnail rounded float-right" />
+                    </div>
+                }
+                <div class="col-6">
+                    <div>@user.FirstName @user.LastName</div>
+                    <div>@user.Email</div>
+                </div>
+                <div class="col d-flex align-items-center justify-content-end">
+                    @if (User.User.Id != user.Id)
+                    {
+                        @if (!User.User.CollaboratedFarms.Select(x => x.OwnerId).Any(x => x == user.Id))
+                        {
+                            <div>@Html.ActionLink("Добавить в друзья", "Undifinite", "Undifinite", null, new{@class = "btn btn-primary"})</div>
+                        }
+                        else
+                        {
+                            <div><p class="btn btn-secondary">Уже в друзьях</p></div>
+                        }
+                    }
+                    else
+                    {
+                        <div><p class="btn btn-Info">А это вы)))</p></div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <h4>Для просмотра содержимого необходимо авторизироватся</h4>
+}

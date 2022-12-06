@@ -1,28 +1,22 @@
 ﻿@using InnoGotchiGameFrontEnd.Web.Models.Authorize;
-@using InnoGotchiGameFrontEnd.Web.Models.Users;
+@{
+    ViewData["Title"] = "Account Details";
+    Layout = "~/Views/Shared/UserLayout.cshtml";
+}
+@inject AuthorizeModel authModel;
 
-@inject AuthorizeModel User
-
-@model IEnumerable<User>;
-
-@if (User.IsAuthorized)
-{
-    <table class="table">
-        <tr>
-            <td>Имя</td>
-            <td>Отчество</td>
-        </tr>
-
-        @foreach (var user in Model)
+<div class="row">
+    @if (authModel.IsAuthorized)
+    {
+        @if (@authModel.User.PhotoFileLink != null)
         {
-            <tr>
-                <td>@user.FirstName</td>
-                <td>@user.LastName</td>
-            </tr>
+            <div class="col-3">
+                <p>Аватар</p>
+                <img src="@authModel.User.PhotoFileLink" height="200" width="200" class="img-thumbnail rounded float-right" />
+            </div>
         }
-    </table>
-}
-else
-{
-    <h4>Для просмотра содержимого необходимо авторизироватся</h4>
-}
+        <div class="col">
+            <h1 class="col-sm">@authModel.User.FirstName @authModel.User.LastName </h1>
+        </div>
+    }
+</div>
