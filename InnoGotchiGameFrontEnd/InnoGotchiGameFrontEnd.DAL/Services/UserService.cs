@@ -1,34 +1,28 @@
-﻿using InnoGotchiGame.Web.Models.Users;
-using InnoGotchiGameFrontEnd.Web.Models.Authorize;
-using InnoGotchiGameFrontEnd.Web.Models.Users;
-using System.Net.Http.Headers;
+﻿using InnoGotchiGameFrontEnd.DAL.Models.Users;
 using System.Text;
 using System.Text.Json;
 
-namespace InnoGotchiGameFrontEnd.Web.Services
+namespace InnoGotchiGameFrontEnd.DAL.Services
 {
     public class UserService : BaseService
     {
         private string _clientName;
 
-        public UserService(IHttpClientFactory httpClientFactory, AuthorizeModel authorize) : base(httpClientFactory, authorize)
+        public UserService(IHttpClientFactory httpClientFactory, string? authorize) : base(httpClientFactory, authorize)
         {
             _clientName = "Users";
         }
 
-        public async Task<IEnumerable<User>> OnGet(UserSorter? sorter = null, UserFiltrator? filtrator = null)
+        public async Task<IEnumerable<User>> GetUsers(UserSorter? sorter = null, UserFiltrator? filtrator = null)
         {
             var httpClient = GetHttpClient(_clientName);
             using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, httpClient.BaseAddress);
+
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
-            var content = JsonSerializer.Serialize(new
-            {
-                sorter,
-                filtrator
-            }, options);
+
             using StringContent jsonContent = new(
                          JsonSerializer.Serialize(new
                          {
@@ -50,13 +44,13 @@ namespace InnoGotchiGameFrontEnd.Web.Services
             return users;
         }
 
-        public async Task<IEnumerable<User>> OnGetPage(int pageSize, int pageNumber, UserSorter sorter, UserFiltrator filtrator)
+        public async Task<IEnumerable<User>> GetUsersPage(int pageSize, int pageNumber, UserSorter sorter, UserFiltrator filtrator)
         {
             var httpClient = GetHttpClient(_clientName);
 
             using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, httpClient.BaseAddress + $"/{pageSize}/{pageNumber}");
             using StringContent jsonContent = new(
-                         JsonSerializer.Serialize(new 
+                         JsonSerializer.Serialize(new
                          {
                              sorter,
                              filtrator
@@ -79,7 +73,7 @@ namespace InnoGotchiGameFrontEnd.Web.Services
             }
             return users;
         }
-        public async Task<User?> OnGet(int id)
+        public async Task<User?> GetUserById(int id)
         {
             var httpClient = GetHttpClient(_clientName);
             var httpResponseMessage = await httpClient.GetAsync(httpClient.BaseAddress + $"/{id}");
@@ -97,7 +91,7 @@ namespace InnoGotchiGameFrontEnd.Web.Services
             }
             return user;
         }
-        public async Task<User?> OnGetAuthodizedUser()
+        public async Task<User?> GetAuthodizedUser()
         {
             var httpClient = GetHttpClient(_clientName);
             var httpResponseMessage = await httpClient.GetAsync(httpClient.BaseAddress + $"/Authorized");
@@ -116,7 +110,7 @@ namespace InnoGotchiGameFrontEnd.Web.Services
             return user;
         }
 
-        public async Task<bool> OnPost(AddUserModel addModel)
+        public async Task<ServiceRezult> Create(AddUserModel addModel)
         {
             var httpClient = GetHttpClient(_clientName);
             using StringContent jsonContent = new(
@@ -126,13 +120,10 @@ namespace InnoGotchiGameFrontEnd.Web.Services
 
             var httpResponseMessage = await httpClient.PostAsync("", jsonContent);
 
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                return true;
-            }
-            else return false;
+            return await GetCommandRezult(httpResponseMessage);
         }
-        public async Task<bool> OnUpdateData(UpdateUserDataModel updateModel)
+
+        public async Task<ServiceRezult> UpdateUserData(UpdateUserDataModel updateModel)
         {
             var httpClient = GetHttpClient(_clientName);
 
@@ -141,15 +132,11 @@ namespace InnoGotchiGameFrontEnd.Web.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await httpClient.PutAsync(httpClient.BaseAddress +"/data", jsonContent);
+            var httpResponseMessage = await httpClient.PutAsync(httpClient.BaseAddress + "/data", jsonContent);
 
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                return true;
-            }
-            else return false;
+            return await GetCommandRezult(httpResponseMessage);
         }
-        public async Task<bool> OnUpdatePassword(UpdateUserPasswordModel updateModel)
+        public async Task<ServiceRezult> UpdateUserPassword(UpdateUserPasswordModel updateModel)
         {
             var httpClient = GetHttpClient(_clientName);
 
@@ -160,23 +147,15 @@ namespace InnoGotchiGameFrontEnd.Web.Services
 
             var httpResponseMessage = await httpClient.PutAsync(httpClient.BaseAddress + "/password", jsonContent);
 
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                return true;
-            }
-            else return false;
+            return await GetCommandRezult(httpResponseMessage);
         }
-        public async Task<bool> OnDelete(int userId)
+        public async Task<ServiceRezult> DeleteById(int userId)
         {
             var httpClient = GetHttpClient(_clientName);
 
             var httpResponseMessage = await httpClient.DeleteAsync(httpClient.BaseAddress + $"/{userId}");
 
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                return true;
-            }
-            else return false;
+            return await GetCommandRezult(httpResponseMessage);
         }
 
         public async Task<string?> Authorize(string email, string password)
@@ -190,7 +169,7 @@ namespace InnoGotchiGameFrontEnd.Web.Services
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 var token = (await httpResponseMessage.Content.ReadAsStringAsync()).Replace("\"", "");
-                AuthorizeModel.AccessToken = token;
+                AccessToken = token;
                 return token;
             }
             return null;

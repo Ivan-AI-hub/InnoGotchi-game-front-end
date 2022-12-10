@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace InnoGotchiGameFrontEnd.Web.Models.Users
+namespace InnoGotchiGameFrontEnd.DAL.Models.Users
 {
     public class UpdateUserPasswordModel
     {

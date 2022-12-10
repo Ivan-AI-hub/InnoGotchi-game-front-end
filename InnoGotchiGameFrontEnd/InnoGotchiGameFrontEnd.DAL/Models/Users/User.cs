@@ -1,7 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using InnoGotchiGame.Application.Models;
-
-namespace InnoGotchiGameFrontEnd.Web.Models.Users
+﻿namespace InnoGotchiGameFrontEnd.DAL.Models.Users
 {
     public class User
     {

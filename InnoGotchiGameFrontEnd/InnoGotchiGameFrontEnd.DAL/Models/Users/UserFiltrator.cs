@@ -1,4 +1,4 @@
-﻿namespace InnoGotchiGameFrontEnd.Web.Models.Users
+﻿namespace InnoGotchiGameFrontEnd.DAL.Models.Users
 {
     public class UserFiltrator
     {
