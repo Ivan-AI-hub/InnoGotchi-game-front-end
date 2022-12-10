@@ -10,4 +10,8 @@
     <Content Remove="Views\Home\HomeLayout.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\InnoGotchiGameFrontEnd.BLL\InnoGotchiGameFrontEnd.BLL.csproj" />
+  </ItemGroup>
+
 </Project>

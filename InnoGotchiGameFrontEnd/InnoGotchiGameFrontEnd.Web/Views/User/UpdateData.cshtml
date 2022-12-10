@@ -1,23 +1,24 @@
-﻿@using InnoGotchiGameFrontEnd.Web.Models.Authorize;
+﻿@using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+
 @{
     ViewData["Title"] = "Update user data";
     Layout = "~/Views/Shared/UserLayout.cshtml";
 }
-@inject AuthorizeModel User
-@if (User.IsAuthorized)
+@inject AuthorizeModel authModel
+@if (authModel.IsAuthorized)
 {
     <form method="post" class="form">
         <div class="form-group">
             <label class="form-label">FirstName</label>
-            <input value="@User.User.FirstName" name="FirstName" type="text" class="form-control bg-black bg-opacity-25" required />
+            <input value="@authModel.User.FirstName" name="FirstName" type="text" class="form-control bg-black bg-opacity-25" required />
         </div>
         <div class="form-group">
             <label class="form-label">LastName</label>
-            <input value="@User.User.LastName" name="LastName" type="text" class="form-control bg-black bg-opacity-25" required />
+            <input value="@authModel.User.LastName" name="LastName" type="text" class="form-control bg-black bg-opacity-25" required />
         </div>
         <div class="form-group">
             <label class="form-label">Avatar</label>
-            <input value="@User.User.PhotoFileLink" name="PhotoFileLink" type="text" class="form-control bg-black bg-opacity-25" required />
+            <input value="@authModel.User.PhotoFileLink" name="PhotoFileLink" type="text" class="form-control bg-black bg-opacity-25" required />
         </div>
         <input type="submit" />
     </form>

@@ -1,11 +1,16 @@
+using AutoMapper;
+using InnoGotchiGameFrontEnd.BLL;
+using InnoGotchiGameFrontEnd.BLL.Mappings;
+using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
 using InnoGotchiGameFrontEnd.Web.Middleware;
-using InnoGotchiGameFrontEnd.Web.Models.Authorize;
-using InnoGotchiGameFrontEnd.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<UserService>();
+var config = new MapperConfiguration(cnf => cnf.AddProfiles(new List<Profile>() {new BllMappingProfile() }));
+
+builder.Services.AddTransient<IMapper>(x => new Mapper(config));
+builder.Services.AddTransient<UserManager>();
 builder.Services.AddScoped<AuthorizeModel>();
 builder.Services.AddLogging();
 builder.Services.AddSession();
@@ -22,7 +27,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseSession();
-app.UseMiddleware<AuthorizationMiddleware>();
+app.UseMiddleware<JwtTokenMiddlewareMiddleware>();
+app.UseMiddleware<AuthorizeUserMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseHttpLogging();

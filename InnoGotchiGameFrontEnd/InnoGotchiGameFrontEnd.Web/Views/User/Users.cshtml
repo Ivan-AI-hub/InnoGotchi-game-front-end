@@ -1,12 +1,11 @@
-﻿@using InnoGotchiGameFrontEnd.Web.Models.Authorize;
-@using InnoGotchiGameFrontEnd.Web.Models.Users;
+﻿@using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
 @using InnoGotchiGameFrontEnd.Web.ViewModels.Users;
 
-@inject AuthorizeModel User
+@inject AuthorizeModel authModel
 
 @model AllUsersViewModel;
 
-@if (User.IsAuthorized)
+@if (authModel.IsAuthorized)
 {
     <div>
         <form>
@@ -53,9 +52,9 @@
                     <div>@user.Email</div>
                 </div>
                 <div class="col d-flex align-items-center justify-content-end">
-                    @if (User.User.Id != user.Id)
+                    @if (authModel.User.Id != user.Id)
                     {
-                        @if (!User.User.CollaboratedFarms.Select(x => x.OwnerId).Any(x => x == user.Id))
+                        @if (!authModel.User.CollaboratedFarms.Select(x => x.OwnerId).Any(x => x == user.Id))
                         {
                             <div>@Html.ActionLink("Добавить в друзья", "Undifinite", "Undifinite", null, new{@class = "btn btn-primary"})</div>
                         }

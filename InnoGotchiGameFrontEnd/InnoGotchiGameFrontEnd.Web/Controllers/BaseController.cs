@@ -1,5 +1,4 @@
-﻿using InnoGotchiGameFrontEnd.Web.Models.Authorize;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchiGameFrontEnd.Web.Controllers
 {

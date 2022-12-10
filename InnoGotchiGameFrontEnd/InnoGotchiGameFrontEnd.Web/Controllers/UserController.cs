@@ -1,10 +1,11 @@
-﻿using InnoGotchiGame.Web.Models.Users;
-using InnoGotchiGameFrontEnd.Web.Models.Authorize;
-using InnoGotchiGameFrontEnd.Web.Models.Users;
-using InnoGotchiGameFrontEnd.Web.Services;
+﻿
+using InnoGotchiGameFrontEnd.BLL;
+using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
+using InnoGotchiGameFrontEnd.BLL.Filtrators;
+using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.Web.ViewModels.Users;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.Web.Controllers
@@ -12,11 +13,11 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
     [Route("/")]
 	public class UserController : BaseController
 	{
-		private UserService _userService;
+		private UserManager _userManager;
         private AuthorizeModel _authorizeModel;
-        public UserController(UserService userService, AuthorizeModel authorizeModel)
+        public UserController(UserManager userManager, AuthorizeModel authorizeModel)
         {
-			_userService = userService;
+			_userManager = userManager;
             _authorizeModel = authorizeModel;
 		}
 
@@ -33,9 +34,10 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
             var sorter = GetSorter(sortRule);
             sorter.IsDescendingSort = isDescendingSort;
 
+            var filtrator = new UserDTOFiltrator();
             Response.Cookies.Append("UserSortRule", sortRule);
 
-			var users = await _userService.OnGet(sorter);
+			var users = await _userManager.GetAllUsers(sorter, filtrator);
             var viewModel = new AllUsersViewModel(users, sortRule, sorter.IsDescendingSort);
 			return View(viewModel);
 		}
@@ -44,7 +46,7 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
 		[Route("{userId}")]
         public async Task<IActionResult> UserPage(int userId)
         {
-            var user = await _userService.OnGet(userId);
+            var user = await _userManager.GetUserById(userId);
             return View(user);
         }
 
@@ -57,10 +59,10 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
         [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn(string email, string password)
         {
-			var token = await _userService.Authorize(email, password);
+			var token = await _userManager.Authorize(email, password);
 			if(token != null)
 			{
-                await SaveUserInSession(token);                
+                await SaveUserInCookie(token);                
 			}
 			return Redirect("/");
         }
@@ -72,10 +74,10 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
         }
 
         [HttpPost("UpdateData")]
-        public async Task<IActionResult> UpdateData(UpdateUserDataModel updateModel)
+        public async Task<IActionResult> UpdateData(UpdateUserDTODataModel updateModel)
         {
             updateModel.UpdatedId = _authorizeModel.User.Id;
-            var isComplite = await _userService.OnUpdateData(updateModel);
+            var isComplite = await _userManager.UpdateUserData(updateModel);
 
             return Redirect("/");
         }
@@ -87,11 +89,11 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
         }
 
         [HttpPost("UpdatePassword")]
-        public async Task<IActionResult> UpdatePassword(UpdateUserPasswordModel updateModel)
+        public async Task<IActionResult> UpdatePassword(UpdateUserDTOPasswordModel updateModel)
         {
             updateModel.UpdatedId = _authorizeModel.User.Id;
-            var isComplite = await _userService.OnUpdatePassword(updateModel);
-            if (isComplite)
+            var rezult = await _userManager.UpdateUserPassword(updateModel);
+            if (rezult.IsComplete)
             {
                 return Redirect("/");
             }
@@ -108,13 +110,13 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(AddUserModel addModel)
+        public async Task<IActionResult> Register(AddUserDTOModel addModel)
         {
-            var complite = await _userService.OnPost(addModel);
-            if (complite)
+            var rezult = await _userManager.Create(addModel);
+            if (rezult.IsComplete)
             {
-                var token = await _userService.Authorize(addModel.Email, addModel.Password);
-                await SaveUserInSession(token);
+                var token = await _userManager.Authorize(addModel.Email, addModel.Password);
+                await SaveUserInCookie(token);
             }
             return Redirect("/");
         }
@@ -127,22 +129,22 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
             return RedirectToAction("LogIn");
         }
 
-        private async Task SaveUserInSession(string token)
+        private async Task SaveUserInCookie(string token)
         {
             var authorizeModel = new AuthorizeModel() { AccessToken = token };
-            HttpContext.Session.SetString("token", JsonSerializer.Serialize(authorizeModel));
+            HttpContext.Response.Cookies.Append("token", JsonSerializer.Serialize(authorizeModel));
         }
 
-        private UserSorter GetSorter(string sortRule)
+        private UserDTOSorter GetSorter(string sortRule)
         {
-            var sorter = new UserSorter();
+            var sorter = new UserDTOSorter();
             switch (sortRule)
             {
                 case "Email":
-                    sorter.IsEmailSort = true;
+                    sorter.SortRule = UserDTOSortRule.Email;
                     break;
                 case "FirstName":
-                    sorter.IsFirstNameSort = true;
+                    sorter.SortRule = UserDTOSortRule.FirstName;
                     break;
             }
 
