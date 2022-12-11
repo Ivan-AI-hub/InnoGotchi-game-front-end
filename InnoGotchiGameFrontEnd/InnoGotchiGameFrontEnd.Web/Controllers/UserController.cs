@@ -4,6 +4,7 @@ using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
+using InnoGotchiGameFrontEnd.Web.ViewModels.PageSystem;
 using InnoGotchiGameFrontEnd.Web.ViewModels.Users;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -13,12 +14,14 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
     [Route("/")]
 	public class UserController : BaseController
 	{
+        private int _pageSize;
 		private UserManager _userManager;
         private AuthorizeModel _authorizeModel;
         public UserController(UserManager userManager, AuthorizeModel authorizeModel)
         {
 			_userManager = userManager;
             _authorizeModel = authorizeModel;
+            _pageSize = 5;
 		}
 
         [HttpGet]
@@ -28,17 +31,29 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
         }
 
         [HttpGet("users")]
-		public async Task<IActionResult> Users(string sortRule, bool isDescendingSort)
+		public async Task<IActionResult> Users(string sortRule, bool isDescendingSort, string lastNameTemplate, string emailTemplate, int pageNumber = 1)
 		{
             sortRule = GetValueFromCookie(Request, "UserSortRule", nameof(sortRule), "");
+            lastNameTemplate = GetValueFromCookie(Request, "UserLastName", nameof(lastNameTemplate), "");
+            emailTemplate = GetValueFromCookie(Request, "UserEmail", nameof(emailTemplate), "");
+
             var sorter = GetSorter(sortRule);
             sorter.IsDescendingSort = isDescendingSort;
 
-            var filtrator = new UserDTOFiltrator();
-            Response.Cookies.Append("UserSortRule", sortRule);
+            var filtrator = new UserDTOFiltrator()
+            {
+                FirstName = lastNameTemplate,
+                Email = emailTemplate
+            };
 
-			var users = await _userManager.GetAllUsers(sorter, filtrator);
-            var viewModel = new AllUsersViewModel(users, sortRule, sorter.IsDescendingSort);
+            Response.Cookies.Append("UserSortRule", sortRule);
+            Response.Cookies.Append("UserLastName", lastNameTemplate);
+            Response.Cookies.Append("UserEmail", emailTemplate);
+
+            var users = await _userManager.GetUsersPage(_pageSize, pageNumber, sorter, filtrator);
+
+            var page = new Page(pageNumber, GetPageStatus(pageNumber, users.Count()));
+            var viewModel = new AllUsersViewModel(users, page, sortRule, lastNameTemplate, emailTemplate, sorter.IsDescendingSort);
 			return View(viewModel);
 		}
 
@@ -143,12 +158,30 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
                 case "Email":
                     sorter.SortRule = UserDTOSortRule.Email;
                     break;
-                case "FirstName":
-                    sorter.SortRule = UserDTOSortRule.FirstName;
+                case "LastName":
+                    sorter.SortRule = UserDTOSortRule.LastName;
                     break;
             }
 
             return sorter;
+        }
+
+        private PageStatus GetPageStatus(int pageNumber, int usersCount)
+        {
+            PageStatus pageStatus;
+            if(pageNumber <= 1)
+            {
+                pageStatus = PageStatus.FirstPage;
+            }
+            else if(usersCount < _pageSize)
+            {
+                pageStatus = PageStatus.LastPage;
+            }
+            else
+            {
+                pageStatus = PageStatus.MiddlePage;
+            }
+            return pageStatus;
         }
     }
 }
