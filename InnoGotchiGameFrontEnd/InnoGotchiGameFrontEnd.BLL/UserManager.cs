@@ -6,18 +6,21 @@ using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.DAL.Models.Users;
 using InnoGotchiGameFrontEnd.DAL.Services;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
     public class UserManager
     {
         private UserService _service;
+        private IMemoryCache _cache;
         private IMapper _mapper;
 
-        public UserManager(AuthorizeModel model, IHttpClientFactory clientFactory, IMapper mapper)
+        public UserManager(AuthorizeModel model, IHttpClientFactory clientFactory, IMapper mapper, IMemoryCache cache)
         {
             _service = new UserService(clientFactory, model.AccessToken);
             _mapper = mapper;
+            _cache = cache;
         }
 
         public async Task<IEnumerable<UserDTO>> GetAllUsers(UserDTOSorter sorter, UserDTOFiltrator filtrator)
@@ -46,8 +49,13 @@ namespace InnoGotchiGameFrontEnd.BLL
 
         public async Task<UserDTO> GetAuthodizedUser()
         {
-            var dataUsers = await _service.GetAuthodizedUser();
-            var user = _mapper.Map<UserDTO>(dataUsers);
+            UserDTO user;
+            if (!_cache.TryGetValue<UserDTO>("AuthodizedUser", out user))
+            {
+                var dataUsers = await _service.GetAuthodizedUser();
+                user = _mapper.Map<UserDTO>(dataUsers);
+                _cache.Set<UserDTO>("AuthodizedUser", user);
+            }
             return user;
         }
 
@@ -66,6 +74,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             var rezult = new ManagerRezult();
             var serviceRezult = await _service.UpdateUserData(updateDataModel);
             rezult.Errors.AddRange(serviceRezult.Errors);
+            if (rezult.IsComplete) _cache.Remove("AuthodizedUser");
             return rezult;
         }
 
@@ -75,6 +84,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             var rezult = new ManagerRezult();
             var serviceRezult = await _service.UpdateUserPassword(updateDataModel);
             rezult.Errors.AddRange(serviceRezult.Errors);
+            if (rezult.IsComplete) _cache.Remove("AuthodizedUser");
             return rezult;
         }
         
