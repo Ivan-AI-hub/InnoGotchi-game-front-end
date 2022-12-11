@@ -13,6 +13,7 @@
 
         public IEnumerable<ColaborationRequestDTO> UnconfirmedRequest { get; set; }
         public IEnumerable<PetFarmDTO?> CollaboratedFarms { get; set; }
+        public IEnumerable<int> CollaboratersId { get; set; }
 
         public UserDTO()
         {

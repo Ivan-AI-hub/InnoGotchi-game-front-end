@@ -93,9 +93,11 @@
                     <div class="col d-flex align-items-center justify-content-end">
                         @if (authModel.User.Id != user.Id)
                         {
-                            @if (!authModel.User.CollaboratedFarms.Select(x => x.OwnerId).Any(x => x == user.Id))
+                            @if (!authModel.User.CollaboratersId.Any(x => x == user.Id) && !user.UnconfirmedRequest.Select(x => x.RequestSenderId).Any(x => x == authModel.User.Id))
                             {
-                                <div>@Html.ActionLink("Добавить в друзья", "Undifinite", "Undifinite", null, new{@class = "btn btn-primary"})</div>
+                                <div>
+                                    <a href="/ColaborationRequest/add?recipientId=@user.Id" class="btn btn-primary">Добавить в друзья</a>
+                                </div>
                             }
                             else
                             {

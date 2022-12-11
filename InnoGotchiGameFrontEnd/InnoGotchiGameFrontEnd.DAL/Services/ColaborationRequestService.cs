@@ -14,12 +14,11 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         public async Task<ServiceRezult> AddCollaborator(int senderId, int recipientId)
         {
             var httpClient = GetHttpClient(_clientName);
-            using StringContent jsonContent = new(
-                                     JsonSerializer.Serialize(new { senderId, recipientId }),
-                                     Encoding.UTF8,
-                                     "application/json");
+            var parameters = new Dictionary<string, string>();
+            parameters["senderId"] = senderId.ToString();
+            parameters["recipientId"] = recipientId.ToString();
 
-            var httpResponseMessage = await httpClient.PostAsync("", jsonContent);
+            var httpResponseMessage = await httpClient.PostAsync("", new FormUrlEncodedContent(parameters));
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -27,12 +26,10 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         public async Task<ServiceRezult> ConfirmRequest(int requestId, int recipientId)
         {
             var httpClient = GetHttpClient(_clientName);
-            using StringContent jsonContent = new(
-                                     JsonSerializer.Serialize(new {recipientId }),
-                                     Encoding.UTF8,
-                                     "application/json");
+            var parameters = new Dictionary<string, string>();
+            parameters["recipientId"] = recipientId.ToString();
 
-            var httpResponseMessage = await httpClient.PostAsync(httpClient.BaseAddress + $"{requestId}/confirm", jsonContent);
+            var httpResponseMessage = await httpClient.PutAsync(httpClient.BaseAddress + $"/{requestId}/confirm", new FormUrlEncodedContent(parameters));
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -40,12 +37,10 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         public async Task<ServiceRezult> RejectRequest(int requestId, int participantId)
         {
             var httpClient = GetHttpClient(_clientName);
-            using StringContent jsonContent = new(
-                                     JsonSerializer.Serialize(new { participantId }),
-                                     Encoding.UTF8,
-                                     "application/json");
+            var parameters = new Dictionary<string, string>();
+            parameters["participantId"] = participantId.ToString();
 
-            var httpResponseMessage = await httpClient.PostAsync(httpClient.BaseAddress + $"{requestId}/reject", jsonContent);
+            var httpResponseMessage = await httpClient.PutAsync(httpClient.BaseAddress + $"/{requestId}/reject", new FormUrlEncodedContent(parameters));
 
             return await GetCommandRezult(httpResponseMessage);
         }

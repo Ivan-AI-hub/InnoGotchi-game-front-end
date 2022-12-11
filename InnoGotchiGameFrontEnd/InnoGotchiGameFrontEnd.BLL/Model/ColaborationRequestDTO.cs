@@ -7,5 +7,8 @@
 
         public int RequestSenderId { get; set; }
         public int RequestReceiverId { get; set; }
+
+        public UserDTO? RequestSender { get; set; }
+        public UserDTO? RequestReceiver { get; set; }
     }
 }

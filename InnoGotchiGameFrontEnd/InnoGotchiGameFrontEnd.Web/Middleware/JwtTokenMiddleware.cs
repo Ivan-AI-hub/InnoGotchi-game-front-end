@@ -4,11 +4,11 @@ using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.Web.Middleware
 {
-    public class JwtTokenMiddlewareMiddleware
+    public class JwtTokenMiddleware
     {
         private RequestDelegate _next;
 
-        public JwtTokenMiddlewareMiddleware(RequestDelegate next)
+        public JwtTokenMiddleware(RequestDelegate next)
         {
             _next = next;
         }

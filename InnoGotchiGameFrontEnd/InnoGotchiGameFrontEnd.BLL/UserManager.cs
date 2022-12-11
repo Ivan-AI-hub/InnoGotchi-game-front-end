@@ -74,7 +74,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             var rezult = new ManagerRezult();
             var serviceRezult = await _service.UpdateUserData(updateDataModel);
             rezult.Errors.AddRange(serviceRezult.Errors);
-            if (rezult.IsComplete) _cache.Remove("AuthodizedUser");
+            if (rezult.IsComplete) CachClear();
             return rezult;
         }
 
@@ -84,7 +84,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             var rezult = new ManagerRezult();
             var serviceRezult = await _service.UpdateUserPassword(updateDataModel);
             rezult.Errors.AddRange(serviceRezult.Errors);
-            if (rezult.IsComplete) _cache.Remove("AuthodizedUser");
+            if (rezult.IsComplete) CachClear();
             return rezult;
         }
         
@@ -101,6 +101,11 @@ namespace InnoGotchiGameFrontEnd.BLL
             var token = await _service.Authorize(email, password);
 
             return token;
+        }
+
+        public void CachClear()
+        {
+            _cache.Remove("AuthodizedUser");
         }
     }
 }

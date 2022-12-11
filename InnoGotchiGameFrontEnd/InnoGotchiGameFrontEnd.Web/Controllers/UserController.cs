@@ -82,6 +82,14 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
 			return Redirect("/");
         }
 
+        [HttpGet("LogOut")]
+        public IActionResult LogOut()
+        {
+            HttpContext.Response.Cookies.Delete("token");
+            _userManager.CachClear();
+            return RedirectToAction("LogIn");
+        }
+
         [HttpGet("UpdateData")]
         public IActionResult UpdateData()
         {
@@ -134,14 +142,6 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
                 await SaveUserInCookie(token);
             }
             return Redirect("/");
-        }
-
-        [HttpGet("LogOut")]
-        public IActionResult LogOut()
-		{
-            HttpContext.Session.Remove("token");
-            
-            return RedirectToAction("LogIn");
         }
 
         private async Task SaveUserInCookie(string token)

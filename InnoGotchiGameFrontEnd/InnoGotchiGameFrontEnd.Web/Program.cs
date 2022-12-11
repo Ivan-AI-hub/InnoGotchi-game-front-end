@@ -11,9 +11,9 @@ var config = new MapperConfiguration(cnf => cnf.AddProfiles(new List<Profile>() 
 
 builder.Services.AddTransient<IMapper>(x => new Mapper(config));
 builder.Services.AddTransient<UserManager>();
+builder.Services.AddTransient<ColaborationRequestManager>();
 builder.Services.AddScoped<AuthorizeModel>();
 builder.Services.AddLogging();
-builder.Services.AddSession();
 HttpClientsConfiguration(builder.Services, "https://localhost:7209/api/");
 
 var app = builder.Build();
@@ -26,8 +26,7 @@ if (!app.Environment.IsDevelopment())
 	app.UseHsts();
 }
 
-app.UseSession();
-app.UseMiddleware<JwtTokenMiddlewareMiddleware>();
+app.UseMiddleware<JwtTokenMiddleware>();
 app.UseMiddleware<AuthorizeUserMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();

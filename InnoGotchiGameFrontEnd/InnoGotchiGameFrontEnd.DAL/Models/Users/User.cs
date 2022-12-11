@@ -13,6 +13,7 @@
 
         public IEnumerable<ColaborationRequest> UnconfirmedRequest { get; set; }
         public IEnumerable<PetFarm?> CollaboratedFarms { get; set; }
+        public IEnumerable<int> CollaboratersId { get; set; }
 
         public User()
         {
