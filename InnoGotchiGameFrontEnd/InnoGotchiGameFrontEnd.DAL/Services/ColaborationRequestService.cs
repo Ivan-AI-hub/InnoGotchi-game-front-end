@@ -1,5 +1,4 @@
-﻿using InnoGotchiGameFrontEnd.DAL.Models.Users;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text;
 
 namespace InnoGotchiGameFrontEnd.DAL.Services
