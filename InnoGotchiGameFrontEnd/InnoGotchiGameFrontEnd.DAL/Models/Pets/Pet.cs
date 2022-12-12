@@ -1,4 +1,4 @@
-﻿namespace InnoGotchiGameFrontEnd.DAL.Models
+﻿namespace InnoGotchiGameFrontEnd.DAL.Models.Pets
 {
     public class Pet
     {

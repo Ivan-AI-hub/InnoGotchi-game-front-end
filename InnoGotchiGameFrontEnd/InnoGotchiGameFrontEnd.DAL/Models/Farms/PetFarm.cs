@@ -1,4 +1,6 @@
-﻿namespace InnoGotchiGameFrontEnd.DAL.Models.Farms
+﻿using InnoGotchiGameFrontEnd.DAL.Models.Pets;
+
+namespace InnoGotchiGameFrontEnd.DAL.Models.Farms
 {
     public class PetFarm
     {
