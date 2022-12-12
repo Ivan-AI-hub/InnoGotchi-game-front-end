@@ -36,7 +36,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         {
             var dataSorter = _mapper.Map<UserSorter>(sorter);
             var dataFiltrator = _mapper.Map<UserFiltrator>(filtrator);
-            var dataUsers = await _service.GetUsersPage(pageSize, pageNumber,dataSorter, dataFiltrator);
+            var dataUsers = await _service.GetUsersPage(pageSize, pageNumber, dataSorter, dataFiltrator);
             var users = _mapper.Map<IEnumerable<UserDTO>>(dataUsers);
             return users;
         }
@@ -87,7 +87,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             if (rezult.IsComplete) CachClear();
             return rezult;
         }
-        
+
         public async Task<ManagerRezult> DeleteById(int id)
         {
             var rezult = new ManagerRezult();

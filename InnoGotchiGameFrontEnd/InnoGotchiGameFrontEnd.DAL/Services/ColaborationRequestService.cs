@@ -1,7 +1,4 @@
-﻿using System.Text.Json;
-using System.Text;
-
-namespace InnoGotchiGameFrontEnd.DAL.Services
+﻿namespace InnoGotchiGameFrontEnd.DAL.Services
 {
     public class ColaborationRequestService : BaseService
     {

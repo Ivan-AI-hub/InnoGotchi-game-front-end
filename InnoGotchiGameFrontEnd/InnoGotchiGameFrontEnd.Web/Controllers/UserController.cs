@@ -12,17 +12,17 @@ using System.Text.Json;
 namespace InnoGotchiGameFrontEnd.Web.Controllers
 {
     [Route("/")]
-	public class UserController : BaseController
-	{
+    public class UserController : BaseController
+    {
         private int _pageSize;
-		private UserManager _userManager;
+        private UserManager _userManager;
         private AuthorizeModel _authorizeModel;
         public UserController(UserManager userManager, AuthorizeModel authorizeModel)
         {
-			_userManager = userManager;
+            _userManager = userManager;
             _authorizeModel = authorizeModel;
             _pageSize = 5;
-		}
+        }
 
         [HttpGet]
         public IActionResult Index()
@@ -31,8 +31,8 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
         }
 
         [HttpGet("users")]
-		public async Task<IActionResult> Users(string sortRule, bool isDescendingSort, string lastNameTemplate, string emailTemplate, int pageNumber = 1)
-		{
+        public async Task<IActionResult> Users(string sortRule, bool isDescendingSort, string lastNameTemplate, string emailTemplate, int pageNumber = 1)
+        {
             sortRule = GetValueFromCookie(Request, "UserSortRule", nameof(sortRule), "");
             lastNameTemplate = GetValueFromCookie(Request, "UserLastName", nameof(lastNameTemplate), "");
             emailTemplate = GetValueFromCookie(Request, "UserEmail", nameof(emailTemplate), "");
@@ -54,11 +54,11 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
 
             var page = new Page(pageNumber, GetPageStatus(pageNumber, users.Count()));
             var viewModel = new AllUsersViewModel(users, page, sortRule, lastNameTemplate, emailTemplate, sorter.IsDescendingSort);
-			return View(viewModel);
-		}
+            return View(viewModel);
+        }
 
-		[HttpGet]
-		[Route("{userId}")]
+        [HttpGet]
+        [Route("{userId}")]
         public async Task<IActionResult> UserPage(int userId)
         {
             var user = await _userManager.GetUserById(userId);
@@ -66,20 +66,20 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
         }
 
         [HttpGet("LogIn")]
-		public IActionResult LogIn()
-		{
-			return View();
-		}
+        public IActionResult LogIn()
+        {
+            return View();
+        }
 
         [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn(string email, string password)
         {
-			var token = await _userManager.Authorize(email, password);
-			if(token != null)
-			{
-                await SaveUserInCookie(token);                
-			}
-			return Redirect("/");
+            var token = await _userManager.Authorize(email, password);
+            if (token != null)
+            {
+                await SaveUserInCookie(token);
+            }
+            return Redirect("/");
         }
 
         [HttpGet("LogOut")]
@@ -169,11 +169,11 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
         private PageStatus GetPageStatus(int pageNumber, int usersCount)
         {
             PageStatus pageStatus;
-            if(pageNumber <= 1)
+            if (pageNumber <= 1)
             {
                 pageStatus = PageStatus.FirstPage;
             }
-            else if(usersCount < _pageSize)
+            else if (usersCount < _pageSize)
             {
                 pageStatus = PageStatus.LastPage;
             }

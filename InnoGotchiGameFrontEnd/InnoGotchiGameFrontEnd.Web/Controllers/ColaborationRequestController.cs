@@ -1,5 +1,4 @@
 ﻿using InnoGotchiGameFrontEnd.BLL;
-using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +19,7 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
 
         public async Task<IActionResult> UnconfirmedRequestsView()
         {
-            foreach(var request in _authorizeModel.User.UnconfirmedRequest)
+            foreach (var request in _authorizeModel.User.UnconfirmedRequest)
             {
                 request.RequestSender = await _userManager.GetUserById(request.RequestSenderId);
                 request.RequestReceiver = _authorizeModel.User;

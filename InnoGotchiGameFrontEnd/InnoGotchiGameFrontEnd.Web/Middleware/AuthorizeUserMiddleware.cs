@@ -1,6 +1,5 @@
 ﻿using InnoGotchiGameFrontEnd.BLL;
 using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
-using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.Web.Middleware
 {
