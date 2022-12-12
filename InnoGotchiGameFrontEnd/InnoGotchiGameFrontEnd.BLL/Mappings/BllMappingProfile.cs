@@ -4,6 +4,7 @@ using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.DAL.Models;
+using InnoGotchiGameFrontEnd.DAL.Models.Farms;
 using InnoGotchiGameFrontEnd.DAL.Models.Users;
 
 namespace InnoGotchiGameFrontEnd.BLL.Mappings

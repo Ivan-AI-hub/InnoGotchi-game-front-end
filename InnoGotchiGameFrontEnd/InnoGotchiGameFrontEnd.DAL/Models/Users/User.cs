@@ -1,4 +1,6 @@
-﻿namespace InnoGotchiGameFrontEnd.DAL.Models.Users
+﻿using InnoGotchiGameFrontEnd.DAL.Models.Farms;
+
+namespace InnoGotchiGameFrontEnd.DAL.Models.Users
 {
     public class User
     {
