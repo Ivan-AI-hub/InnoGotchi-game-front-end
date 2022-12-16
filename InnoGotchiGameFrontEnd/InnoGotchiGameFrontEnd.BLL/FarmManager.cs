@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InnoGotchiGameFrontEnd.BLL.ComandModels.Farm;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
@@ -8,7 +9,7 @@ using InnoGotchiGameFrontEnd.DAL.Services;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
-    public class FarmManager
+	public class FarmManager
     {
         private FarmService _service;
         private IMapper _mapper;
