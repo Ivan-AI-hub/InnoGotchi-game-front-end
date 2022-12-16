@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InnoGotchiGameFrontEnd.BLL.ComandModels.Farm;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
@@ -22,7 +23,15 @@ namespace InnoGotchiGameFrontEnd.BLL.Mappings
             CreateMap<UpdateUserDataModel, UpdateUserDTODataModel>().ReverseMap();
             CreateMap<UpdateUserPasswordModel, UpdateUserDTOPasswordModel>().ReverseMap();
 
+
             CreateMap<PetFarm, PetFarmDTO>().ReverseMap();
+            CreateMap<FarmSorter, FarmDTOSorter>().ReverseMap();
+            CreateMap<FarmSortRule, FarmDTOSortRule>().ReverseMap();
+            CreateMap<FarmFiltrator, FarmDTOFiltrator>().ReverseMap();
+            CreateMap<AddFarmModel, AddFarmDTOModel>().ReverseMap();
+            CreateMap<UpdateFarmModel, UpdateFarmDTOModel>().ReverseMap();
+
+
             CreateMap<ColaborationRequest, ColaborationRequestDTO>().ReverseMap();
             CreateMap<ColaborationRequestStatus, ColaborationRequestStatusDTO>().ReverseMap();
 
