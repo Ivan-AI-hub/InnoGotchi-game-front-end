@@ -1,18 +1,10 @@
 ﻿using AutoMapper;
-using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.DAL.Models.Farms;
-using InnoGotchiGameFrontEnd.DAL.Models.Users;
 using InnoGotchiGameFrontEnd.DAL.Services;
-using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {

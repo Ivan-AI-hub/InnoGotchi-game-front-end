@@ -1,9 +1,8 @@
-﻿
-namespace InnoGotchiGameFrontEnd.DAL.Models.Farms
+﻿namespace InnoGotchiGameFrontEnd.BLL.ComandModels.Farm
 {
-    public class UpdateFarmDTOModel
-    {
-        public int UpdatedId { get; set; }
-        public string Name { get; set; }
-    }
+	public class UpdateFarmDTOModel
+	{
+		public int UpdatedId { get; set; }
+		public string Name { get; set; }
+	}
 }
