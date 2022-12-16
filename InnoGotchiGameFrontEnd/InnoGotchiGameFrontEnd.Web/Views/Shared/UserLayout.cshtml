@@ -6,13 +6,19 @@
 
 @inject AuthorizeModel authModel
 
-@if (authModel.IsAuthorized)
+@if(authModel.IsAuthorized)
 {
     <div class="row">
         <div class="col-3">
             <div class="list-group">
                 @Html.ActionLink("Изменить данные", "UpdateData", "User", null, new {@class = "list-group-item list-group-item-action"})
                 @Html.ActionLink("Изменить пароль", "UpdatePassword", "User", null, new {@class = "list-group-item list-group-item-action"})
+
+                @if(authModel.User.OwnPetFarm == null)
+                {
+                    @Html.ActionLink("Создать ферму", "CreateFarm", "Farm", new{ownerID = authModel.User.Id},
+                                                                            new {@class = "list-group-item list-group-item-action"})
+                }
             </div>
         </div>
         <div class="col">

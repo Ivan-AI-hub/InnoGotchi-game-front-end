@@ -15,9 +15,9 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
 		}
 
 		[HttpGet("create")]
-		public async Task<IActionResult> CreateFarm()
+		public async Task<IActionResult> CreateFarm(int ownerID)
 		{
-			return View();
+			return View(ownerID);
 		}
 
 		[HttpPost("create")]
@@ -40,7 +40,7 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
 			return Redirect("/");
 		}
 
-		[HttpGet("{id}")]
+		[HttpGet()]
 		public async Task<IActionResult> FarmPage(int id)
 		{
 			var farm = await _farmManager.GetFarmById(id);

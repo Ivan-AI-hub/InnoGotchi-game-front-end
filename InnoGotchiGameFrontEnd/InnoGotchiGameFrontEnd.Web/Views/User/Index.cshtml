@@ -6,9 +6,9 @@
 }
 @inject AuthorizeModel authModel;
 
-<div class="row">
-    @if (authModel.IsAuthorized)
-    {
+@if (authModel.IsAuthorized)
+{
+    <div class="row">
         @if (@authModel.User.PhotoFileLink != null)
         {
             <div class="col-3">
@@ -19,5 +19,23 @@
         <div class="col">
             <h1 class="col-sm">@authModel.User.FirstName @authModel.User.LastName </h1>
         </div>
+    </div>
+    @if (authModel.User.OwnPetFarm != null)
+    {
+        <div>
+            <div>
+                <h3>Краткая статистика о ферме "@authModel.User.OwnPetFarm.Name"</h3>
+            </div>
+            <div>
+                <label>Дата создания: @authModel.User.OwnPetFarm.CreateDate.ToShortDateString()</label>
+            </div>
+            <div>
+                <label>Количество животных: @authModel.User.OwnPetFarm.Pets.Count()</label>
+            </div>            
+            <div>
+                @Html.ActionLink("Перейти на ферму", "FarmPage", "Farm", new {id = authModel.User.OwnPetFarm.Id},
+                                                                        new {@class = "list-group-item list-group-item-action"})
+            </div>
+        </div>
     }
-</div>
+}

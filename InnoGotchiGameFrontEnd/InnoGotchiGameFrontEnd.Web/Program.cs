@@ -46,6 +46,10 @@ void HttpClientsConfiguration(IServiceCollection services, string baseUri)
     services.AddHttpClient("Users", httpClient =>
     {
         httpClient.BaseAddress = new Uri(baseUri + "users");
+    });    
+    services.AddHttpClient("Farms", httpClient =>
+    {
+        httpClient.BaseAddress = new Uri(baseUri + "farms");
     });
     services.AddHttpClient("Colaborators", httpClient =>
     {
