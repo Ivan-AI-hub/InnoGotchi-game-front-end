@@ -1,0 +1,13 @@
+﻿@using InnoGotchiGameFrontEnd.Web.ViewModels.Pets;
+@model CreatePetViewModel
+
+<div>
+    <img id="bodyImg"/>
+</div>
+
+<script type="text/javascript">
+    let currentBodyId = 1
+    let bodyImgEl = document.getElementById("bodyImg")
+    
+    bodyImgEl.src = '@Model.BodiesLinks[1]';
+</script>

@@ -13,6 +13,7 @@ builder.Services.AddTransient<IMapper>(x => new Mapper(config));
 builder.Services.AddTransient<UserManager>();
 builder.Services.AddTransient<ColaborationRequestManager>();
 builder.Services.AddTransient<FarmManager>();
+builder.Services.AddTransient<PetManager>();
 builder.Services.AddScoped<AuthorizeModel>();
 builder.Services.AddLogging();
 HttpClientsConfiguration(builder.Services, "https://localhost:7209/api/");
@@ -50,6 +51,10 @@ void HttpClientsConfiguration(IServiceCollection services, string baseUri)
     services.AddHttpClient("Farms", httpClient =>
     {
         httpClient.BaseAddress = new Uri(baseUri + "farms");
+    });
+    services.AddHttpClient("Pets", httpClient =>
+    {
+        httpClient.BaseAddress = new Uri(baseUri + "pets");
     });
     services.AddHttpClient("Colaborators", httpClient =>
     {

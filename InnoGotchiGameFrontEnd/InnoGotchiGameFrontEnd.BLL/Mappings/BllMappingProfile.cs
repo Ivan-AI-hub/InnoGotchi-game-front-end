@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.Farm;
+using InnoGotchiGameFrontEnd.BLL.ComandModels.Pet;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
@@ -38,6 +39,11 @@ namespace InnoGotchiGameFrontEnd.BLL.Mappings
             CreateMap<Pet, PetDTO>().ReverseMap();
             CreateMap<PetStatistic, PetStatisticDTO>().ReverseMap();
             CreateMap<PetView, PetViewDTO>().ReverseMap();
+            CreateMap<PetSorter, PetDTOSorter>().ReverseMap();
+            CreateMap<PetSortRule, PetDTOSortRule>().ReverseMap();
+            CreateMap<PetFiltrator, PetDTOFiltrator>().ReverseMap();
+            CreateMap<AddPetModel, AddPetDTOModel>().ReverseMap();
+            CreateMap<UpdatePetModel, UpdatePetDTOModel>().ReverseMap();
         }
     }
 }

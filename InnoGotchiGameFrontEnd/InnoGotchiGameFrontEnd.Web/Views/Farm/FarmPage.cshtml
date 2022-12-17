@@ -5,13 +5,13 @@
 <div>
     <div class="row">
         <div class="col">
-            @Html.ActionLink("Добавить питомца", "Undifinite", "Pet", null, new {@class = "list-group-item list-group-item-action"})
+            @Html.ActionLink("Добавить питомца", "CreatePet", "Pet", new{farmId = Model.Id}, new {@class = "list-group-item list-group-item-action"})
         </div>
         <div class="col">
             @Html.ActionLink("Подробнее", "Undifinite", "Pet", null, new {@class = "list-group-item list-group-item-action"})
         </div>
     </div>
-    <div class="bg-gradient vh-100">
+    <div class="bg-light vh-100">
         
     </div>
 </div>
