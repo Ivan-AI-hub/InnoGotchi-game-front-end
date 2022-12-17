@@ -9,7 +9,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Models.Users
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public string? PhotoFileLink { get; set; }
+        public Picture? Picture { get; set; }
 
         public PetFarm? OwnPetFarm { get; set; }
 

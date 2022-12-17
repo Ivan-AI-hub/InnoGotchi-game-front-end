@@ -10,6 +10,6 @@ namespace InnoGotchiGameFrontEnd.DAL.Models.Users
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        public string? PhotoFileLink { get; set; }
+        public Picture? Picture { get; set; }
     }
 }
