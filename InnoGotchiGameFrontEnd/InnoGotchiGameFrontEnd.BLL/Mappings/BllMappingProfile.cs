@@ -44,6 +44,8 @@ namespace InnoGotchiGameFrontEnd.BLL.Mappings
             CreateMap<PetFiltrator, PetDTOFiltrator>().ReverseMap();
             CreateMap<AddPetModel, AddPetDTOModel>().ReverseMap();
             CreateMap<UpdatePetModel, UpdatePetDTOModel>().ReverseMap();
+
+            CreateMap<Picture, PictureDTO>().ReverseMap();
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace InnoGotchiGameFrontEnd.DAL.Models
+﻿namespace InnoGotchiGameFrontEnd.BLL.Model
 {
-    public class Picture
+    public class PictureDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
