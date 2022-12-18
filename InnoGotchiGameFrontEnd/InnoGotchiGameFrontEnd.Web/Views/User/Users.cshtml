@@ -1,4 +1,5 @@
 ﻿@using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+@using InnoGotchiGameFrontEnd.Web.Helpers;
 @using InnoGotchiGameFrontEnd.Web.ViewModels.PageSystem;
 @using InnoGotchiGameFrontEnd.Web.ViewModels.Users;
 
@@ -80,10 +81,10 @@
             @foreach (var user in Model.Users)
             {
                 <div class="row mb-3">
-                    @if (user.PhotoFileLink != null)
+                    @if (user.Picture != null)
                     {
                         <div class="col-2">
-                            <img src="@user.PhotoFileLink" height="150" width="150" class="img-thumbnail rounded float-right" />
+                            @Html.ImageFromByteArray(@user.Picture.Image, 150, 150)
                         </div>
                     }
                     <div class="col-6">

@@ -6,7 +6,7 @@
 @inject AuthorizeModel authModel;
 
 <div class="row">
-    @if (authModel.IsAuthorized)
+@*    @if (authModel.IsAuthorized)
     {
         @if (@authModel.User.PhotoFileLink != null)
         {
@@ -18,5 +18,5 @@
         <div class="col">
             <h1 class="col-sm">@authModel.User.FirstName @authModel.User.LastName </h1>
         </div>
-    }
+    }*@
 </div>

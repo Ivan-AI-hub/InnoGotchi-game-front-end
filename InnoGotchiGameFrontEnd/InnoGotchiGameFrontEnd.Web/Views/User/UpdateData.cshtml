@@ -7,7 +7,7 @@
 @inject AuthorizeModel authModel
 @if (authModel.IsAuthorized)
 {
-    <form method="post" class="form">
+    <form method="post" enctype="multipart/form-data" class="form">
         <div class="form-group">
             <label class="form-label">FirstName</label>
             <input value="@authModel.User.FirstName" name="FirstName" type="text" class="form-control bg-black bg-opacity-25" required />
@@ -18,7 +18,11 @@
         </div>
         <div class="form-group">
             <label class="form-label">Avatar</label>
-            <input value="@authModel.User.PhotoFileLink" name="PhotoFileLink" type="text" class="form-control bg-black bg-opacity-25" required />
+            <input name="Image" type="file" accept=".jpeg,.jpg,.png" class="form-control" />
+            @if(authModel.User.Picture != null)
+            {
+                <p>@authModel.User.Picture.Name</p>
+            }
         </div>
         <input type="submit" />
     </form>

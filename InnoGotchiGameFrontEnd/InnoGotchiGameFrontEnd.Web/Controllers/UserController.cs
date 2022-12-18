@@ -99,6 +99,7 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
         [HttpPost("UpdateData")]
         public async Task<IActionResult> UpdateData(UpdateUserDTODataModel updateModel)
         {
+            var a = Request.Form;
             updateModel.UpdatedId = _authorizeModel.User.Id;
             var isComplite = await _userManager.UpdateUserData(updateModel);
 

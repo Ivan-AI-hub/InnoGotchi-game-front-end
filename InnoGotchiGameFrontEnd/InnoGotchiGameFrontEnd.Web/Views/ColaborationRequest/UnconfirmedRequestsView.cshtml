@@ -4,12 +4,12 @@
 @foreach (var request in Model)
 {
     <div class="row mb-3">
-        @if (request.RequestSender.PhotoFileLink != null)
+@*        @if (request.RequestSender.PhotoFileLink != null)
         {
             <div class="col-2">
                 <img src="@request.RequestSender.PhotoFileLink" height="150" width="150" class="img-thumbnail rounded float-right" />
             </div>
-        }
+        }*@
         <div class="col-6">
             <div>@request.RequestSender.FirstName @request.RequestSender.LastName</div>
             <div>@request.RequestSender.Email</div>

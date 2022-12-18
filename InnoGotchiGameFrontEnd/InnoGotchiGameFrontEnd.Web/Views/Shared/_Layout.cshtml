@@ -1,4 +1,5 @@
 ﻿@using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+@using InnoGotchiGameFrontEnd.Web.Helpers;
 
 @inject AuthorizeModel authModel
 
@@ -68,10 +69,10 @@
                         
                         <div class="d-flex align-items-center justify-content-end">
                             <a class="nav-link text-dark text-center" asp-area="" asp-controller="User" asp-action="LogOut">Выйти</a>
-                            @if (@authModel.User.PhotoFileLink != null)
+                            @if (@authModel.User.Picture != null)
                             {
                                 <a class="" asp-area="" asp-controller="User" asp-action="Index">
-                                    <img src="@authModel.User.PhotoFileLink" width="100" class="nav-link img-thumbnail rounded float-right" />
+                                    @Html.ImageFromByteArray(@authModel.User.Picture.Image, 150, 150, "nav-link img-thumbnail rounded float-right")
                                 </a>
                             }
                             else

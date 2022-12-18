@@ -1,4 +1,5 @@
 ﻿@using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+@using InnoGotchiGameFrontEnd.Web.Helpers;
 
 @{
     ViewData["Title"] = "Account Details";
@@ -9,11 +10,11 @@
 @if (authModel.IsAuthorized)
 {
     <div class="row">
-        @if (@authModel.User.PhotoFileLink != null)
+        @if (@authModel.User.Picture != null)
         {
             <div class="col-3">
                 <p>Аватар</p>
-                <img src="@authModel.User.PhotoFileLink" height="200" width="200" class="img-thumbnail rounded float-right" />
+                @Html.ImageFromByteArray(@authModel.User.Picture.Image)
             </div>
         }
         <div class="col">
