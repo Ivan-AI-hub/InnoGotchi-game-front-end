@@ -11,6 +11,31 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\Resourses\Bodies\body1.svg" />
+    <None Include="wwwroot\Resourses\Bodies\body2.svg" />
+    <None Include="wwwroot\Resourses\Bodies\body3.svg" />
+    <None Include="wwwroot\Resourses\Bodies\body4.svg" />
+    <None Include="wwwroot\Resourses\Bodies\body5.svg" />
+    <None Include="wwwroot\Resourses\Eyes\eyes1.svg" />
+    <None Include="wwwroot\Resourses\Eyes\eyes2.svg" />
+    <None Include="wwwroot\Resourses\Eyes\eyes3.svg" />
+    <None Include="wwwroot\Resourses\Eyes\eyes4.svg" />
+    <None Include="wwwroot\Resourses\Eyes\eyes5.svg" />
+    <None Include="wwwroot\Resourses\Eyes\eyes6.svg" />
+    <None Include="wwwroot\Resourses\Mouths\mouth1.svg" />
+    <None Include="wwwroot\Resourses\Mouths\mouth2.svg" />
+    <None Include="wwwroot\Resourses\Mouths\mouth3.svg" />
+    <None Include="wwwroot\Resourses\Mouths\mouth4.svg" />
+    <None Include="wwwroot\Resourses\Mouths\mouth5.svg" />
+    <None Include="wwwroot\Resourses\Noses\nose1.svg" />
+    <None Include="wwwroot\Resourses\Noses\nose2.svg" />
+    <None Include="wwwroot\Resourses\Noses\nose3.svg" />
+    <None Include="wwwroot\Resourses\Noses\nose4.svg" />
+    <None Include="wwwroot\Resourses\Noses\nose5.svg" />
+    <None Include="wwwroot\Resourses\Noses\nose6.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\InnoGotchiGameFrontEnd.BLL\InnoGotchiGameFrontEnd.BLL.csproj" />
   </ItemGroup>
 

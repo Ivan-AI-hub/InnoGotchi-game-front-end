@@ -1,4 +1,4 @@
-﻿using InnoGotchiGameFrontEnd.BLL.Model;
+﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace InnoGotchiGameFrontEnd.BLL.ComandModels.User
@@ -13,6 +13,6 @@ namespace InnoGotchiGameFrontEnd.BLL.ComandModels.User
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
-        public PictureDTO? Picture { get; set; }
+        public IFormFile Image { get; set; }
     }
 }

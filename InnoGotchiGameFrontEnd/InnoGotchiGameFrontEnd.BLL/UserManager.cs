@@ -65,6 +65,12 @@ namespace InnoGotchiGameFrontEnd.BLL
         public async Task<ManagerRezult> Create(AddUserDTOModel addModel)
         {
             var addDataModel = _mapper.Map<AddUserModel>(addModel);
+            if (addModel.Image != null)
+            {   
+                addDataModel.Picture = new Picture();
+                addDataModel.Picture.Name = "user-avatar-" + Guid.NewGuid().ToString();
+                addDataModel.Picture.Image = GetByteArrayFromImage(addModel.Image);
+            }
             var rezult = new ManagerRezult();
             var serviceRezult = await _service.Create(addDataModel);
             rezult.Errors.AddRange(serviceRezult.Errors);

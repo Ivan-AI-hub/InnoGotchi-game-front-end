@@ -14,6 +14,7 @@ builder.Services.AddTransient<UserManager>();
 builder.Services.AddTransient<ColaborationRequestManager>();
 builder.Services.AddTransient<FarmManager>();
 builder.Services.AddTransient<PetManager>();
+builder.Services.AddTransient<PictureManager>();
 builder.Services.AddScoped<AuthorizeModel>();
 builder.Services.AddLogging();
 HttpClientsConfiguration(builder.Services, "https://localhost:7209/api/");
@@ -32,6 +33,7 @@ app.UseMiddleware<JwtTokenMiddleware>();
 app.UseMiddleware<AuthorizeUserMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseMiddleware<BasePetViewInitializer>();
 app.UseHttpLogging();
 app.UseRouting();
 
@@ -55,6 +57,10 @@ void HttpClientsConfiguration(IServiceCollection services, string baseUri)
     services.AddHttpClient("Pets", httpClient =>
     {
         httpClient.BaseAddress = new Uri(baseUri + "pets");
+    });
+    services.AddHttpClient("Pictures", httpClient =>
+    {
+        httpClient.BaseAddress = new Uri(baseUri + "pictures");
     });
     services.AddHttpClient("Colaborators", httpClient =>
     {

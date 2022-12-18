@@ -1,0 +1,40 @@
+﻿@using InnoGotchiGameFrontEnd.BLL.Model;
+@using InnoGotchiGameFrontEnd.Web.Helpers;
+@model UserDTO
+
+<div class="row">
+    @if (Model.Picture != null)
+    {
+        <div class="col-3">
+            <p>Аватар</p>
+            @Html.ImageFromByteArray(Model.Picture.Image)
+        </div>
+    }
+    <div class="col">
+        <h1 class="col-sm">@Model.FirstName @Model.LastName </h1>
+    </div>
+</div>
+@if (Model.OwnPetFarm != null)
+{
+    <div>
+        <div>
+            <h3>Краткая статистика о ферме "@Model.OwnPetFarm.Name"</h3>
+        </div>
+        <div>
+            <label>Дата создания: @Model.OwnPetFarm.CreateDate.ToShortDateString()</label>
+        </div>
+        <div>
+            <label>Количество животных: @Model.OwnPetFarm.Pets.Count()</label>
+        </div>
+        <div>
+            @Html.ActionLink("Перейти на ферму", "FarmPage", "Farm", new {id = Model.OwnPetFarm.Id},
+        new {@class = "list-group-item list-group-item-action"})
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        Фермы не наблюдается.............
+    </div>
+}

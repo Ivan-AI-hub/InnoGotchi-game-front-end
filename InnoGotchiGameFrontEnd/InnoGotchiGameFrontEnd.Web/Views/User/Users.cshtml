@@ -94,6 +94,14 @@
                     <div class="col d-flex align-items-center justify-content-end">
                         @if (authModel.User.Id != user.Id)
                         {
+                            <div>
+                                @Html.ActionLink("Подробнее", "UserPage", "User", new{userId = user.Id}, new{@class = "btn btn-primary"})
+                            </div>
+                        }
+                    </div>
+                    <div class="col d-flex align-items-center justify-content-end">
+                        @if (authModel.User.Id != user.Id)
+                        {
                             @if (!authModel.User.CollaboratersId.Any(x => x == user.Id) && !user.UnconfirmedRequest.Select(x => x.RequestSenderId).Any(x => x == authModel.User.Id))
                             {
                                 <div>

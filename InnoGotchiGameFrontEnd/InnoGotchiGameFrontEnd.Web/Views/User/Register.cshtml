@@ -1,5 +1,5 @@
 ﻿
-<form method="post" class="form">
+<form method="post" enctype="multipart/form-data" class="form">
     <div class="form-group">
         <label class="form-label">FirstName</label>
         <input name="FirstName" type="text" class="form-control bg-black bg-opacity-25" required />
@@ -18,7 +18,7 @@
     </div>
     <div class="form-group">
         <label class="form-label">Avatar</label>
-        <input name="PhotoFileLink" type="text" class="form-control bg-black bg-opacity-25" required />
+        <input name="Image" type="file" accept=".jpeg,.jpg,.png" class="form-control bg-black bg-opacity-25"/>
     </div>
     <input type="submit" />
 </form>
