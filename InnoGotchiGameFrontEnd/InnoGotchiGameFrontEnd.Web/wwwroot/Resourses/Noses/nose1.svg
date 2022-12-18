@@ -1,25 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Creator: CorelDRAW 2021.5 (Evaluation Version) -->
-<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="11in" height="8.5in" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
-viewBox="0 0 11000 8500"
- xmlns:xlink="http://www.w3.org/1999/xlink"
- xmlns:xodm="http://www.corel.com/coreldraw/odm/2003">
- <defs>
-  <style type="text/css">
-   <![CDATA[
-    .str0 {stroke:#AD7300;stroke-width:41.67;stroke-miterlimit:2.61313}
-    .fil1 {fill:none}
-    .fil2 {fill:#AD7300}
-    .fil0 {fill:#FFCC00}
-   ]]>
-  </style>
- </defs>
- <g id="Layer_x0020_1">
-  <metadata id="CorelCorpID_0Corel-Layer"/>
-  <path class="fil0 str0" d="M5691.31 1493.61c996.34,0 1223.12,1277.04 1960.8,1679.39 1062.02,579.27 2440.46,459.49 2440.46,1493.61 0,2503.67 -8802.52,2404.84 -8802.52,0 0,-834.34 1658.1,-1035.84 2388.46,-1602.24 803.65,-623.23 739.37,-1570.76 2012.8,-1570.76z"/>
-  <path class="fil1 str0" d="M1337.65 4964.51c1380.98,447.76 2975.38,857.22 4394.8,862.71 1458.98,5.63 3094.86,-468.33 4330.08,-913.38"/>
-  <ellipse class="fil2" transform="matrix(1.35269 0.313983 -0.313983 1.35269 4783.57 3299.9)" rx="98.91" ry="151.28"/>
-  <ellipse class="fil2" transform="matrix(-1.35269 0.313983 0.313983 1.35269 6265.74 3299.9)" rx="98.91" ry="151.28"/>
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="194px" height="px" viewBox="0 0 194 150" version="1.1">
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,80%,0%);fill-opacity:1;stroke-width:41.67;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(67.843137%,45.098039%,0%);stroke-opacity:1;stroke-miterlimit:2.61313;" d="M 5691.365979 1493.697917 C 6687.620812 1493.697917 6914.424936 2770.690104 7652.202803 3172.890625 C 8714.239691 3752.174479 10092.562017 3632.421875 10092.562017 4666.588542 C 10092.562017 7170.325521 1289.948454 7071.380208 1289.948454 4666.588542 C 1289.948454 3832.304688 2948.23212 3630.872396 3678.479381 3064.427083 C 4482.260793 2441.09375 4417.807668 1493.697917 5691.365979 1493.697917 Z M 5691.365979 1493.697917 " transform="matrix(0.0176364,0,0,0.0176471,0,0)"/>
+<path style="fill:none;stroke-width:41.67;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(67.843137%,45.098039%,0%);stroke-opacity:1;stroke-miterlimit:2.61313;" d="M 1337.56846 4964.53125 C 2718.548647 5412.330729 4313.043653 5821.835938 5732.341334 5827.148438 C 7191.506927 5832.903646 8827.420264 5358.984375 10062.439594 4913.841146 " transform="matrix(0.0176364,0,0,0.0176471,0,0)"/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(67.843137%,45.098039%,0%);fill-opacity:1;" d="M 86.722656 58.78125 C 87.1875 56.789062 86.503906 54.925781 85.203125 54.621094 C 83.898438 54.320312 82.46875 55.691406 82.003906 57.683594 C 81.542969 59.679688 82.222656 61.542969 83.527344 61.84375 C 84.832031 62.148438 86.261719 60.777344 86.722656 58.78125 Z M 86.722656 58.78125 "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(67.843137%,45.098039%,0%);fill-opacity:1;" d="M 108.144531 58.78125 C 107.683594 56.789062 108.363281 54.925781 109.667969 54.621094 C 110.96875 54.320312 112.402344 55.691406 112.863281 57.683594 C 113.328125 59.679688 112.644531 61.542969 111.34375 61.84375 C 110.039062 62.148438 108.609375 60.777344 108.144531 58.78125 Z M 108.144531 58.78125 "/>
+</g>
 </svg>
