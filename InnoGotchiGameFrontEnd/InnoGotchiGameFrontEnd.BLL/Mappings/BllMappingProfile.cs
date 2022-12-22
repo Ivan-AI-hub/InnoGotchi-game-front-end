@@ -4,6 +4,7 @@ using InnoGotchiGameFrontEnd.BLL.ComandModels.Pet;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
+using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.DAL.Models;
 using InnoGotchiGameFrontEnd.DAL.Models.Farms;
@@ -24,6 +25,7 @@ namespace InnoGotchiGameFrontEnd.BLL.Mappings
             CreateMap<UpdateUserDataModel, UpdateUserDTODataModel>().ReverseMap();
             CreateMap<UpdateUserPasswordModel, UpdateUserDTOPasswordModel>().ReverseMap();
 
+            CreateMap<AuthorizeModel, AuthorizeModelDTO>().ReverseMap();
 
             CreateMap<PetFarm, PetFarmDTO>().ReverseMap();
             CreateMap<FarmSorter, FarmDTOSorter>().ReverseMap();

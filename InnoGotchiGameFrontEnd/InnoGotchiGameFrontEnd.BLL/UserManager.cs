@@ -111,11 +111,11 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<string?> Authorize(string email, string password)
+        public async Task<AuthorizeModelDTO?> Authorize(string email, string password)
         {
             var token = await _service.Authorize(email, password);
 
-            return token;
+            return _mapper.Map<AuthorizeModelDTO?>(token);
         }
 
         public void CachClear()
