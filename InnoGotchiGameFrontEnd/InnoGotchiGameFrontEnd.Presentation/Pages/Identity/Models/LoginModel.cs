@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
 
-namespace InnoGotchiGameFrontEnd.Presentation.Pages
+namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
 {
     public class LoginModel : ComponentBase
     {
