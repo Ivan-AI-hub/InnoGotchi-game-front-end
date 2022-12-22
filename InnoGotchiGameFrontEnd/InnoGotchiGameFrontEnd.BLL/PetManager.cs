@@ -3,7 +3,7 @@ using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.Pet;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
-using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.DAL.Models.Pets;
 using InnoGotchiGameFrontEnd.DAL.Services;
@@ -15,7 +15,7 @@ namespace InnoGotchiGameFrontEnd.BLL
 		private PetService _service;
 		private IMapper _mapper;
 
-		public PetManager(AuthorizeModel model, IHttpClientFactory clientFactory, IMapper mapper)
+		public PetManager(SecurityToken model, IHttpClientFactory clientFactory, IMapper mapper)
 		{
 			_service = new PetService(clientFactory, model.AccessToken);
 			_mapper = mapper;

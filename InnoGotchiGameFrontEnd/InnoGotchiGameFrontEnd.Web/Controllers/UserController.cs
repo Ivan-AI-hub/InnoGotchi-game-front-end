@@ -2,7 +2,7 @@
 using InnoGotchiGameFrontEnd.BLL;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
-using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.Web.ViewModels.PageSystem;
 using InnoGotchiGameFrontEnd.Web.ViewModels.Users;
@@ -11,13 +11,13 @@ using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.Web.Controllers
 {
-    [Route("/")]
+	[Route("/")]
     public class UserController : BaseController
     {
         private int _pageSize;
         private UserManager _userManager;
-        private AuthorizeModel _authorizeModel;
-        public UserController(UserManager userManager, AuthorizeModel authorizeModel)
+        private SecurityToken _authorizeModel;
+        public UserController(UserManager userManager, SecurityToken authorizeModel)
         {
             _userManager = userManager;
             _authorizeModel = authorizeModel;
@@ -147,7 +147,7 @@ namespace InnoGotchiGameFrontEnd.Web.Controllers
 
         private async Task SaveUserInCookie(string token)
         {
-            var authorizeModel = new AuthorizeModel() { AccessToken = token };
+            var authorizeModel = new SecurityToken() { AccessToken = token };
             HttpContext.Response.Cookies.Append("token", JsonSerializer.Serialize(authorizeModel));
         }
 

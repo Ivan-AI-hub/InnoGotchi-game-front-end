@@ -2,7 +2,7 @@
 using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
-using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.DAL.Models;
 using InnoGotchiGameFrontEnd.DAL.Models.Users;
@@ -13,13 +13,13 @@ using System.Reflection;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
-    public class UserManager
+	public class UserManager
     {
         private UserService _service;
         private IMemoryCache _cache;
         private IMapper _mapper;
 
-        public UserManager(AuthorizeModel model, IHttpClientFactory clientFactory, IMapper mapper, IMemoryCache cache)
+        public UserManager(SecurityToken model, IHttpClientFactory clientFactory, IMapper mapper, IMemoryCache cache)
         {
             _service = new UserService(clientFactory, model.AccessToken);
             _mapper = mapper;

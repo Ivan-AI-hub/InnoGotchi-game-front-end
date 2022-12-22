@@ -1,9 +1,10 @@
-﻿@using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+﻿@	using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+	using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 @{
     ViewData["Title"] = "Account Details";
     Layout = "~/Views/Shared/HomeLayout.cshtml";
 }
-@inject AuthorizeModel authModel;
+@inject SecurityToken authModel;
 
 <div class="row">
 @*    @if (authModel.IsAuthorized)

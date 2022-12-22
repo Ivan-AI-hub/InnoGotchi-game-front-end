@@ -2,7 +2,7 @@
 using InnoGotchiGameFrontEnd.BLL.ComandModels.Farm;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
-using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.DAL.Models.Farms;
 using InnoGotchiGameFrontEnd.DAL.Services;
@@ -16,7 +16,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         private IMemoryCache _cache;
         private IMapper _mapper;
 
-        public FarmManager(AuthorizeModel model, IHttpClientFactory clientFactory, IMapper mapper, IMemoryCache cache)
+        public FarmManager(SecurityToken model, IHttpClientFactory clientFactory, IMapper mapper, IMemoryCache cache)
         {
             _service = new FarmService(clientFactory, model.AccessToken);
             _mapper = mapper;

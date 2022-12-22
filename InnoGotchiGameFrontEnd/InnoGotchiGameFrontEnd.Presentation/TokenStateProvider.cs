@@ -1,4 +1,4 @@
-﻿using InnoGotchiGameFrontEnd.Presentation;
+﻿using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Headers;
@@ -26,11 +26,14 @@ internal class TokenStateProvider : AuthenticationStateProvider
             return GetAnonymous();
         }
 
-		_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token.AccessToken);
+		_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+
 		var claims = new List<Claim>()
         {
             new Claim(ClaimTypes.Name, token.UserName),
+            new Claim(ClaimTypes.Email, token.Email),
             new Claim(ClaimTypes.Expired, token.ExpireAt.ToLongDateString()),
+            new Claim(nameof(SecurityToken.UserId), token.UserId.ToString())
 
         };
 

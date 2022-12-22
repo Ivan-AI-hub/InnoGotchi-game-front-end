@@ -1,18 +1,18 @@
 ﻿using AutoMapper;
-using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
 using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.DAL.Services;
 using InnoGotchiGameFrontEnd.DAL.Models;
 using Microsoft.AspNetCore.Http;
+using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
-    public class PictureManager
+	public class PictureManager
     {
         private PictureService _service;
         private IMapper _mapper;
 
-        public PictureManager(AuthorizeModel model, IHttpClientFactory clientFactory, IMapper mapper)
+        public PictureManager(SecurityToken model, IHttpClientFactory clientFactory, IMapper mapper)
         {
             _service = new PictureService(clientFactory, model.AccessToken);
             _mapper = mapper;

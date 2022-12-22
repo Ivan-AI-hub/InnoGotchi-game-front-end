@@ -1,10 +1,11 @@
-﻿@using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+﻿@	using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+	using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 
 @{
     ViewData["Title"] = "Update user data";
     Layout = "~/Views/Shared/UserLayout.cshtml";
 }
-@inject AuthorizeModel authModel
+@inject SecurityToken authModel
 @if (authModel.IsAuthorized)
 {
     <form method="post" enctype="multipart/form-data" class="form">

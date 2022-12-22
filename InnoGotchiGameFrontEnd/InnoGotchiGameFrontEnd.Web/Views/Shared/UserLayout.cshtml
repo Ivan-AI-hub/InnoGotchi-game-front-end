@@ -1,10 +1,11 @@
-﻿@using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+﻿@	using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+	using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 
 @{
     Layout = "_Layout";
 }
 
-@inject AuthorizeModel authModel
+@inject SecurityToken authModel
 
 @if(authModel.IsAuthorized)
 {

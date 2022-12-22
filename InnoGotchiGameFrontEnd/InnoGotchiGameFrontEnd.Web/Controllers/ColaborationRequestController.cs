@@ -1,16 +1,16 @@
 ﻿using InnoGotchiGameFrontEnd.BLL;
-using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchiGameFrontEnd.Web.Controllers
 {
-    [Route("/ColaborationRequest")]
+	[Route("/ColaborationRequest")]
     public class ColaborationRequestController : BaseController
     {
         private ColaborationRequestManager _requestManager;
         private UserManager _userManager;
-        private AuthorizeModel _authorizeModel;
-        public ColaborationRequestController(ColaborationRequestManager requestManager, UserManager userManager, AuthorizeModel model)
+        private SecurityToken _authorizeModel;
+        public ColaborationRequestController(ColaborationRequestManager requestManager, UserManager userManager, SecurityToken model)
         {
             _requestManager = requestManager;
             _userManager = userManager;

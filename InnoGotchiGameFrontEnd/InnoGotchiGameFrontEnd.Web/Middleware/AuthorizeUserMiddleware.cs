@@ -1,9 +1,9 @@
 ﻿using InnoGotchiGameFrontEnd.BLL;
-using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 
 namespace InnoGotchiGameFrontEnd.Web.Middleware
 {
-    public class AuthorizeUserMiddleware
+	public class AuthorizeUserMiddleware
     {
         private RequestDelegate _next;
 
@@ -12,7 +12,7 @@ namespace InnoGotchiGameFrontEnd.Web.Middleware
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext, AuthorizeModel authorizeModel, UserManager manager)
+        public async Task InvokeAsync(HttpContext httpContext, SecurityToken authorizeModel, UserManager manager)
         {
             if (authorizeModel.AccessToken != null)
             {

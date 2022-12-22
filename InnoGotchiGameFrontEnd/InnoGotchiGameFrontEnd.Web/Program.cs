@@ -1,7 +1,7 @@
 using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL;
 using InnoGotchiGameFrontEnd.BLL.Mappings;
-using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +15,7 @@ builder.Services.AddTransient<ColaborationRequestManager>();
 builder.Services.AddTransient<FarmManager>();
 builder.Services.AddTransient<PetManager>();
 builder.Services.AddTransient<PictureManager>();
-builder.Services.AddScoped<AuthorizeModel>();
+builder.Services.AddScoped<SecurityToken>();
 builder.Services.AddLogging();
 HttpClientsConfiguration(builder.Services, "https://localhost:7209/api/");
 
