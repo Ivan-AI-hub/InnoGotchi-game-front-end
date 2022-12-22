@@ -6,10 +6,10 @@ namespace InnoGotchiGameFrontEnd.Web.Helpers
 {
     public static class ImageHelper
     {
-        public static HtmlString ImageFromByteArray(this IHtmlHelper html, byte[] image, int heigh = 200, int width = 200, string imgClass = "img-thumbnail rounded float-right")
+        public static HtmlString ImageFromByteArray(this IHtmlHelper html, byte[] image, string imgType = "png", int heigh = 200, int width = 200, string imgClass = "img-thumbnail rounded float-right")
         {
             var builder = new StringBuilder();
-            builder.Append($"<img src=\"data:image/png;base64," +
+            builder.Append($"<img src=\"data:image/{imgType};base64," +
                            $"{@Convert.ToBase64String(image)}\" " +
                            $"height=\"{heigh}\" " +
                            $"width=\"{width}\" " +

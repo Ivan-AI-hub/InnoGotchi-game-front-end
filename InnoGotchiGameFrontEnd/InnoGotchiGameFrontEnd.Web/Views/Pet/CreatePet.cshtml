@@ -1,13 +1,205 @@
-﻿@using InnoGotchiGameFrontEnd.Web.ViewModels.Pets;
+﻿@using InnoGotchiGameFrontEnd.Web.Helpers;
+@using InnoGotchiGameFrontEnd.Web.ViewModels.Pets;
 @model CreatePetViewModel
 
-<div>
-    <img id="bodyImg"/>
+<div class="row">
+    <div class="col" style="position: relative; width: 400px; height: 400px">
+        <img id="bodyImg" class="img-responsive drag ui-widget-content w-100 h-100" style="position: absolute;" />
+        <img id="eyesImg" class="img-responsive drag w-25 h-25" style="position: absolute;" />
+        <img id="noseImg" class="img-responsive drag w-25 h-25" style="position: absolute;" />
+        <img id="mouthImg" class="img-responsive drag w-25 h-25" style="position: absolute;" />
+    </div>
+    <div class="col">
+        <div>
+            <button onclick="SetNextBody()">След</button>
+            <button onclick="SetPrevBody()">Пред</button>
+        </div>
+        <div>
+            <button onclick="SetNextEyes()">След</button>
+            <button onclick="SetPrevEyes()">Пред</button>
+            <input type="range" class="custom-range" min="200" max="400" step="0.1" id="EyesXRange">
+            <input type="range" class="custom-range" min="0" max="400" step="0.1" id="EyesYRange">
+        </div>
+        <div>
+            <button onclick="SetNextNose()">След</button>
+            <button onclick="SetPrevNose()">Пред</button>
+            <input type="range" class="custom-range" min="200" max="400" step="0.1" id="NoseXRange">
+            <input type="range" class="custom-range" min="0" max="400" step="0.1" id="NoseYRange">
+        </div>
+        <div>
+            <button onclick="SetNextMouth()">След</button>
+            <button onclick="SetPrevMouth()">Пред</button>
+            <input type="range" class="custom-range" min="200" max="400" step="0.1" id="MouthXRange">
+            <input type="range" class="custom-range" min="0" max="400" step="0.1" id="MouthYRange">
+        </div>
+    </div>
+
 </div>
 
 <script type="text/javascript">
-    let currentBodyId = 1
-    let bodyImgEl = document.getElementById("bodyImg")
+    var currentBodyId = 0
+    var bodiesImages = [];
+
+    var currentEyesId = 0
+    var EyesImages = [];
+    var eyesX = 0;
+    var eyesY = 0;
+
+    var currentNoseId = 0
+    var nosesImages = [];
+    var noseX = 0;
+    var noseY = 0;
+
+    var currentMouthId = 0
+    var mouthsImages = [];
+    var mouthX = 0;
+    var mouthY = 0;
+
+    @foreach (var picture in Model.BodiesPictures)
+    {
+        @:var bytes = [];
+        @foreach (var imByte in @picture.Image)
+        {
+            @:bytes.push(@imByte)
+        }
+        @:bodiesImages.push(btoa(String.fromCharCode.apply(null, new Uint8Array(bytes))));
+    }
+    @foreach (var picture in Model.EyesPictures)
+    {
+        @:var bytes = [];
+        @foreach (var imByte in @picture.Image)
+        {
+            @:bytes.push(@imByte)
+        }
+        @:EyesImages.push(btoa(String.fromCharCode.apply(null, new Uint8Array(bytes))));
+    }
+    @foreach (var picture in Model.NosesPictures)
+    {
+        @:var bytes = [];
+        @foreach (var imByte in @picture.Image)
+        {
+            @:bytes.push(@imByte)
+        }
+        @:nosesImages.push(btoa(String.fromCharCode.apply(null, new Uint8Array(bytes))));
+    }
+    @foreach (var picture in Model.MouthsPictures)
+    {
+        @:var bytes = [];
+        @foreach (var imByte in @picture.Image)
+        {
+            @:bytes.push(@imByte)
+        }
+        @:mouthsImages.push(btoa(String.fromCharCode.apply(null, new Uint8Array(bytes))));
+    }
+
+
+    jQuery("#bodyImg").attr('src', "data:image/svg+xml;base64," + bodiesImages[currentBodyId]);
+    jQuery("#eyesImg").attr('src', "data:image/svg+xml;base64," + EyesImages[currentEyesId]);
+    jQuery("#noseImg").attr('src', "data:image/svg+xml;base64," + nosesImages[currentNoseId]);
+    jQuery("#mouthImg").attr('src', "data:image/svg+xml;base64," + mouthsImages[currentMouthId]);
+
+    function SetNextBody() {
+        if (currentBodyId != bodiesImages.length - 1) {
+            currentBodyId = currentBodyId + 1
+        }
+        else {
+            currentBodyId = 0
+        }
+        jQuery("#bodyImg").attr('src', "data:image/svg+xml;base64," + bodiesImages[currentBodyId]);
+    }
+    function SetPrevBody() {
+        if (currentBodyId != 0) {
+            currentBodyId = currentBodyId - 1
+        }
+        else {
+            currentBodyId = bodiesImages.length - 1
+        }
+
+        jQuery("#bodyImg").attr('src', "data:image/svg+xml;base64," + bodiesImages[currentBodyId]);
+    }
+    function SetNextEyes() {
+        if (currentEyesId != EyesImages.length - 1) {
+            currentEyesId = currentEyesId + 1
+        }
+        else {
+            currentEyesId = 0
+        }
+        jQuery("#eyesImg").attr('src', "data:image/svg+xml;base64," + EyesImages[currentEyesId]);
+    }
+    function SetPrevEyes() {
+        if (currentEyesId != 0) {
+            currentEyesId = currentEyesId - 1
+        }
+        else {
+            currentEyesId = EyesImages.length - 1
+        }
+        jQuery("#eyesImg").attr('src', "data:image/svg+xml;base64," + EyesImages[currentEyesId]);
+    }
+    function SetNextNose() {
+        if (currentNoseId != nosesImages.length - 1) {
+            currentNoseId = currentNoseId + 1
+        }
+        else {
+            currentNoseId = 0
+        }
+        jQuery("#noseImg").attr('src', "data:image/svg+xml;base64," + nosesImages[currentNoseId]);
+    }
+    function SetPrevNose() {
+        if (currentNoseId != 0) {
+            currentNoseId = currentNoseId - 1
+        }
+        else {
+            currentNoseId = nosesImages.length - 1
+        }
+        jQuery("#noseImg").attr('src', "data:image/svg+xml;base64," + nosesImages[currentNoseId]);
+    }
+    function SetNextMouth() {
+        if (currentMouthId != mouthsImages.length - 1) {
+            currentMouthId = currentMouthId + 1
+        }
+        else {
+            currentMouthId = 0
+        }
+        jQuery("#mouthImg").attr('src', "data:image/svg+xml;base64," + mouthsImages[currentMouthId]);
+    }
+    function SetPrevMouth() {
+        if (currentMouthId != 0) {
+            currentMouthId = currentMouthId - 1
+        }
+        else {
+            currentMouthId = mouthsImages.length - 1
+        }
+        jQuery("#mouthImg").attr('src', "data:image/svg+xml;base64," + mouthsImages[currentMouthId]);
+    }
     
-    bodyImgEl.src = '@Model.BodiesLinks[1]';
+    $(document).on('input', '#EyesXRange', function () {
+        eyesX = $(this).val()
+        console.log(eyesX)
+        $("#eyesImg").offset({ left: eyesX })
+    });
+    $(document).on('input', '#EyesYRange', function () {
+        eyesY = $(this).val()
+        console.log(eyesY)
+        $("#eyesImg").offset({ top: eyesY })
+    });
+    $(document).on('input', '#NoseXRange', function () {
+        noseX = $(this).val()
+        console.log(noseX)
+        $("#noseImg").offset({ left: noseX })
+    });
+    $(document).on('input', '#NoseYRange', function () {
+        noseY = $(this).val()
+        console.log(noseY)
+        $("#noseImg").offset({ top: noseY })
+    });
+    $(document).on('input', '#MouthXRange', function () {
+        mouthX = $(this).val()
+        console.log(mouthX)
+        $("#mouthImg").offset({ left: mouthX })
+    });
+    $(document).on('input', '#MouthYRange', function () {
+        mouthY = $(this).val()
+        console.log(mouthY)
+        $("#mouthImg").offset({ top: mouthY })
+    });
 </script>

@@ -5,46 +5,39 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchiGameFrontEnd.Web.Controllers
 {
-    [Route("/Pets")]
+    [Route("/Pets/create")]
     public class PetController : BaseController
     {
         private PetManager _petManager;
-        public PetController(PetManager petManager)
+        private PictureManager _pictureManager;
+        public PetController(PetManager petManager, PictureManager pictureManager)
         {
             _petManager = petManager;
+            _pictureManager = pictureManager;
         }
 
-        [HttpGet("create")]
         public async Task<IActionResult> CreatePet(int farmId)
         {
-            var bodiesLinks = new List<string>();
-            var eyesLinks = new List<string>();
-            var mouthsLinks = new List<string>();
-            var nosesLinks = new List<string>();
-            for(int i = 0; i < 5; i++)
-            {
-                bodiesLinks.Add("E:\\Projects\\Resourses\\Bodies\\body" + i + ".svg");
-                eyesLinks.Add("E:\\Projects\\Resourses\\Eyes\\eyes" + i + ".svg");
-                mouthsLinks.Add("E:\\Projects\\Resourses\\Mouths\\mouth" + i + ".svg");
-                nosesLinks.Add("E:\\Projects\\Resourses\\Noses\\nose" + i + ".svg");
-            }
+            var bodiesPictures = await _pictureManager.GetAllPictures("body");
+            var eyesPictures = await _pictureManager.GetAllPictures("eye");
+            var mouthsPictures = await _pictureManager.GetAllPictures("mouth");
+            var nosesPictures = await _pictureManager.GetAllPictures("nose");
+
             var model = new CreatePetViewModel()
             {
                 FarmId = farmId,
-                BodiesLinks = bodiesLinks,
-                EyesLinks = eyesLinks,
-                MouthsLinks = mouthsLinks,
-                NosesLinks = nosesLinks
+                BodiesPictures = bodiesPictures.ToList(),
+                EyesPictures = eyesPictures.ToList(),
+                MouthsPictures = mouthsPictures.ToList(),
+                NosesPictures = nosesPictures.ToList()
             };
             return View(model);
         }
-
-        [HttpPost("create")]
-        public async Task<IActionResult> CreatePet(AddPetDTOModel addModel)
-        {
-            var rez = await _petManager.Create(addModel);
-            return Redirect("/");
-        }
-
+        //[HttpPost("create")]
+        //public async Task<IActionResult> CreatePet(AddPetDTOModel addModel)
+        //{
+        //    var rez = await _petManager.Create(addModel);
+        //    return Redirect("/");
+        //}
     }
 }

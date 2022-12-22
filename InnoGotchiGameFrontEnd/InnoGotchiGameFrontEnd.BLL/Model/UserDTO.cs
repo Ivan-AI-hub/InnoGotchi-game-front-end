@@ -1,4 +1,6 @@
-﻿namespace InnoGotchiGameFrontEnd.BLL.Model
+﻿using InnoGotchiGameFrontEnd.BLL.Model.Authorize;
+
+namespace InnoGotchiGameFrontEnd.BLL.Model
 {
     public class UserDTO
     {
