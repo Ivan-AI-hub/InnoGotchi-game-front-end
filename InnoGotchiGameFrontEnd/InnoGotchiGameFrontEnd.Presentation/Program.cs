@@ -1,7 +1,6 @@
 using InnoGotchiGameFrontEnd.Presentation;
 using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

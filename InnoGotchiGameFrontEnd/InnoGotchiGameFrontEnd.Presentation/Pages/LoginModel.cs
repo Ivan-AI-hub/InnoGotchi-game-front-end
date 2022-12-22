@@ -24,7 +24,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages
                 ExpireAt = DateTime.UtcNow.AddHours(1)
             };
             await LocalStorageService.SetAsync(nameof(SecurityToken), token);
-            Navigation.NavigateTo("/");
+            Navigation.NavigateTo("/", true);
         }
     }
 
