@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
+using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
 
 namespace InnoGotchiGameFrontEnd.Presentation.Pages
 {
     public class LoginModel : ComponentBase
     {
+        [Inject] public ILocalStorageService LocalStorageService { get; set; }
+        [Inject] public NavigationManager Navigation { get; set; }
         public LoginModel()
         {
             LoginData = new LoginViewModel();
@@ -12,9 +15,16 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages
 
         public LoginViewModel LoginData { get; set; }
 
-        protected Task LoginAsync()
+        protected async Task LoginAsync()
         {
-            return Task.CompletedTask;
+            var token = new SecurityToken
+            {
+                AccessToken = "21421412",
+                UserName = LoginData.UserName,
+                ExpireAt = DateTime.UtcNow.AddHours(1)
+            };
+            await LocalStorageService.SetAsync(nameof(SecurityToken), token);
+            Navigation.NavigateTo("/");
         }
     }
 
