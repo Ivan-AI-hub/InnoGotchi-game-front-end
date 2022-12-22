@@ -2,25 +2,21 @@
 using InnoGotchiGameFrontEnd.BLL.ComandModels.Farm;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
-using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.DAL.Models.Farms;
 using InnoGotchiGameFrontEnd.DAL.Services;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
 	public class FarmManager
     {
         private FarmService _service;
-        private IMemoryCache _cache;
         private IMapper _mapper;
 
-        public FarmManager(SecurityToken model, IHttpClientFactory clientFactory, IMapper mapper, IMemoryCache cache)
+        public FarmManager(HttpClient client, IMapper mapper)
         {
-            _service = new FarmService(clientFactory, model.AccessToken);
+            _service = new FarmService(client);
             _mapper = mapper;
-            _cache = cache;
         }
 
         public async Task<IEnumerable<PetFarmDTO>> GetAllFarms(FarmDTOSorter sorter, FarmDTOFiltrator filtrator)
@@ -45,7 +41,6 @@ namespace InnoGotchiGameFrontEnd.BLL
             var rezult = new ManagerRezult();
             var serviceRezult = await _service.Create(addDataModel);
             rezult.Errors.AddRange(serviceRezult.Errors);
-            if (rezult.IsComplete) CachClear();
             return rezult;
         }
 
@@ -55,13 +50,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             var rezult = new ManagerRezult();
             var serviceRezult = await _service.UpdateFarm(updateDataModel);
             rezult.Errors.AddRange(serviceRezult.Errors);
-            if (rezult.IsComplete) CachClear();
             return rezult;
-        }
-
-        public void CachClear()
-        {
-            _cache.Remove("AuthodizedUser");
         }
     }
 }

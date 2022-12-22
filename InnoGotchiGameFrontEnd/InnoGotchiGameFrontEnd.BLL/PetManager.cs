@@ -15,9 +15,9 @@ namespace InnoGotchiGameFrontEnd.BLL
 		private PetService _service;
 		private IMapper _mapper;
 
-		public PetManager(SecurityToken model, IHttpClientFactory clientFactory, IMapper mapper)
+		public PetManager(HttpClient client, IMapper mapper)
 		{
-			_service = new PetService(clientFactory, model.AccessToken);
+			_service = new PetService(client);
 			_mapper = mapper;
 		}
 

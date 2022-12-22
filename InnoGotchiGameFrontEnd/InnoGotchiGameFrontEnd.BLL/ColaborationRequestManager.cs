@@ -10,9 +10,9 @@ namespace InnoGotchiGameFrontEnd.BLL
         private IMemoryCache _cache;
         private SecurityToken _authorizeModel;
 
-        public ColaborationRequestManager(SecurityToken model, IHttpClientFactory clientFactory, IMemoryCache cache)
+        public ColaborationRequestManager(SecurityToken model, HttpClient client, IMemoryCache cache)
         {
-            _service = new ColaborationRequestService(clientFactory, model.AccessToken);
+            _service = new ColaborationRequestService(client);
             _authorizeModel = model;
             _cache = cache;
         }

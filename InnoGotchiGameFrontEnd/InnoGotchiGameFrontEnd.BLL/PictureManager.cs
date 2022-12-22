@@ -12,9 +12,9 @@ namespace InnoGotchiGameFrontEnd.BLL
         private PictureService _service;
         private IMapper _mapper;
 
-        public PictureManager(SecurityToken model, IHttpClientFactory clientFactory, IMapper mapper)
+        public PictureManager(HttpClient client, IMapper mapper)
         {
-            _service = new PictureService(clientFactory, model.AccessToken);
+            _service = new PictureService(client);
             _mapper = mapper;
         }
 
@@ -51,7 +51,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             var pictureData = await _service.GetPictureById(updatedId);
             pictureData.Image = GetByteArrayFromImage(file);
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.UpdateFarm(updatedId, pictureData);
+            var serviceRezult = await _service.UpdatePicture(updatedId, pictureData);
             rezult.Errors.AddRange(serviceRezult.Errors);
 
             return rezult;
