@@ -6,15 +6,15 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 {
     public class FarmService : BaseService
     {
-        private string _clientName;
-        public FarmService(IHttpClientFactory httpClientFactory, string? accessToken) : base(httpClientFactory, accessToken)
-        {
-            _clientName = "Farms";
-        }
+        public FarmService(HttpClient client) : base(client)
+		{
+			var apiControllerName = "farms";
+			RequestClient.BaseAddress = new Uri(RequestClient.BaseAddress, apiControllerName);
+		}
         public async Task<IEnumerable<PetFarm>> GetFarms(FarmSorter? sorter = null, FarmFiltrator? filtrator = null)
         {
-            var httpClient = GetHttpClient(_clientName);
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, httpClient.BaseAddress);
+
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, RequestClient.BaseAddress);
 
             var options = new JsonSerializerOptions
             {
@@ -30,7 +30,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                          Encoding.UTF8,
                          "application/json");
             request.Content = jsonContent;
-            var httpResponseMessage = await httpClient.SendAsync(request);
+            var httpResponseMessage = await RequestClient.SendAsync(request);
 
             IEnumerable<PetFarm> farms = new List<PetFarm>();
 
@@ -44,8 +44,8 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<PetFarm?> GetFarmById(int id)
         {
-            var httpClient = GetHttpClient(_clientName);
-            var httpResponseMessage = await httpClient.GetAsync(httpClient.BaseAddress + $"/{id}");
+
+            var httpResponseMessage = await RequestClient.GetAsync(RequestClient.BaseAddress + $"/{id}");
 
             PetFarm? farm = null;
 
@@ -63,27 +63,27 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<ServiceRezult> Create(AddFarmModel addModel)
         {
-            var httpClient = GetHttpClient(_clientName);
+
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(addModel),
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await httpClient.PostAsync("", jsonContent);
+            var httpResponseMessage = await RequestClient.PostAsync("", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
 
         public async Task<ServiceRezult> UpdateFarm(UpdateFarmModel updateModel)
         {
-            var httpClient = GetHttpClient(_clientName);
+
 
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(updateModel),
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await httpClient.PutAsync("", jsonContent);
+            var httpResponseMessage = await RequestClient.PutAsync("", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }

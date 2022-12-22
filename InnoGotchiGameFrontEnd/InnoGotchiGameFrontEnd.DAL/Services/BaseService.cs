@@ -5,22 +5,12 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 {
     public class BaseService
     {
-        private IHttpClientFactory _httpClientFactory;
-        protected string? AccessToken;
+        protected HttpClient RequestClient;
 
 
-        public BaseService(IHttpClientFactory httpClientFactory, string? accessToken)
+        public BaseService(HttpClient client)
         {
-            _httpClientFactory = httpClientFactory;
-            AccessToken = accessToken;
-        }
-
-        protected HttpClient GetHttpClient(string clientName)
-        {
-            var httpClient = _httpClientFactory.CreateClient(clientName);
-            if (AccessToken != null)
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-            return httpClient;
+            RequestClient = client;
         }
 
         protected async Task<ServiceRezult> GetCommandRezult(HttpResponseMessage responseMessage)

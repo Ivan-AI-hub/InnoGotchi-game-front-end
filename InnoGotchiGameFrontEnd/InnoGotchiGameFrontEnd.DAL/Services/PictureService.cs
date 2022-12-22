@@ -8,15 +8,16 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
     public class PictureService : BaseService
     {
         string _clientName;
-        public PictureService(IHttpClientFactory httpClientFactory, string? accessToken) : base(httpClientFactory, accessToken)
-        {
-            _clientName = "Pictures";
-        }
+        public PictureService(HttpClient client) : base(client)
+		{
+			var apiControllerName = "pictures";
+			RequestClient.BaseAddress = new Uri(RequestClient.BaseAddress, apiControllerName);
+		}
 
         public async Task<IEnumerable<Picture>> GetPictures(string nameTemplate)
         {
-            var httpClient = GetHttpClient(_clientName);
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, httpClient.BaseAddress);
+
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, RequestClient.BaseAddress);
 
             var options = new JsonSerializerOptions
             {
@@ -26,7 +27,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             var parameters = new Dictionary<string, string>();
             parameters["nameTemplate"] = nameTemplate;
             request.Content = new FormUrlEncodedContent(parameters);
-            var httpResponseMessage = await httpClient.SendAsync(request);
+            var httpResponseMessage = await RequestClient.SendAsync(request);
 
             IEnumerable<Picture> pictures = new List<Picture>();
 
@@ -40,8 +41,8 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<Picture?> GetPictureById(int id)
         {
-            var httpClient = GetHttpClient(_clientName);
-            var httpResponseMessage = await httpClient.GetAsync(httpClient.BaseAddress + $"/{id}");
+
+            var httpResponseMessage = await RequestClient.GetAsync(RequestClient.BaseAddress + $"/{id}");
 
             Picture? picture = null;
 
@@ -59,27 +60,25 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<ServiceRezult> Create(Picture picture)
         {
-            var httpClient = GetHttpClient(_clientName);
+
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(picture),
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await httpClient.PostAsync("", jsonContent);
+            var httpResponseMessage = await RequestClient.PostAsync("", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> UpdateFarm(int updatedId,Picture picture)
+        public async Task<ServiceRezult> UpdatePicture(int updatedId, Picture picture)
         {
-            var httpClient = GetHttpClient(_clientName);
-
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(picture),
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await httpClient.PutAsync(httpClient.BaseAddress + $"/{updatedId}", jsonContent);
+            var httpResponseMessage = await RequestClient.PutAsync(RequestClient.BaseAddress + $"/{updatedId}", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }

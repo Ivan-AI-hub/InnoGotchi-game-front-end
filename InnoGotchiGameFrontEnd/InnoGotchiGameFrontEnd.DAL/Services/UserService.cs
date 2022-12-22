@@ -6,17 +6,16 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 {
     public class UserService : BaseService
     {
-        private string _clientName;
 
-        public UserService(IHttpClientFactory httpClientFactory, string? authorize) : base(httpClientFactory, authorize)
+        public UserService(HttpClient client) : base(client)
         {
-            _clientName = "Users";
+            var apiControllerName = "users";
+            RequestClient.BaseAddress = new Uri(RequestClient.BaseAddress, apiControllerName);
         }
 
         public async Task<IEnumerable<User>> GetUsers(UserSorter? sorter = null, UserFiltrator? filtrator = null)
         {
-            var httpClient = GetHttpClient(_clientName);
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, httpClient.BaseAddress);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, RequestClient.BaseAddress);
 
             var options = new JsonSerializerOptions
             {
@@ -32,7 +31,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                          Encoding.UTF8,
                          "application/json");
             request.Content = jsonContent;
-            var httpResponseMessage = await httpClient.SendAsync(request);
+            var httpResponseMessage = await RequestClient.SendAsync(request);
 
             IEnumerable<User> users = new List<User>();
 
@@ -46,9 +45,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<IEnumerable<User>> GetUsersPage(int pageSize, int pageNumber, UserSorter sorter, UserFiltrator filtrator)
         {
-            var httpClient = GetHttpClient(_clientName);
-
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, httpClient.BaseAddress + $"/{pageSize}/{pageNumber}");
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, RequestClient.BaseAddress + $"/{pageSize}/{pageNumber}");
             using StringContent jsonContent = new(
                          JsonSerializer.Serialize(new
                          {
@@ -58,7 +55,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                          Encoding.UTF8,
                          "application/json");
             request.Content = jsonContent;
-            var httpResponseMessage = await httpClient.SendAsync(request);
+            var httpResponseMessage = await RequestClient.SendAsync(request);
 
             IEnumerable<User> users = new List<User>();
 
@@ -75,8 +72,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         }
         public async Task<User?> GetUserById(int id)
         {
-            var httpClient = GetHttpClient(_clientName);
-            var httpResponseMessage = await httpClient.GetAsync(httpClient.BaseAddress + $"/{id}");
+            var httpResponseMessage = await RequestClient.GetAsync(RequestClient.BaseAddress + $"/{id}");
 
             User? user = null;
 
@@ -93,8 +89,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         }
         public async Task<User?> GetAuthodizedUser()
         {
-            var httpClient = GetHttpClient(_clientName);
-            var httpResponseMessage = await httpClient.GetAsync(httpClient.BaseAddress + $"/Authorized");
+            var httpResponseMessage = await RequestClient.GetAsync(RequestClient.BaseAddress + $"/Authorized");
 
             User? user = null;
 
@@ -112,64 +107,60 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<ServiceRezult> Create(AddUserModel addModel)
         {
-            var httpClient = GetHttpClient(_clientName);
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(addModel),
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await httpClient.PostAsync("", jsonContent);
+            var httpResponseMessage = await RequestClient.PostAsync("", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
 
         public async Task<ServiceRezult> UpdateUserData(UpdateUserDataModel updateModel)
         {
-            var httpClient = GetHttpClient(_clientName);
-
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(updateModel),
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await httpClient.PutAsync(httpClient.BaseAddress + "/data", jsonContent);
+            var httpResponseMessage = await RequestClient.PutAsync(RequestClient.BaseAddress + "/data", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
         public async Task<ServiceRezult> UpdateUserPassword(UpdateUserPasswordModel updateModel)
         {
-            var httpClient = GetHttpClient(_clientName);
-
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(updateModel),
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await httpClient.PutAsync(httpClient.BaseAddress + "/password", jsonContent);
+            var httpResponseMessage = await RequestClient.PutAsync(RequestClient.BaseAddress + "/password", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
         public async Task<ServiceRezult> DeleteById(int userId)
         {
-            var httpClient = GetHttpClient(_clientName);
-
-            var httpResponseMessage = await httpClient.DeleteAsync(httpClient.BaseAddress + $"/{userId}");
+            var httpResponseMessage = await RequestClient.DeleteAsync(RequestClient.BaseAddress + $"/{userId}");
 
             return await GetCommandRezult(httpResponseMessage);
         }
 
-        public async Task<string?> Authorize(string email, string password)
+        public async Task<AuthorizeModel?> Authorize(string email, string password)
         {
-            var httpClient = GetHttpClient(_clientName);
             var parameters = new Dictionary<string, string>();
             parameters["email"] = email;
             parameters["password"] = password;
-            var httpResponseMessage = await httpClient.PostAsync(httpClient.BaseAddress + "/token", new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await RequestClient.PostAsync(RequestClient.BaseAddress + "/token", new FormUrlEncodedContent(parameters));
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
-                var token = (await httpResponseMessage.Content.ReadAsStringAsync()).Replace("\"", "");
-                AccessToken = token;
+				using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+				var options = new JsonSerializerOptions
+				{
+					PropertyNameCaseInsensitive = true
+				};
+				var token = await JsonSerializer.DeserializeAsync<AuthorizeModel>(contentStream, options);
                 return token;
             }
             return null;
