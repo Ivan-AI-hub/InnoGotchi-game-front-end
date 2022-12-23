@@ -1,4 +1,5 @@
 ﻿using InnoGotchiGameFrontEnd.DAL.Models.Users;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
@@ -16,58 +17,60 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<IEnumerable<User>> GetUsers(UserSorter? sorter = null, UserFiltrator? filtrator = null)
         {
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, RequestClient.BaseAddress);
+            var requestUrl = new StringBuilder($"?sortField={sorter.SortRule}" +
+                                               $"&isDescendingSort={sorter.IsDescendingSort}");
 
-            var options = new JsonSerializerOptions
+            if (!String.IsNullOrEmpty(filtrator.FirstName))
             {
-                PropertyNameCaseInsensitive = true
-            };
-
-            using StringContent jsonContent = new(
-                         JsonSerializer.Serialize(new
-                         {
-                             sorter,
-                             filtrator
-                         }),
-                         Encoding.UTF8,
-                         "application/json");
-            request.Content = jsonContent;
-            var httpResponseMessage = await RequestClient.SendAsync(request);
-
-            IEnumerable<User> users = new List<User>();
-
-            if (httpResponseMessage.IsSuccessStatusCode)
+                requestUrl.Append($"&firstName={filtrator.FirstName}");
+            }
+            if (!String.IsNullOrEmpty(filtrator.LastName))
             {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                users = await JsonSerializer.DeserializeAsync<IEnumerable<User>>(contentStream, options);
+                requestUrl.Append($"&lastName={filtrator.LastName}");
+            }
+            if (!String.IsNullOrEmpty(filtrator.Email))
+            {
+                requestUrl.Append($"&email={filtrator.Email}");
+            }
+            if (!String.IsNullOrEmpty(filtrator.Email))
+            {
+                requestUrl.Append($"&petFarnId={filtrator.PetFarmId}");
+            }
+            var users = await RequestClient.GetFromJsonAsync<IEnumerable<User>>(RequestClient.BaseAddress + requestUrl.ToString());
+
+            if (users == null)
+            {
+                throw new Exception("BadRequest in UserService GetUsers");
             }
             return users;
         }
 
         public async Task<IEnumerable<User>> GetUsersPage(int pageSize, int pageNumber, UserSorter sorter, UserFiltrator filtrator)
         {
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, RequestClient.BaseAddress + $"/{pageSize}/{pageNumber}");
-            using StringContent jsonContent = new(
-                         JsonSerializer.Serialize(new
-                         {
-                             sorter,
-                             filtrator
-                         }),
-                         Encoding.UTF8,
-                         "application/json");
-            request.Content = jsonContent;
-            var httpResponseMessage = await RequestClient.SendAsync(request);
+            var requestUrl = new StringBuilder($"/{pageSize}/{pageNumber}" +
+                             $"?sortField={sorter.SortRule}&isDescendingSort={sorter.IsDescendingSort}");
 
-            IEnumerable<User> users = new List<User>();
-
-            if (httpResponseMessage.IsSuccessStatusCode)
+            if(!String.IsNullOrEmpty(filtrator.FirstName))
             {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                users = await JsonSerializer.DeserializeAsync<IEnumerable<User>>(contentStream, options);
+                requestUrl.Append($"&firstName={filtrator.FirstName}");
+            }
+            if (!String.IsNullOrEmpty(filtrator.LastName))
+            {
+                requestUrl.Append($"&lastName={filtrator.LastName}");
+            }
+            if (!String.IsNullOrEmpty(filtrator.Email))
+            {
+                requestUrl.Append($"&email={filtrator.Email}");
+            }
+            if (!String.IsNullOrEmpty(filtrator.Email))
+            {
+                requestUrl.Append($"&petFarnId={filtrator.PetFarmId}");
+            }
+            var users = await RequestClient.GetFromJsonAsync<IEnumerable<User>>(RequestClient.BaseAddress + requestUrl.ToString());
+
+            if (users == null)
+            {
+                throw new Exception("BadRequest in UserService GetUsersPage");
             }
             return users;
         }
