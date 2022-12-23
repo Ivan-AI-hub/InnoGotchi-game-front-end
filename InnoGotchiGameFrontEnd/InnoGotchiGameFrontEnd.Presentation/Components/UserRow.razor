@@ -1,0 +1,19 @@
+﻿
+<div class="row mb-3">
+    @if (User.Picture != null)
+    {
+        <div class="col-2">
+            <ImageFromByteArray Image="@User.Picture.Image" imgClass="img-thumbnail rounded float-right" />
+        </div>
+    }
+    <div class="col-6">
+        <div>@User.FirstName @User.LastName</div>
+        <div>@User.Email</div>
+    </div>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public UserDTO User { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}
