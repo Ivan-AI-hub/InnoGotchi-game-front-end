@@ -1,4 +1,7 @@
-﻿using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
+﻿using InnoGotchiGameFrontEnd.BLL;
+using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
+using InnoGotchiGameFrontEnd.BLL.Model.Identity;
+using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,32 +11,37 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
     {
         [Inject] public ILocalStorageService LocalStorageService { get; set; }
         [Inject] public NavigationManager Navigation { get; set; }
+        [Inject] public UserManager Manager { get; set; }
+
+        protected LoginData LoginData { get; set; }
+        protected string ErrorMessage { get; set; }
+
         public LoginModel()
         {
-            LoginData = new LoginViewModel();
+            LoginData = new LoginData();
+            ErrorMessage = "";
         }
-
-        public LoginViewModel LoginData { get; set; }
 
         protected async Task LoginAsync()
         {
-            var token = new SecurityToken
+            var authModel = await Manager.Authorize(LoginData.Email, LoginData.Password);
+            if (authModel != null)
             {
-                AccessToken = "21421412",
-                UserName = LoginData.UserName,
-                ExpireAt = DateTime.UtcNow.AddHours(1)
-            };
-            await LocalStorageService.SetAsync(nameof(SecurityToken), token);
-            Navigation.NavigateTo("/", true);
+                var token = new SecurityToken
+                {
+                    AccessToken = authModel.AccessToken,
+                    UserId = authModel.User.Id,
+                    Email = authModel.User.Email,
+                    UserName = $"{authModel.User.FirstName} {authModel.User.LastName}",
+                    ExpireAt = DateTime.UtcNow.AddHours(1)
+                };
+                await LocalStorageService.SetAsync(nameof(SecurityToken), token);
+                Navigation.NavigateTo("/", true);
+            }
+            else
+            {
+                ErrorMessage = "Email или пароль введены неверно.";
+            }
         }
-    }
-
-    public class LoginViewModel
-    {
-        [Required]
-        [StringLength(14, ErrorMessage = "too long")]
-        public string UserName { get; set; }
-        [Required]
-        public string Password { get; set; }
     }
 }

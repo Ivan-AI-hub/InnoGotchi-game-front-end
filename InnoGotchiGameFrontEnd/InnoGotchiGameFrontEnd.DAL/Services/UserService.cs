@@ -6,11 +6,12 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 {
     public class UserService : BaseService
     {
+        private string _clientName;
 
         public UserService(HttpClient client) : base(client)
         {
-            var apiControllerName = "users";
-            RequestClient.BaseAddress = new Uri(RequestClient.BaseAddress, apiControllerName);
+            _clientName = "Users";
+            RequestClient.BaseAddress = new Uri(RequestClient.BaseAddress, _clientName);
         }
 
         public async Task<IEnumerable<User>> GetUsers(UserSorter? sorter = null, UserFiltrator? filtrator = null)
