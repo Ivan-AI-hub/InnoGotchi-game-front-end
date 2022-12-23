@@ -1,0 +1,126 @@
+﻿@page "/users"
+@using InnoGotchiGameFrontEnd.BLL.Sorters;
+@using InnoGotchiGameFrontEnd.Presentation.Pages.Users.Models;
+@inject UserManager manager
+@attribute [Authorize]
+
+<div class="row">
+    <div class="col-sm-3">
+        <EditForm Model="Data">
+            <div class="container">
+                <div class="col ">
+                    <label class="form-label">Фильтрация</label>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        
+                        <InputText @bind-Value="Data.Filtrator.Email" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Фамилия</label>
+                        <InputText @bind-Value="Data.Filtrator.LastName" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Сортировка</label>
+                        <InputSelect class="form-control" @bind-Value="@Data.Sorter.SortRule">
+
+                            @foreach (var sortRule in Enum.GetValues<UserDTOSortRule>())
+                            {
+
+                                <option value="@sortRule">@sortRule</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">Обратная сортировка</label>
+                        <InputCheckbox class="form-check-input" @bind-Value="@Data.Sorter.IsDescendingSort" />
+                    </div>
+                </div>
+                <input type="submit" class="btn btn-primary align-self-center" value="Найти" />
+            </div>
+        </EditForm>
+    </div>
+    <div class="col-sm">
+        @if(@Data.Users != null)
+        {
+            <div class="row">
+                <div class="d-flex align-items-center justify-content-start col">
+                    @if (@Data.PageStatus != PageStatus.FirstPage)
+                    {
+                        <button class="btn btn-info" @onclick="SetPreviousPage">←Предидущая страница</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-info disabled">←Предидущая страница</button>
+                    }
+                </div>
+                <div class="d-flex align-items-center justify-content-end col">
+                    @if (@Data.PageStatus != PageStatus.LastPage)
+                    {
+                        <button class="btn btn-info" @onclick="SetNextPage">Следующая страница→</button>
+                    }
+                    else
+                    {
+                        <a href="undifinite" class="btn btn-info disabled">Следующая страница→</a>
+                    }
+                </div>
+            </div>
+            @foreach (var user in Data.Users)
+            {
+                <UserRow User="@user">
+                    <div class="col d-flex align-items-center justify-content-end">
+                        @if (Data.AuthorizedUserId != user.Id)
+                        {
+                            <div>
+                                <NavLink class="btn btn-primary" href=@{$"/users/{user.Id}"} Match="NavLinkMatch.All">
+                                    Подробнее
+                                </NavLink>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="btn btn-info">Это вы)))))))))))</div>
+
+                        }
+                    </div>
+                </UserRow>
+            }
+        }
+        else
+        {
+            <p>loading...</p>
+        }
+    </div>
+
+</div>
+
+@code
+{
+    private UsersData Data { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Data = new UsersData();
+        Data.AuthorizedUserId = 1;//int.Parse(@ClaimsPrincipal.Current.Claims.First(x => x.Value == "Id").Value);
+        await UsersUpdate();
+    }
+
+    protected async Task SetPreviousPage()
+    {
+        Data.Page.Number--;
+        Data.Users = null;
+        await UsersUpdate();
+    }
+    protected async Task SetNextPage()
+    {
+        Data.Page.Number++;
+        Data.Users = null;
+        await UsersUpdate();
+    }
+
+    private async Task UsersUpdate()
+    {
+        Data.Users = await manager.GetUsersPage(Data.Page.PageSize, Data.Page.Number, Data.Sorter, Data.Filtrator);
+    }
+}

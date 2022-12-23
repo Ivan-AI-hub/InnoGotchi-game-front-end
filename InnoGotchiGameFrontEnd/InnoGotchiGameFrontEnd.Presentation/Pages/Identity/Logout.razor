@@ -1,7 +1,7 @@
 ﻿@page "/logout"
 @inject NavigationManager Navigator
 @inject AuthenticationStateProvider StateProvider
-
+@attribute [Authorize]
 @code {
 
 	protected override void OnInitialized()
