@@ -7,12 +7,12 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 {
     public class UserService : BaseService
     {
-        private string _clientName;
+        private Uri _baseUri;
 
         public UserService(HttpClient client) : base(client)
         {
-            _clientName = "Users";
-            RequestClient.BaseAddress = new Uri(RequestClient.BaseAddress, _clientName);
+            var apiControllerName = "Users";
+            _baseUri = new Uri(client.BaseAddress, apiControllerName);
         }
 
         public async Task<IEnumerable<User>> GetUsers(UserSorter? sorter = null, UserFiltrator? filtrator = null)
@@ -36,7 +36,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             {
                 requestUrl.Append($"&petFarnId={filtrator.PetFarmId}");
             }
-            var users = await RequestClient.GetFromJsonAsync<IEnumerable<User>>(RequestClient.BaseAddress + requestUrl.ToString());
+            var users = await RequestClient.GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString());
 
             if (users == null)
             {
@@ -66,7 +66,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             {
                 requestUrl.Append($"&petFarnId={filtrator.PetFarmId}");
             }
-            var users = await RequestClient.GetFromJsonAsync<IEnumerable<User>>(RequestClient.BaseAddress + requestUrl.ToString());
+            var users = await RequestClient.GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString());
 
             if (users == null)
             {
@@ -76,7 +76,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         }
         public async Task<User?> GetUserById(int id)
         {
-            var httpResponseMessage = await RequestClient.GetAsync(RequestClient.BaseAddress + $"/{id}");
+            var httpResponseMessage = await RequestClient.GetAsync(_baseUri + $"/{id}");
 
             User? user = null;
 
@@ -93,7 +93,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         }
         public async Task<User?> GetAuthodizedUser()
         {
-            var httpResponseMessage = await RequestClient.GetAsync(RequestClient.BaseAddress + $"/Authorized");
+            var httpResponseMessage = await RequestClient.GetAsync(_baseUri + $"/Authorized");
 
             User? user = null;
 
@@ -116,7 +116,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PostAsync("", jsonContent);
+            var httpResponseMessage = await RequestClient.PostAsync(_baseUri, jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -128,7 +128,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PutAsync(RequestClient.BaseAddress + "/data", jsonContent);
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + "/data", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -139,13 +139,13 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PutAsync(RequestClient.BaseAddress + "/password", jsonContent);
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + "/password", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
         public async Task<ServiceRezult> DeleteById(int userId)
         {
-            var httpResponseMessage = await RequestClient.DeleteAsync(RequestClient.BaseAddress + $"/{userId}");
+            var httpResponseMessage = await RequestClient.DeleteAsync(_baseUri + $"/{userId}");
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -155,7 +155,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             var parameters = new Dictionary<string, string>();
             parameters["email"] = email;
             parameters["password"] = password;
-            var httpResponseMessage = await RequestClient.PostAsync(RequestClient.BaseAddress + "/token", new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await RequestClient.PostAsync(_baseUri + "/token", new FormUrlEncodedContent(parameters));
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {

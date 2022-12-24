@@ -6,17 +6,18 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 {
     public class PetService : BaseService
     {
+        private Uri _baseUri;
         public PetService(HttpClient client) : base(client)
 		{
 			var apiControllerName = "pets";
-			RequestClient.BaseAddress = new Uri(RequestClient.BaseAddress, apiControllerName);
+			_baseUri= new Uri(client.BaseAddress, apiControllerName);
 		}
 
 
         public async Task<IEnumerable<Pet>> GetPets(PetSorter? sorter = null, PetFiltrator? filtrator = null)
         {
 
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, RequestClient.BaseAddress);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _baseUri);
 
             var options = new JsonSerializerOptions
             {
@@ -48,7 +49,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         {
 
 
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, RequestClient.BaseAddress + $"/{pageSize}/{pageNumber}");
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _baseUri+ $"/{pageSize}/{pageNumber}");
             using StringContent jsonContent = new(
                          JsonSerializer.Serialize(new
                          {
@@ -76,7 +77,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         public async Task<Pet?> GetPetById(int id)
         {
 
-            var httpResponseMessage = await RequestClient.GetAsync(RequestClient.BaseAddress + $"/{id}");
+            var httpResponseMessage = await RequestClient.GetAsync(_baseUri+ $"/{id}");
 
             Pet? Pet = null;
 
@@ -100,7 +101,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PostAsync("", jsonContent);
+            var httpResponseMessage = await RequestClient.PostAsync(_baseUri, jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -114,7 +115,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PutAsync(RequestClient.BaseAddress + "/data", jsonContent);
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri+ "/data", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -125,7 +126,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             var parameters = new Dictionary<string, string>();
             parameters["feederId"] = feederId.ToString();
 
-            var httpResponseMessage = await RequestClient.PutAsync(RequestClient.BaseAddress + $"/{petId}/feed", new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri+ $"/{petId}/feed", new FormUrlEncodedContent(parameters));
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -136,7 +137,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             var parameters = new Dictionary<string, string>();
             parameters["drinkerId"] = drinkerId.ToString();
 
-            var httpResponseMessage = await RequestClient.PutAsync(RequestClient.BaseAddress + $"/{petId}/drink", new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri+ $"/{petId}/drink", new FormUrlEncodedContent(parameters));
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -144,7 +145,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         //{
         //    var RequestClient = GetHttpClient(_clientName);
 
-        //    var httpResponseMessage = await RequestClient.DeleteAsync(RequestClient.BaseAddress + $"/{PetId}");
+        //    var httpResponseMessage = await RequestClient.DeleteAsync(_baseUri+ $"/{PetId}");
 
         //    return await GetCommandRezult(httpResponseMessage);
         //}

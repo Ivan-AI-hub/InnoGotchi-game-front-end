@@ -7,17 +7,17 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 {
     public class PictureService : BaseService
     {
-        string _clientName;
+        private Uri _baseUri;
         public PictureService(HttpClient client) : base(client)
 		{
 			var apiControllerName = "pictures";
-			RequestClient.BaseAddress = new Uri(RequestClient.BaseAddress, apiControllerName);
+			_baseUri = new Uri(client.BaseAddress, apiControllerName);
 		}
 
         public async Task<IEnumerable<Picture>> GetPictures(string nameTemplate)
         {
 
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, RequestClient.BaseAddress);
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _baseUri);
 
             var options = new JsonSerializerOptions
             {
@@ -42,7 +42,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         public async Task<Picture?> GetPictureById(int id)
         {
 
-            var httpResponseMessage = await RequestClient.GetAsync(RequestClient.BaseAddress + $"/{id}");
+            var httpResponseMessage = await RequestClient.GetAsync(_baseUri + $"/{id}");
 
             Picture? picture = null;
 
@@ -66,7 +66,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PostAsync("", jsonContent);
+            var httpResponseMessage = await RequestClient.PostAsync(_baseUri, jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -78,7 +78,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PutAsync(RequestClient.BaseAddress + $"/{updatedId}", jsonContent);
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + $"/{updatedId}", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }

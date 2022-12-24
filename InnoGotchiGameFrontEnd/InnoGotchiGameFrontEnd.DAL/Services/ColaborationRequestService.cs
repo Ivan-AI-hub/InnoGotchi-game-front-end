@@ -2,10 +2,11 @@
 {
     public class ColaborationRequestService : BaseService
     {
+        private Uri _baseUri;
         public ColaborationRequestService(HttpClient client) : base(client)
 		{
 			var apiControllerName = "colaborators";
-			RequestClient.BaseAddress = new Uri(RequestClient.BaseAddress, apiControllerName);
+			_baseUri = new Uri(client.BaseAddress, apiControllerName);
 		}
 
         public async Task<ServiceRezult> AddCollaborator(int senderId, int recipientId)
@@ -15,7 +16,7 @@
             parameters["senderId"] = senderId.ToString();
             parameters["recipientId"] = recipientId.ToString();
 
-            var httpResponseMessage = await RequestClient.PostAsync("", new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await RequestClient.PostAsync(_baseUri, new FormUrlEncodedContent(parameters));
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -26,7 +27,7 @@
             var parameters = new Dictionary<string, string>();
             parameters["recipientId"] = recipientId.ToString();
 
-            var httpResponseMessage = await RequestClient.PutAsync(RequestClient.BaseAddress + $"/{requestId}/confirm", new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + $"/{requestId}/confirm", new FormUrlEncodedContent(parameters));
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -37,7 +38,7 @@
             var parameters = new Dictionary<string, string>();
             parameters["participantId"] = participantId.ToString();
 
-            var httpResponseMessage = await RequestClient.PutAsync(RequestClient.BaseAddress + $"/{requestId}/reject", new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + $"/{requestId}/reject", new FormUrlEncodedContent(parameters));
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -46,7 +47,7 @@
         {
 
 
-            var httpResponseMessage = await RequestClient.DeleteAsync(RequestClient.BaseAddress + $"/{requestId}");
+            var httpResponseMessage = await RequestClient.DeleteAsync(_baseUri + $"/{requestId}");
 
             return await GetCommandRezult(httpResponseMessage);
         }
