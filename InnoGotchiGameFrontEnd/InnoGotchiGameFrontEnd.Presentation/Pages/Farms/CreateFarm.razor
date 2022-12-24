@@ -1,0 +1,72 @@
+﻿@page "/farms/create"
+@using InnoGotchiGameFrontEnd.BLL.ComandModels.Farm;
+@using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
+@attribute [Authorize]
+@inject AuthenticationStateProvider stateProvider;
+@inject ILocalStorageService localStorageService;
+@inject NavigationManager navigation;
+@inject FarmManager manager;
+
+@if (!IsLoading)
+{
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div>
+                @foreach (var error in Errors)
+                {
+                    <p class="text-danger">@error</p>
+                }
+            </div>
+            <EditForm Model="@Data" OnValidSubmit="CreateAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group">
+                    <label class="form-label">Введите название вашей супер уникальной фермы!!</label>
+                    <InputText @bind-Value="Data.Name" class="form-control bg-black bg-opacity-25" />
+                </div>
+                <input type="submit" />
+            </EditForm>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h3>Loading............</h3>
+        </div>
+    </div>
+}
+@code {
+    private bool IsLoading { get; set; }
+    private List<String> Errors = new List<string>();
+    private AddFarmDTOModel Data;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        var userId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
+        Data = new AddFarmDTOModel()
+            {
+                OwnerId = userId
+            };
+        IsLoading = false;
+    }
+
+    private async Task CreateAsync()
+    {
+        var rezult = await manager.Create(Data);
+        if (!rezult.IsComplete)
+        {
+            Errors = rezult.Errors;
+        }
+        else
+        {
+            var token = await localStorageService.GetAsync<SecurityToken>(nameof(SecurityToken));
+            token.HasFarm = true;
+            await localStorageService.SetAsync<SecurityToken>(nameof(SecurityToken), token);
+            navigation.NavigateTo("/");
+        }
+    }
+}

@@ -15,7 +15,7 @@
 
             @if (!HasFarm)
             {
-                <button class="list-group-item list-group-item-action">Создать ферму</button>
+                <button @onclick="ToCreateFarmPage" class="list-group-item list-group-item-action">Создать ферму</button>
             }
         </div>
     </div>
@@ -47,6 +47,10 @@
     private void ToUpdatePasswordPage()
     {
         navigation.NavigateTo("/updatePassword");
+    }
+    private void ToCreateFarmPage()
+    {
+        navigation.NavigateTo("/farms/create");
     }
 }
 

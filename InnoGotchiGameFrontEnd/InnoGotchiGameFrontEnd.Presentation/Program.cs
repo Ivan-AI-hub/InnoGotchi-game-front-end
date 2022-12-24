@@ -22,7 +22,7 @@ new HttpClient
 
 var config = new MapperConfiguration(cnf => cnf.AddProfiles(new List<Profile>() { new BllMappingProfile() }));
 
-builder.Services.AddScoped<IMapper>(x => new Mapper(config));
+builder.Services.AddTransient<IMapper>(x => new Mapper(config));
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<ColaborationRequestManager>();
 builder.Services.AddScoped<FarmManager>();
