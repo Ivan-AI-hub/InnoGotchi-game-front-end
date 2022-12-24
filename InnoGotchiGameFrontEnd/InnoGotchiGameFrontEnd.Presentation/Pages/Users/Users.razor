@@ -2,11 +2,12 @@
 @using InnoGotchiGameFrontEnd.BLL.Sorters;
 @using InnoGotchiGameFrontEnd.Presentation.Pages.Users.Models;
 @inject UserManager manager
+@inject AuthenticationStateProvider stateProvider
 @attribute [Authorize]
 
 <div class="row">
     <div class="col-sm-3">
-        <EditForm Model="Data">
+        <EditForm Model="Data" OnValidSubmit="UsersUpdate">
             <div class="container">
                 <div class="col ">
                     <label class="form-label">Фильтрация</label>
@@ -102,25 +103,25 @@
     protected override async Task OnInitializedAsync()
     {
         Data = new UsersData();
-        Data.AuthorizedUserId = 1;//int.Parse(@ClaimsPrincipal.Current.Claims.First(x => x.Value == "Id").Value);
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        Data.AuthorizedUserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
         await UsersUpdate();
     }
 
     protected async Task SetPreviousPage()
     {
         Data.Page.Number--;
-        Data.Users = null;
         await UsersUpdate();
     }
     protected async Task SetNextPage()
     {
         Data.Page.Number++;
-        Data.Users = null;
         await UsersUpdate();
     }
 
     private async Task UsersUpdate()
     {
+        Data.Users = null;
         Data.Users = await manager.GetUsersPage(Data.Page.PageSize, Data.Page.Number, Data.Sorter, Data.Filtrator);
     }
 }
