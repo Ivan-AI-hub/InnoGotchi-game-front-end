@@ -1,0 +1,57 @@
+﻿@page "/users/{Id:int}"
+@inject UserManager manager;
+@inject NavigationManager navigator;
+@if (User != null)
+{
+    <div class="row">
+        @if (User.Picture != null)
+        {
+            <div class="col-3">
+                <p>Аватар</p>
+                <ImageFromByteArray Image="User.Picture.Image" />
+            </div>
+        }
+        <div class="col">
+            <h1 class="col-sm">@User.FirstName @User.LastName </h1>
+        </div>
+    </div>
+    @if (User.OwnPetFarm != null)
+    {
+        <div>
+            <div>
+                <h3>Краткая статистика о ферме "@User.OwnPetFarm.Name"</h3>
+            </div>
+            <div>
+                <label>Дата создания: @User.OwnPetFarm.CreateDate.ToShortDateString()</label>
+            </div>
+            <div>
+                <label>Количество животных: @User.OwnPetFarm.Pets.Count()</label>
+            </div>
+            <div>
+                <button class="list-group-item list-group-item-action">Перейти на ферму</button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div>
+            Фермы не наблюдается.............
+        </div>
+    }
+}
+else
+{
+    <div>
+        Пользователь не найден.........
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    UserDTO? User { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        User = await manager.GetUserById(Id);
+    }
+}
