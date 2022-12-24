@@ -18,7 +18,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Users.Models
             Users = null;
             Filtrator = new UserDTOFiltrator();
             Sorter = new UserDTOSorter();
-            Page = new Page(1, 10);
+            Page = new Page(1, 5);
         }
     }
 }

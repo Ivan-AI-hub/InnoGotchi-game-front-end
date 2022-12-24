@@ -1,6 +1,7 @@
 ﻿@page "/"
 @attribute [Authorize]
 @inject AuthenticationStateProvider stateProvider
+@inject NavigationManager navigation;
 @using InnoGotchiGameFrontEnd.Presentation.Pages.Users;
 
 <PageTitle>Index</PageTitle>
@@ -9,7 +10,7 @@
 <div class="row">
     <div class="col-3">
         <div class="list-group">
-            <button class="list-group-item list-group-item-action">Изменить данные</button>
+            <button @onclick="ToUpdateDataPage" class="list-group-item list-group-item-action">Изменить данные</button>
             <button class="list-group-item list-group-item-action">Изменить пароль</button>
 
             @if (!HasFarm)
@@ -36,6 +37,11 @@
         var state = await stateProvider.GetAuthenticationStateAsync();
         Id = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
         HasFarm = bool.Parse(state.User.FindFirst(nameof(SecurityToken.HasFarm)).Value);
+    }
+
+    private void ToUpdateDataPage()
+    {
+        navigation.NavigateTo("/updateData");
     }
 }
 

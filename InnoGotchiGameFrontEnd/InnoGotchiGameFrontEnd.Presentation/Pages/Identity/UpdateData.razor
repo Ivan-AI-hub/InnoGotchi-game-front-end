@@ -1,0 +1,88 @@
+﻿@page "/updateData"
+@using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
+@attribute [Authorize]
+@inject AuthenticationStateProvider stateProvider;
+@inject UserManager manager;
+@inject NavigationManager navigation;
+
+@if (!IsLoading)
+{
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <EditForm Model="@Data" OnValidSubmit="UpdateAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group">
+                    <label class="form-label">FirstName</label>
+                    <InputText @bind-Value="@Data.FirstName" class="form-control bg-opacity-25" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">LastName</label>
+                    <InputText @bind-Value="@Data.LastName" class="form-control bg-opacity-25" />
+                </div>
+                <div class="form-group row">
+                    <div class="col">
+                        <label class="form-label">Avatar</label>
+                        <InputFile OnChange="@OnFileSelected" accept=".jpeg,.jpg,.png" class="form-control bg-opacity-25" />
+                    </div>
+                    @if (Data.Image != null)
+                    {
+                        <div class="col-md-3">
+                            <ImageFromByteArray Image="@Data.Image.ToArray()"/>
+                        </div>
+                    }
+                </div>
+                <input type="submit" />
+            </EditForm>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h3>Loading............</h3>
+        </div>
+    </div>
+}
+
+@code {
+    private bool IsLoading { get; set; }
+    private UpdateUserDTODataModel Data { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        var id = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
+        var user = await manager.GetUserById(id);
+        Data = new UpdateUserDTODataModel()
+            {
+                UpdatedId = id,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            };
+        if (user.Picture != null)
+        {
+            Data.Image = new MemoryStream(user.Picture.Image);
+        }
+        IsLoading = false;
+    }
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        Data.Image = new MemoryStream();
+        var file = e.File;
+        string imageType = file.ContentType;
+        file = await file.RequestImageFileAsync(imageType, 200, 200);
+        await file.OpenReadStream().CopyToAsync(Data.Image);
+        this.StateHasChanged();
+    }
+    private async Task UpdateAsync()
+    {
+        IsLoading = true;
+        await manager.UpdateUserData(Data);
+        IsLoading = false;
+        navigation.NavigateTo("/");
+
+    }
+}
