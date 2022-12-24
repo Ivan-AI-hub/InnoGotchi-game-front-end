@@ -1,0 +1,93 @@
+﻿@page "/register"
+
+@using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
+@using InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models;
+@using Microsoft.AspNetCore.Http;
+@inject UserManager manager;
+@inject NavigationManager navigation;
+
+<div>
+    @foreach(var error in Errors)
+    {
+        <p class="text-danger">@error</p>
+    }
+</div>
+<EditForm Model="@Data" OnValidSubmit="RegisterAsync" class="form">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label class="form-label">FirstName</label>
+        <InputText id="firstName" @bind-Value="@Data.FirstName" class="form-control bg-black bg-opacity-25" />
+    </div>
+    <div class="form-group">
+        <label class="form-label">LastName</label>
+        <InputText id="lastName" @bind-Value="@Data.LastName" class="form-control bg-black bg-opacity-25" />
+    </div>
+    <div class="form-group">
+        <label class="form-label">Email</label>
+        <InputText id="email" @bind-Value="@Data.Email" class="form-control bg-black bg-opacity-25" />
+    </div>
+    <div class="form-group row">
+        <div class="col">
+            <label class="form-label">Avatar</label>
+            <InputFile OnChange="@OnFileSelected" accept=".jpeg,.jpg,.png" class="form-control bg-black bg-opacity-25" />
+        </div>
+        @if(Data.Image != null)
+        {
+            <div class="col">
+                <ImageFromByteArray Image="@Data.Image.ToArray()"/>
+            </div>
+        }
+    </div>
+    <div class="form-group">
+        <label class="form-label">Password</label>
+        <InputText @bind-Value="@Data.Password" type="password" class="form-control bg-black bg-opacity-25" />
+    </div>
+    <div class="form-group">
+        <label class="form-label">RePassword</label>
+        <InputText @bind-Value="@Data.RePassword" type="password" class="form-control bg-black bg-opacity-25" />
+    </div>
+    <input type="submit" />
+</EditForm>
+
+@code {
+    private List<string> Errors;
+    private RegisterData Data;
+    protected override void OnInitialized()
+    {
+        Data = new RegisterData();
+        Errors = new List<string>();
+    }
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        Data.Image = new MemoryStream();
+        await e.File.OpenReadStream().CopyToAsync(Data.Image);
+        this.StateHasChanged();
+    }
+
+    private async Task RegisterAsync()
+    {
+        if(Data.Password != Data.RePassword)
+        {
+            Errors.Add("Пароли не совпадают");
+        }
+        var createModel = new AddUserDTOModel()
+            {
+                FirstName = Data.FirstName,
+                LastName = Data.LastName,
+                Email = Data.Email,
+                Password = Data.Password
+            };
+        createModel.Image = Data.Image;
+        var rezult = await manager.Create(createModel);
+        this.StateHasChanged();
+        if(!rezult.IsComplete)
+        {
+            Errors = rezult.Errors;
+        }
+        else
+        {
+            navigation.NavigateTo("/login");
+        }
+    }
+}

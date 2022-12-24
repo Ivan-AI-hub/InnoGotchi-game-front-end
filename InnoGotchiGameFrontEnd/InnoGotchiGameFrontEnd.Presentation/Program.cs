@@ -22,11 +22,11 @@ new HttpClient
 
 var config = new MapperConfiguration(cnf => cnf.AddProfiles(new List<Profile>() { new BllMappingProfile() }));
 
-builder.Services.AddTransient<IMapper>(x => new Mapper(config));
-builder.Services.AddTransient<UserManager>();
-builder.Services.AddTransient<ColaborationRequestManager>();
-builder.Services.AddTransient<FarmManager>();
-builder.Services.AddTransient<PetManager>();
-builder.Services.AddTransient<PictureManager>();
+builder.Services.AddScoped<IMapper>(x => new Mapper(config));
+builder.Services.AddScoped<UserManager>();
+builder.Services.AddScoped<ColaborationRequestManager>();
+builder.Services.AddScoped<FarmManager>();
+builder.Services.AddScoped<PetManager>();
+builder.Services.AddScoped<PictureManager>();
 
 await builder.Build().RunAsync();
