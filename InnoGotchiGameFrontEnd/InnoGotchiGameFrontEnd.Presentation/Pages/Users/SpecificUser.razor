@@ -28,7 +28,7 @@
                 <label>Количество животных: @User.OwnPetFarm.Pets.Count()</label>
             </div>
             <div>
-                <button class="list-group-item list-group-item-action">Перейти на ферму</button>
+                <button @onclick="ToFarm" class="list-group-item list-group-item-action">Перейти на ферму</button>
             </div>
         </div>
     }
@@ -42,7 +42,7 @@
 else
 {
     <div>
-        Пользователь не найден.........
+        <h2>Загрузка</h2>
     </div>
 }
 
@@ -53,5 +53,10 @@ else
     protected override async Task OnInitializedAsync()
     {
         User = await manager.GetUserById(Id);
+    }
+
+    private void ToFarm()
+    {
+        navigator.NavigateTo($"/farms/{User.OwnPetFarm.Id}");
     }
 }

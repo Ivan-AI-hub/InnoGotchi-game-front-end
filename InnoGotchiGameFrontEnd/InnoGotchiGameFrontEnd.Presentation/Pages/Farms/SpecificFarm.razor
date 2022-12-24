@@ -1,0 +1,34 @@
+﻿@page "/farms/{Id:int}"
+@inject FarmManager manager
+
+
+<div>
+    <div class="row">
+        <div class="col">
+            <button class="list-group-item list-group-item-action">Добавить питомца</button>
+        </div>
+        <div class="col">
+            <button class="list-group-item list-group-item-action">Подробнее</button>
+        </div>
+    </div>
+    @if (Farm != null)
+    {
+        <h2>@Farm.Name</h2>
+        <div class="bg-light vh-100">
+        </div>
+    }
+    else
+    {
+        <h2>Loading.........</h2>
+    }
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private PetFarmDTO Farm { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Farm = await manager.GetFarmById(Id);
+    }
+}

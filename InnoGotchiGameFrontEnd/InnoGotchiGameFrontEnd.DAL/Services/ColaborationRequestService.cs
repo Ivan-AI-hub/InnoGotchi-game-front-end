@@ -45,8 +45,6 @@
 
         public async Task<ServiceRezult> DeleteById(int requestId)
         {
-
-
             var httpResponseMessage = await RequestClient.DeleteAsync(_baseUri + $"/{requestId}");
 
             return await GetCommandRezult(httpResponseMessage);
