@@ -11,6 +11,6 @@ namespace InnoGotchiGameFrontEnd.BLL.ComandModels.User
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        public IFormFile Image { get; set; }
+        public MemoryStream Image { get; set; }
     }
 }

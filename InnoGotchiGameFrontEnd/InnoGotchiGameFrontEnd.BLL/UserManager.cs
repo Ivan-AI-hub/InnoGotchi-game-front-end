@@ -62,7 +62,7 @@ namespace InnoGotchiGameFrontEnd.BLL
 			{
 				addDataModel.Picture = new Picture();
 				addDataModel.Picture.Name = "user-avatar-" + Guid.NewGuid().ToString();
-				addDataModel.Picture.Image = GetByteArrayFromImage(addModel.Image);
+				addDataModel.Picture.Image = addModel.Image.ToArray();
 			}
 			var rezult = new ManagerRezult();
 			var serviceRezult = await _service.Create(addDataModel);
@@ -77,7 +77,7 @@ namespace InnoGotchiGameFrontEnd.BLL
 			{
 				updateDataModel.Picture = new Picture();
 				updateDataModel.Picture.Name = "user-avatar-" + Guid.NewGuid().ToString();
-				updateDataModel.Picture.Image = GetByteArrayFromImage(updateModel.Image);
+				updateDataModel.Picture.Image = updateModel.Image.ToArray();
 			}
 			var rezult = new ManagerRezult();
 			var serviceRezult = await _service.UpdateUserData(updateDataModel);
@@ -107,15 +107,6 @@ namespace InnoGotchiGameFrontEnd.BLL
 			var token = await _service.Authorize(email, password);
 
 			return _mapper.Map<AuthorizeModelDTO?>(token);
-		}
-
-		private byte[] GetByteArrayFromImage(IFormFile file)
-		{
-			using (var target = new MemoryStream())
-			{
-				file.CopyTo(target);
-				return target.ToArray();
-			}
 		}
 	}
 }
