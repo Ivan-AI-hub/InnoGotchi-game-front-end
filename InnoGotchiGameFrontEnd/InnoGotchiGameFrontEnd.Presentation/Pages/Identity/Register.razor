@@ -6,50 +6,53 @@
 @inject UserManager manager;
 @inject NavigationManager navigation;
 
-<div>
-    @foreach(var error in Errors)
-    {
-        <p class="text-danger">@error</p>
-    }
-</div>
-<EditForm Model="@Data" OnValidSubmit="RegisterAsync" class="form">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="form-group">
-        <label class="form-label">FirstName</label>
-        <InputText id="firstName" @bind-Value="@Data.FirstName" class="form-control bg-black bg-opacity-25" />
-    </div>
-    <div class="form-group">
-        <label class="form-label">LastName</label>
-        <InputText id="lastName" @bind-Value="@Data.LastName" class="form-control bg-black bg-opacity-25" />
-    </div>
-    <div class="form-group">
-        <label class="form-label">Email</label>
-        <InputText id="email" @bind-Value="@Data.Email" class="form-control bg-black bg-opacity-25" />
-    </div>
-    <div class="form-group row">
-        <div class="col">
-            <label class="form-label">Avatar</label>
-            <InputFile OnChange="@OnFileSelected" accept=".jpeg,.jpg,.png" class="form-control bg-black bg-opacity-25" />
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div>
+            @foreach (var error in Errors)
+            {
+                <p class="text-danger">@error</p>
+            }
         </div>
-        @if(Data.Image != null)
-        {
-            <div class="col">
-                <ImageFromByteArray Image="@Data.Image.ToArray()"/>
+        <EditForm Model="@Data" OnValidSubmit="RegisterAsync" class="form">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label class="form-label">FirstName</label>
+                <InputText id="firstName" @bind-Value="@Data.FirstName" class="form-control bg-black bg-opacity-25" />
             </div>
-        }
+            <div class="form-group">
+                <label class="form-label">LastName</label>
+                <InputText id="lastName" @bind-Value="@Data.LastName" class="form-control bg-black bg-opacity-25" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <InputText id="email" @bind-Value="@Data.Email" class="form-control bg-black bg-opacity-25" />
+            </div>
+            <div class="form-group row">
+                <div class="col">
+                    <label class="form-label">Avatar</label>
+                    <InputFile OnChange="@OnFileSelected" accept=".jpeg,.jpg,.png" class="form-control bg-black bg-opacity-25" />
+                </div>
+                @if (Data.Image != null)
+                {
+                    <div class="col">
+                        <ImageFromByteArray Image="@Data.Image.ToArray()" />
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <InputText @bind-Value="@Data.Password" type="password" class="form-control bg-black bg-opacity-25" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">RePassword</label>
+                <InputText @bind-Value="@Data.RePassword" type="password" class="form-control bg-black bg-opacity-25" />
+            </div>
+            <input type="submit" />
+        </EditForm>
     </div>
-    <div class="form-group">
-        <label class="form-label">Password</label>
-        <InputText @bind-Value="@Data.Password" type="password" class="form-control bg-black bg-opacity-25" />
-    </div>
-    <div class="form-group">
-        <label class="form-label">RePassword</label>
-        <InputText @bind-Value="@Data.RePassword" type="password" class="form-control bg-black bg-opacity-25" />
-    </div>
-    <input type="submit" />
-</EditForm>
-
+</div>
 @code {
     private List<string> Errors;
     private RegisterData Data;
@@ -67,7 +70,7 @@
 
     private async Task RegisterAsync()
     {
-        if(Data.Password != Data.RePassword)
+        if (Data.Password != Data.RePassword)
         {
             Errors.Add("Пароли не совпадают");
         }
@@ -81,7 +84,7 @@
         createModel.Image = Data.Image;
         var rezult = await manager.Create(createModel);
         this.StateHasChanged();
-        if(!rezult.IsComplete)
+        if (!rezult.IsComplete)
         {
             Errors = rezult.Errors;
         }

@@ -32,6 +32,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
                     AccessToken = authModel.AccessToken,
                     UserId = authModel.User.Id,
                     Email = authModel.User.Email,
+                    HasFarm = authModel.User.OwnPetFarm != null,
                     UserName = $"{authModel.User.FirstName} {authModel.User.LastName}",
                     ExpireAt = DateTime.UtcNow.AddHours(1)
                 };

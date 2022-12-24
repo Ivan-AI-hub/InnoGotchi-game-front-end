@@ -1,3 +1,41 @@
 ﻿@page "/"
+@attribute [Authorize]
+@inject AuthenticationStateProvider stateProvider
+@using InnoGotchiGameFrontEnd.Presentation.Pages.Users;
 
 <PageTitle>Index</PageTitle>
+
+
+<div class="row">
+    <div class="col-3">
+        <div class="list-group">
+            <button class="list-group-item list-group-item-action">Изменить данные</button>
+            <button class="list-group-item list-group-item-action">Изменить пароль</button>
+
+            @if (!HasFarm)
+            {
+                <button class="list-group-item list-group-item-action">Создать ферму</button>
+            }
+        </div>
+    </div>
+    <div class="col">
+        @if (Id != 0)
+        {
+            <SpecificUser Id="@Id" />
+        }
+    </div>
+</div>
+
+@code
+{
+    private int Id { get; set; }
+    private bool HasFarm { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        Id = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
+        HasFarm = bool.Parse(state.User.FindFirst(nameof(SecurityToken.HasFarm)).Value);
+    }
+}
+
