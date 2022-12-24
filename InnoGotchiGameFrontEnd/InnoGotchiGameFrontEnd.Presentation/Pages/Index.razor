@@ -11,7 +11,7 @@
     <div class="col-3">
         <div class="list-group">
             <button @onclick="ToUpdateDataPage" class="list-group-item list-group-item-action">Изменить данные</button>
-            <button class="list-group-item list-group-item-action">Изменить пароль</button>
+            <button @onclick="ToUpdatePasswordPage" class="list-group-item list-group-item-action">Изменить пароль</button>
 
             @if (!HasFarm)
             {
@@ -42,6 +42,11 @@
     private void ToUpdateDataPage()
     {
         navigation.NavigateTo("/updateData");
+    }
+
+    private void ToUpdatePasswordPage()
+    {
+        navigation.NavigateTo("/updatePassword");
     }
 }
 

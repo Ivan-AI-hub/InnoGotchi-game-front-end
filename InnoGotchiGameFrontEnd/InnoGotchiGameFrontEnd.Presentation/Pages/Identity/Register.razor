@@ -76,6 +76,7 @@
         if (Data.Password != Data.RePassword)
         {
             Errors.Add("Пароли не совпадают");
+            return;
         }
         var createModel = new AddUserDTOModel()
             {
