@@ -29,4 +29,8 @@ builder.Services.AddScoped<FarmManager>();
 builder.Services.AddScoped<PetManager>();
 builder.Services.AddScoped<PictureManager>();
 
+builder.Services
+    .AddSingleton<MouseService>()
+    .AddSingleton<IMouseService>(ff => ff.GetRequiredService<MouseService>());
+
 await builder.Build().RunAsync();
