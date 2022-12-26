@@ -1,4 +1,5 @@
 ﻿using InnoGotchiGameFrontEnd.DAL.Models.Farms;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
@@ -45,20 +46,12 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<PetFarm?> GetFarmById(int id)
         {
-
-            var httpResponseMessage = await RequestClient.GetAsync(_baseUri + $"/{id}");
-
-            PetFarm? farm = null;
-
-            if (httpResponseMessage.IsSuccessStatusCode)
+            var options = new JsonSerializerOptions
             {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                farm = await JsonSerializer.DeserializeAsync<PetFarm>(contentStream, options);
-            }
+                PropertyNameCaseInsensitive = true,
+                IncludeFields = true
+            };
+            PetFarm? farm = await RequestClient.GetFromJsonAsync<PetFarm>(_baseUri + $"/{id}", options);
             return farm;
         }
 

@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text;
 using InnoGotchiGameFrontEnd.DAL.Models;
+using System.Net.Http.Json;
 
 namespace InnoGotchiGameFrontEnd.DAL.Services
 {
@@ -14,28 +15,10 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 			_baseUri = new Uri(client.BaseAddress, apiControllerName);
 		}
 
-        public async Task<IEnumerable<Picture>> GetPictures(string nameTemplate)
+        public async Task<IEnumerable<Picture>?> GetPictures(string nameTemplate)
         {
-
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _baseUri);
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-
-            var parameters = new Dictionary<string, string>();
-            parameters["nameTemplate"] = nameTemplate;
-            request.Content = new FormUrlEncodedContent(parameters);
-            var httpResponseMessage = await RequestClient.SendAsync(request);
-
-            IEnumerable<Picture> pictures = new List<Picture>();
-
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                pictures = await JsonSerializer.DeserializeAsync<IEnumerable<Picture>>(contentStream, options);
-            }
+            var uri = _baseUri + $"/getAll/{nameTemplate}";
+            IEnumerable<Picture> pictures = await RequestClient.GetFromJsonAsync<IEnumerable<Picture>>(uri);
             return pictures;
         }
 
