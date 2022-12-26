@@ -1,11 +1,13 @@
 ﻿@page "/farms/{Id:int}"
+@using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 @inject FarmManager manager
-
+@inject MouseService mouseSrv;
+@inject NavigationManager navigator;
 
 <div>
     <div class="row">
         <div class="col">
-            <button class="list-group-item list-group-item-action">Добавить питомца</button>
+            <button @onclick="ToCreatePetPage" class="list-group-item list-group-item-action">Добавить питомца</button>
         </div>
         <div class="col">
             <button class="list-group-item list-group-item-action">Подробнее</button>
@@ -13,8 +15,24 @@
     </div>
     @if (Farm != null)
     {
+        <div class="col" style="position: relative;">
         <h2>@Farm.Name</h2>
-        <div class="bg-light vh-100">
+        <svg class="vh-100 bg-success img-thumbnail rounded float-right"
+                     viewBox="0 0 1000 100"
+                     @onmousemove=@(e => mouseSrv.FireMove(this, e))
+                     @onmouseup=@(e => mouseSrv.FireUp(this, e))>
+            @foreach (var pet in Farm.Pets)
+            {
+                <Draggable X=random.Next(200) Y=random.Next(200) >
+                    <text x="90" y="30">@pet.Statistic.Name</text>
+                    <ImageFromByteArray Image="pet.View.BodyPicture.Image"
+                                ImageType="svg+xml"
+                                Height="200"
+                                Width="200"
+                                IsSvgImage="true" />
+                </Draggable>
+            }
+        </svg>
         </div>
     }
     else
@@ -25,10 +43,17 @@
 
 @code {
     [Parameter] public int Id { get; set; }
+    private Random random { get; set; }
     private PetFarmDTO Farm { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        random = new Random();
         Farm = await manager.GetFarmById(Id);
+    }
+
+    private void ToCreatePetPage()
+    {
+        navigator.NavigateTo($"/pets/create/{Id}");
     }
 }
