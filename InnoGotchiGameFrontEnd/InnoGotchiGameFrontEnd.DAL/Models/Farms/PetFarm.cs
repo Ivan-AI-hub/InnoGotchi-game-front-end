@@ -1,4 +1,5 @@
 ﻿using InnoGotchiGameFrontEnd.DAL.Models.Pets;
+using System.Text.Json.Serialization;
 
 namespace InnoGotchiGameFrontEnd.DAL.Models.Farms
 {
@@ -11,7 +12,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Models.Farms
 
         public int OwnerId { get; set; }
 
-        public List<Pet> Pets { get; }
+        public IEnumerable<Pet> Pets { get; set; }
 
         public int AlivesPetsCount { get; set; }
         public int DeadsPetsCount { get; set; }

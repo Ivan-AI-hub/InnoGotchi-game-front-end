@@ -5,5 +5,10 @@
         public int FarmId { get; set; }
         public string Name { get; set; }
         public PetView View { get; set; }
+
+        public AddPetModel()
+        {
+            View = new PetView();  
+        }
     }
 }
