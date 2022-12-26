@@ -13,6 +13,7 @@ builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
 builder.Services.AddTransient<ILocalStorageService, LocalStorageService>();
+builder.Services.AddTransient<IElementReferenceService, ElementReferenceService>();
 builder.Services.AddScoped<AuthenticationStateProvider, TokenStateProvider>();
 builder.Services.AddScoped(sp => 
 new HttpClient 
