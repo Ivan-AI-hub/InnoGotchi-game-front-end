@@ -1,0 +1,69 @@
+﻿<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay; position:absolute">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @*Modal Title*@
+            <div class="modal-header">
+                <h5 class="modal-title">@Pet.Statistic.Name</h5>
+                <button type="button" class="close" @onclick="() => Close()"
+                        data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @*Modal body*@
+            <div class="modal-body">
+                <PetRow Pet="@Pet" />
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary">Покормить</button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary">Напоить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+
+@code {
+    [Parameter] public PetDTO Pet { get; set; }
+    private string ModalDisplay = "none;";
+    private string ModalClass = "";
+    private bool ShowBackdrop = false;
+
+    protected override void OnInitialized()
+    {
+        Pet = Pet ?? new PetDTO();
+        base.OnInitialized();
+    }
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        ShowBackdrop = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none";
+        ModalClass = "";
+        ShowBackdrop = false;
+        StateHasChanged();
+    }
+
+    public void SetPet(PetDTO pet)
+    {
+        Pet = pet;
+        StateHasChanged();
+    }
+}
