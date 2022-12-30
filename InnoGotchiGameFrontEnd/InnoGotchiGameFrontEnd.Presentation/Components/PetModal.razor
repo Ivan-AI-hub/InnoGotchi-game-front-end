@@ -1,4 +1,7 @@
-﻿<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay; position:absolute">
+﻿@inject PetManager petManager
+@inject AuthenticationStateProvider stateProvider
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay; position:absolute">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             @*Modal Title*@
@@ -11,15 +14,35 @@
             </div>
             @*Modal body*@
             <div class="modal-body">
+                <div>
+                    @foreach (var error in Errors)
+                    {
+                        <p class="text-danger">@error</p>
+                    }
+                </div>
                 <PetRow Pet="@Pet" />
             </div>
             <div class="modal-footer">
                 <div class="row">
                     <div class="col">
-                        <button type="button" class="btn btn-primary">Покормить</button>
+                        @if (Pet.Statistic.HungerLevel != HungerLevel.Full)
+                        {
+                            <button type="button" class="btn btn-primary" @onclick="Feeding">Покормить</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary" disabled>Питомец сыт</button>
+                        }
                     </div>
                     <div class="col">
-                        <button type="button" class="btn btn-primary">Напоить</button>
+                        @if (Pet.Statistic.ThirstyLevel != ThirstyLevel.Full)
+                        {
+                            <button type="button" class="btn btn-primary" @onclick="GiveDrink">Напоить</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary" disabled>Питомец уталил жажду</button>
+                        }
                     </div>
                 </div>
             </div>
@@ -36,6 +59,8 @@
 
 @code {
     [Parameter] public PetDTO Pet { get; set; }
+    private List<string> Errors { get; set; }
+    private int UserId { get; set; }
     private string ModalDisplay = "none;";
     private string ModalClass = "";
     private bool ShowBackdrop = false;
@@ -45,6 +70,16 @@
         Pet = Pet ?? new PetDTO();
         base.OnInitialized();
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Pet = Pet ?? new PetDTO();
+        Errors = new List<string>();
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        UserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
+
+    }
+
     public void Open()
     {
         ModalDisplay = "block;";
@@ -65,5 +100,35 @@
     {
         Pet = pet;
         StateHasChanged();
+    }
+
+    private async Task Feeding()
+    {
+        var rez = await petManager.Feed(Pet.Id, UserId);
+        if(rez.IsComplete)
+        {
+            Pet.Statistic.HungerLevel = HungerLevel.Full;
+            Pet.Statistic.FeedingCount++;
+            Pet.Statistic.DateLastFeed = DateTime.UtcNow;
+        }
+        else
+        {
+            Errors = rez.Errors;
+        }
+    }
+
+    private async Task GiveDrink()
+    {
+        var rez = await petManager.GiveDrink(Pet.Id, UserId);
+        if (rez.IsComplete)
+        {
+            Pet.Statistic.ThirstyLevel = ThirstyLevel.Full;
+            Pet.Statistic.DrinkingCount++;
+            Pet.Statistic.DateLastDrink = DateTime.UtcNow;
+        }
+        else
+        {
+            Errors = rez.Errors;
+        }
     }
 }

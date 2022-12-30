@@ -12,32 +12,57 @@
             <button @onclick="ToCreatePetPage" class="list-group-item list-group-item-action">Добавить питомца</button>
         </div>
         <div class="col">
-            <button class="list-group-item list-group-item-action">Подробнее</button>
+            <button class="list-group-item list-group-item-action" @onclick="@ChangeStatisticState">@buttonForStatisticValue</button>
         </div>
     </div>
     @if (Farm != null)
     {
-        <div class="col" style="position: relative;">
-            <h2>@Farm.Name</h2>
-            <svg class="vh-100 bg-success img-thumbnail rounded float-right"
-             viewBox="0 0 1000 100"
-             @onmousemove=@(e => mouseSrv.FireMove(this, e))
-             @onmouseup=@(e => mouseSrv.FireUp(this, e))
-             @oncontextmenu:preventDefault="true">
-                @foreach (var pet in Farm.Pets)
-                {
-                    <g @oncontextmenu="@(e => PetRightClick(e, pet))">
-                        <Draggable X=random.Next(200) Y=random.Next(200)>
-                            <text x="90" y="30">@pet.Statistic.Name</text>
-                            <ImageFromByteArray Image="pet.View.BodyPicture.Image"
-                                        ImageType="svg+xml"
-                                        Height="200"
-                                        Width="200"
-                                        IsSvgImage="true" />
-                        </Draggable>
-                    </g>
-                }
-            </svg>
+        <div class="row">
+            <div class="col" style="position: relative;">
+                <h2>@Farm.Name</h2>
+                <svg class="container-fluid bg-success"
+                 height="400"
+                 viewBox="0 0 1000 100"
+                 @onmousemove=@(e => mouseSrv.FireMove(this, e))
+                 @onmouseup=@(e => mouseSrv.FireUp(this, e))
+                 @oncontextmenu:preventDefault="true">
+                    @foreach (var pet in Farm.Pets)
+                    {
+                        
+                        <g @oncontextmenu="@(e => PetRightClick(e, pet))" >
+                            <Draggable X=random.Next(150) Y=random.Next(100)>
+                                <text x="90" y="30">@pet.Statistic.Name</text>
+                                <ImageFromByteArray Image="pet.View.BodyPicture.Image"
+                                            ImageType="svg+xml"
+                                            Height="200"
+                                            Width="200"
+                                            IsSvgImage="true" />
+                            </Draggable>
+                        </g>
+                    }
+                </svg>
+            </div>
+            <div class="col @statisticClass">
+                <h2>Статистика</h2>
+                <div>
+                    Количиство живых питомцев: @Farm.AlivesPetsCount
+                </div>
+                <div>
+                    Количиство мертвых питомцев: @Farm.DeadsPetsCount
+                </div>
+                <div>
+                    Средний период кормления: @String.Format("{0:0.00}", @Farm.AverageFeedingPeriod)  раз в день
+                </div>
+                <div>
+                    Средний период поения: @String.Format("{0:0.00}", @Farm.AverageDrinkingPeriod) раз в день
+                </div>
+                <div>
+                    Средний период счастливых дней: @String.Format("{0:0.00}", @Farm.AveragePetsHappinessDaysCount) дней
+                </div>
+                <div>
+                    Средний возраст питомцев: @String.Format("{0:0.00}", @Farm.AveragePetsAge) Лет
+                </div>
+            </div>
         </div>
     }
     else
@@ -50,7 +75,9 @@
     [Parameter] public int Id { get; set; }
     private Random random { get; set; }
     private PetFarmDTO Farm { get; set; }
-    private PetModal petModal {get;set;}
+    private PetModal petModal { get; set; }
+    private string statisticClass = "visually-hidden";
+    private string buttonForStatisticValue = "Статистика";
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,12 +89,29 @@
     {
         navigator.NavigateTo($"/pets/create/{Id}");
     }
-    void PetRightClick(MouseEventArgs args, PetDTO pet)
+    private void PetRightClick(MouseEventArgs args, PetDTO pet)
     {
         if (args.Button == 2)
         {
             petModal.SetPet(pet);
             petModal.Open();
         }
+    }
+    private void ChangeStatisticState()
+    {
+        if (statisticClass == "")
+            HideStatictic();
+        else
+            ShowStatictic();
+    }
+    private void ShowStatictic()
+    {
+        statisticClass = "";
+        buttonForStatisticValue = "Скрыть";
+    }
+    private void HideStatictic()
+    {
+        statisticClass = "visually-hidden";
+        buttonForStatisticValue = "Статистика";
     }
 }

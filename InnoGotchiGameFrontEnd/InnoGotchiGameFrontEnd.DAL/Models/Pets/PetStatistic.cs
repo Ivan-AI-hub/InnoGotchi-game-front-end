@@ -11,10 +11,5 @@
         public DateTime FirstHappinessDay { get; set; }
         public DateTime DateLastFeed { get; set; }
         public DateTime DateLastDrink { get; set; }
-
-        public int Age { get; set; }
-        public int HappinessDayCount { get; set; }
-        public double AverageDrinkingPeriod { get; set; }
-        public double AverageFeedingPeriod { get; set; }
     }
 }

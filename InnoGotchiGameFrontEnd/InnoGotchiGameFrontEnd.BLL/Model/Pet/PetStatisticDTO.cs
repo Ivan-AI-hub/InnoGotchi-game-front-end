@@ -12,14 +12,31 @@
         public DateTime DateLastFeed { get; set; }
         public DateTime DateLastDrink { get; set; }
 
-        public int Age { get; set; }
-        public int HappinessDayCount { get; set; }
-        public double AverageDrinkingPeriod { get; set; }
-        public double AverageFeedingPeriod { get; set; }
-        public HungerLevel HungerLevel => GetHungerLevel();
-        public ThirstyLevel ThirstyLevel => GetThirstyLevel();
+        public int Age => IsAlive ? (DateTime.Now - BornDate).Days : (int)(DeadDate - BornDate)?.Days;
+        public int HappinessDayCount => IsAlive ? (DateTime.Now - FirstHappinessDay).Days : 0;
+        public double AverageDrinkingPeriod => DrinkingCount != 0 ? Age / DrinkingCount : DrinkingCount;
+        public double AverageFeedingPeriod => FeedingCount != 0 ? Age / FeedingCount : FeedingCount;
+
+        public HungerLevel HungerLevel { get => GetHungerLevel(); set => _currentHungerLevel = value; }
+        public ThirstyLevel ThirstyLevel { get => GetThirstyLevel(); set => _currentThirstyLevel = value; }
+        private HungerLevel? _currentHungerLevel;
+        private ThirstyLevel? _currentThirstyLevel;
 
         private HungerLevel GetHungerLevel()
+        {
+            if (_currentHungerLevel != null)
+                return (HungerLevel)_currentHungerLevel;
+            else
+                return GetHungerLevelByData();
+        }
+        private ThirstyLevel GetThirstyLevel()
+        {
+            if (_currentThirstyLevel != null)
+                return (ThirstyLevel)_currentThirstyLevel;
+            else
+                return GetThirstyLevelByData();
+        }
+        private HungerLevel GetHungerLevelByData()
         {
             var dayCount = (DateTime.UtcNow - DateLastFeed).Days;
             
@@ -35,10 +52,9 @@
                 default: return HungerLevel.Dead;
             }
         }
-
-        private ThirstyLevel GetThirstyLevel()
+        private ThirstyLevel GetThirstyLevelByData()
         {
-            var dayCount = (DateTime.UtcNow - DateLastFeed).Days;
+            var dayCount = (DateTime.UtcNow - DateLastDrink).Days;
 
             switch (dayCount)
             {

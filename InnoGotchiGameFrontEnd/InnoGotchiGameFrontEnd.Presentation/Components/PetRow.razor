@@ -14,10 +14,10 @@
     <div class="col-md">
         <div>Имя: @Pet.Statistic.Name</div>
         <div>День рождения: @Pet.Statistic.BornDate.ToShortDateString()</div>
-        <div>Возраст: @Pet.Statistic.Age</div>
+        <div>Возраст: @Pet.Statistic?.Age</div>
         <div>Статус голода: @Pet.Statistic.HungerLevel</div>
         <div>Статус жажды: @Pet.Statistic.ThirstyLevel</div>
-        <div>Дней счастья: @((Pet.Statistic.FirstHappinessDay - DateTime.UtcNow).Days)</div>
+        <div>Дней счастья: @Pet.Statistic.HappinessDayCount</div>
     </div>
 </div>
 
