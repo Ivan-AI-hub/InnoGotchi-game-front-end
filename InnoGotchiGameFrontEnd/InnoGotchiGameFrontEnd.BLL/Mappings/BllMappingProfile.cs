@@ -5,6 +5,7 @@ using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.BLL.Model.Identity;
+using InnoGotchiGameFrontEnd.BLL.Model.Pet;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.DAL.Models;
 using InnoGotchiGameFrontEnd.DAL.Models.Farms;

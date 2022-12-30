@@ -2,15 +2,15 @@
 using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.Pet;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
-using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.BLL.Model.Identity;
+using InnoGotchiGameFrontEnd.BLL.Model.Pet;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.DAL.Models.Pets;
 using InnoGotchiGameFrontEnd.DAL.Services;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
-	public class PetManager
+    public class PetManager
 	{
 		private PetService _service;
 		private IMapper _mapper;

@@ -1,9 +1,9 @@
-﻿using InnoGotchiGameFrontEnd.BLL.Model;
+﻿using InnoGotchiGameFrontEnd.BLL.Model.Pet;
 using System.ComponentModel.DataAnnotations;
 
 namespace InnoGotchiGameFrontEnd.BLL.ComandModels.Pet
 {
-	public class AddPetDTOModel
+    public class AddPetDTOModel
 	{
 		public int FarmId { get; set; }
 		[Required]

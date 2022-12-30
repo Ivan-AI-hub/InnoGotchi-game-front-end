@@ -1,4 +1,4 @@
-﻿namespace InnoGotchiGameFrontEnd.BLL.Model
+﻿namespace InnoGotchiGameFrontEnd.BLL.Model.Pet
 {
     public class PetDTO
     {
