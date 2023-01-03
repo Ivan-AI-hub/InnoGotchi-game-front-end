@@ -4,7 +4,8 @@
     {
         public string Name { get; set; }
         public DateTime BornDate { get; set; }
-        public bool IsAlive { get; set; }
+        internal bool IsAlive { get; set; }
+        public AliveState AliveState => GetAliveState();
         public DateTime? DeadDate { get; set; }
         public int FeedingCount { get; set; }
         public int DrinkingCount { get; set; }
@@ -22,6 +23,15 @@
         private HungerLevel? _currentHungerLevel;
         private ThirstyLevel? _currentThirstyLevel;
 
+        private AliveState GetAliveState()
+        {
+            if (IsAlive == false)
+                return AliveState.Dead;
+            else if (HungerLevel == HungerLevel.Dead || ThirstyLevel == ThirstyLevel.Dead)
+                return AliveState.NotAnnouncedDead;
+            else
+                return AliveState.Alive;
+        }
         private HungerLevel GetHungerLevel()
         {
             if (_currentHungerLevel != null)
