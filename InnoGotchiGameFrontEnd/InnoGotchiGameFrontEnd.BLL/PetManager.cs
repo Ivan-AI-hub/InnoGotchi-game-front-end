@@ -65,28 +65,50 @@ namespace InnoGotchiGameFrontEnd.BLL
 			return rezult;
 		}
 
-		public async Task<ManagerRezult> Feed(int petId, int feederId)
+		public async Task<ManagerRezult> Feed(PetDTO pet, int feederId)
 		{
 			var rezult = new ManagerRezult();
-			var serviceRezult = await _service.Feed(petId, feederId);
+			var serviceRezult = await _service.Feed(pet.Id, feederId);
 			rezult.Errors.AddRange(serviceRezult.Errors);
+
+            if (rezult.IsComplete)
+            {
+                pet.Statistic.HungerLevel = HungerLevel.Full;
+                pet.Statistic.FeedingCount++;
+                pet.Statistic.DateLastFeed = DateTime.UtcNow;
+            }
+
+            return rezult;
+		}
+
+		public async Task<ManagerRezult> GiveDrink(PetDTO pet, int drinkerId)
+		{
+			var rezult = new ManagerRezult();
+			var serviceRezult = await _service.GiveDrink(pet.Id, drinkerId);
+			rezult.Errors.AddRange(serviceRezult.Errors);
+
+			if(rezult.IsComplete)
+			{
+                pet.Statistic.ThirstyLevel = ThirstyLevel.Full;
+                pet.Statistic.DrinkingCount++;
+                pet.Statistic.DateLastDrink = DateTime.UtcNow;
+            }
+
 			return rezult;
 		}
 
-		public async Task<ManagerRezult> GiveDrink(int petId, int drinkerId)
+		public async Task<ManagerRezult> SetDeadStatus(PetDTO pet)
 		{
 			var rezult = new ManagerRezult();
-			var serviceRezult = await _service.GiveDrink(petId, drinkerId);
+			var serviceRezult = await _service.SetDeadStatus(pet.Id);
 			rezult.Errors.AddRange(serviceRezult.Errors);
+
+			if(rezult.IsComplete)
+			{
+				pet.Statistic.IsAlive = false;
+				pet.Statistic.DeadDate = DateTime.UtcNow;
+			}
 			return rezult;
 		}
-
-		//public async Task<ManagerRezult> DeleteById(int id)
-		//{
-		//	var rezult = new ManagerRezult();
-		//	var serviceRezult = await _service.DeleteById(id);
-		//	rezult.Errors.AddRange(serviceRezult.Errors);
-		//	return rezult;
-		//}
 	}
 }

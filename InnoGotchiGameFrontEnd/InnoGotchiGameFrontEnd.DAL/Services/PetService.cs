@@ -141,13 +141,11 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             return await GetCommandRezult(httpResponseMessage);
         }
-        //public async Task<ServiceRezult> DeleteById(int PetId)
-        //{
-        //    var RequestClient = GetHttpClient(_clientName);
+        public async Task<ServiceRezult> SetDeadStatus(int petId)
+        {
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + $"/{petId}/dead", null);
 
-        //    var httpResponseMessage = await RequestClient.DeleteAsync(_baseUri+ $"/{PetId}");
-
-        //    return await GetCommandRezult(httpResponseMessage);
-        //}
+            return await GetCommandRezult(httpResponseMessage);
+        }
     }
 }
