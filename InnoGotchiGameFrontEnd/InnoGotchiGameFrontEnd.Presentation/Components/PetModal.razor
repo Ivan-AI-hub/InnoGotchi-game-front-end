@@ -65,12 +65,6 @@
     private string ModalClass = "";
     private bool ShowBackdrop = false;
 
-    protected override void OnInitialized()
-    {
-        Pet = Pet ?? new PetDTO();
-        base.OnInitialized();
-    }
-
     protected override async Task OnInitializedAsync()
     {
         Pet = Pet ?? new PetDTO();
@@ -104,31 +98,17 @@
 
     private async Task Feeding()
     {
-        var rez = await petManager.Feed(Pet.Id, UserId);
-        if(rez.IsComplete)
-        {
-            Pet.Statistic.HungerLevel = HungerLevel.Full;
-            Pet.Statistic.FeedingCount++;
-            Pet.Statistic.DateLastFeed = DateTime.UtcNow;
-        }
-        else
-        {
-            Errors = rez.Errors;
-        }
+        var rez = await petManager.Feed(Pet, UserId);
+
+        Errors = rez.Errors;
+        
     }
 
     private async Task GiveDrink()
     {
-        var rez = await petManager.GiveDrink(Pet.Id, UserId);
-        if (rez.IsComplete)
-        {
-            Pet.Statistic.ThirstyLevel = ThirstyLevel.Full;
-            Pet.Statistic.DrinkingCount++;
-            Pet.Statistic.DateLastDrink = DateTime.UtcNow;
-        }
-        else
-        {
-            Errors = rez.Errors;
-        }
+        var rez = await petManager.GiveDrink(Pet, UserId);
+
+        Errors = rez.Errors;
+        
     }
 }

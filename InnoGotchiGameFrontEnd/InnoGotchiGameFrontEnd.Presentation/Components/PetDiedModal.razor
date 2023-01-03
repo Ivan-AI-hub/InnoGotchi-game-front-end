@@ -1,0 +1,80 @@
+﻿@inject PetManager petManager
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay; position:absolute">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @*Modal Title*@
+            <div class="modal-header">
+                <h5 class="modal-title">@Pet.Statistic.Name умер пока вы отсутвывали</h5>
+            </div>
+            @*Modal body*@
+            <div class="modal-body">
+                <div>
+                    @foreach (var error in Errors)
+                    {
+                        <p class="text-danger">@error</p>
+                    }
+                </div>
+                <PetRow Pet="@Pet" />
+                <div>
+                    <p>Надеюсь хотябы после смерти его покормят.....</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="Died">((((((((</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+
+@code {
+    [Parameter] public PetDTO Pet { get; set; }
+    private List<string> Errors { get; set; }
+    private string ModalDisplay = "none;";
+    private string ModalClass = "";
+    private bool ShowBackdrop = false;
+
+    protected override void OnInitialized()
+    {
+        Pet = Pet ?? new PetDTO();
+        Errors = new List<string>();
+        base.OnInitialized();
+    }
+
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        ShowBackdrop = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none";
+        ModalClass = "";
+        ShowBackdrop = false;
+        StateHasChanged();
+    }
+
+    public void SetPet(PetDTO pet)
+    {
+        Pet = pet;
+        StateHasChanged();
+    }
+
+    private async Task Died()
+    {
+        var rez = await petManager.SetDeadStatus(Pet);
+
+        Errors = rez.Errors;
+        Close();
+    }
+}
