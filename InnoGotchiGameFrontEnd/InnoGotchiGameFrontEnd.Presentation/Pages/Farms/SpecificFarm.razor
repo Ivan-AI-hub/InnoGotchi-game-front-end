@@ -6,6 +6,13 @@
 @inject NavigationManager navigator;
 
 <PetModal @ref="@petModal"/>
+@if (DiesPets != null)
+{
+    @foreach (var pet in DiesPets)
+    {
+        <PetDiedModal Pet="pet" />
+    }
+}
 <div>
     <div class="row">
         <div class="col">
@@ -28,17 +35,19 @@
                  @oncontextmenu:preventDefault="true">
                     @foreach (var pet in Farm.Pets)
                     {
-                        
-                        <g @oncontextmenu="@(e => PetRightClick(e, pet))" >
-                            <Draggable X=random.Next(150) Y=random.Next(100)>
-                                <text x="90" y="30">@pet.Statistic.Name</text>
-                                <ImageFromByteArray Image="pet.View.BodyPicture.Image"
+                        @if (pet.Statistic.AliveState == AliveState.Alive)
+                        {
+                            <g @oncontextmenu="@(e => PetRightClick(e, pet))">
+                                <Draggable X=random.Next(0,900) Y=random.Next(0,100)>
+                                    <text x="90" y="30">@pet.Statistic.Name</text>
+                                    <ImageFromByteArray Image="pet.View.BodyPicture.Image"
                                             ImageType="svg+xml"
                                             Height="200"
                                             Width="200"
                                             IsSvgImage="true" />
-                            </Draggable>
-                        </g>
+                                </Draggable>
+                            </g>
+                        }
                     }
                 </svg>
             </div>
@@ -62,6 +71,27 @@
                 <div>
                     Средний возраст питомцев: @String.Format("{0:0.00}", @Farm.AveragePetsAge) Лет
                 </div>
+                <div class="row">
+                    @if (Farm.Pets.Any(x => x.Statistic.AliveState == AliveState.Dead))
+                    {
+                        <h3>Скорбим по</h3>
+                        @foreach (var pet in Farm.Pets)
+                        {
+                            @if (pet.Statistic.AliveState == AliveState.Dead)
+                            {
+
+                                <div class="col">
+                                    <p>@pet.Statistic.Name умер @pet.Statistic.DeadDate.ToShortDateString()</p>
+                                    <ImageFromByteArray Image="pet.View.BodyPicture.Image"
+                                        ImageType="svg+xml"
+                                        Height="200"
+                                        Width="200" />
+                                </div>
+                            }
+
+                        }
+                    }
+                </div>
             </div>
         </div>
     }
@@ -75,6 +105,7 @@
     [Parameter] public int Id { get; set; }
     private Random random { get; set; }
     private PetFarmDTO Farm { get; set; }
+    private List<PetDTO> DiesPets { get; set; }
     private PetModal petModal { get; set; }
     private string statisticClass = "visually-hidden";
     private string buttonForStatisticValue = "Статистика";
@@ -83,6 +114,14 @@
     {
         random = new Random();
         Farm = await manager.GetFarmById(Id);
+        DiesPets = new List<PetDTO>();
+        foreach (var pet in Farm.Pets)
+        {
+            if (pet.Statistic.AliveState == AliveState.NotAnnouncedDead)
+            {
+                DiesPets.Add(pet);
+            }
+        }
     }
 
     private void ToCreatePetPage()

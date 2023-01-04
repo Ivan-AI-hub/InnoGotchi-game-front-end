@@ -6,22 +6,23 @@
         public DateTime BornDate { get; set; }
         internal bool IsAlive { get; set; }
         public AliveState AliveState => GetAliveState();
-        public DateTime? DeadDate { get; set; }
+        public DateTime DeadDate { get; set; }
         public int FeedingCount { get; set; }
         public int DrinkingCount { get; set; }
         public DateTime FirstHappinessDay { get; set; }
         public DateTime DateLastFeed { get; set; }
         public DateTime DateLastDrink { get; set; }
 
-        public int Age => IsAlive ? (DateTime.Now - BornDate).Days : (int)(DeadDate - BornDate)?.Days;
+        public int Age => _daysAliveCount/7;
         public int HappinessDayCount => IsAlive ? (DateTime.Now - FirstHappinessDay).Days : 0;
-        public double AverageDrinkingPeriod => DrinkingCount != 0 ? Age / DrinkingCount : DrinkingCount;
-        public double AverageFeedingPeriod => FeedingCount != 0 ? Age / FeedingCount : FeedingCount;
+        public double AverageDrinkingPeriod => DrinkingCount != 0 ? _daysAliveCount / DrinkingCount : DrinkingCount;
+        public double AverageFeedingPeriod => FeedingCount != 0 ? _daysAliveCount / FeedingCount : FeedingCount;
 
         public HungerLevel HungerLevel { get => GetHungerLevel(); set => _currentHungerLevel = value; }
         public ThirstyLevel ThirstyLevel { get => GetThirstyLevel(); set => _currentThirstyLevel = value; }
         private HungerLevel? _currentHungerLevel;
         private ThirstyLevel? _currentThirstyLevel;
+        private int _daysAliveCount => IsAlive ? (DateTime.Now - BornDate).Days : (DeadDate - BornDate).Days;
 
         private AliveState GetAliveState()
         {
@@ -70,7 +71,7 @@
             {
                 case 0: return ThirstyLevel.Full;
 
-                case 1: 
+                case 1:
                 case 2: return ThirstyLevel.Normal;
                 case 3:
                 case 4:

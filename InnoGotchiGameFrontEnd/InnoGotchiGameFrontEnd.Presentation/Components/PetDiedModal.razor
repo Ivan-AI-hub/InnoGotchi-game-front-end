@@ -28,23 +28,17 @@
 </div>
 
 
-@if (ShowBackdrop)
-{
-    <div class="modal-backdrop fade show"></div>
-}
-
-
 @code {
     [Parameter] public PetDTO Pet { get; set; }
     private List<string> Errors { get; set; }
     private string ModalDisplay = "none;";
     private string ModalClass = "";
-    private bool ShowBackdrop = false;
 
     protected override void OnInitialized()
     {
         Pet = Pet ?? new PetDTO();
         Errors = new List<string>();
+        Open();
         base.OnInitialized();
     }
 
@@ -52,7 +46,6 @@
     {
         ModalDisplay = "block;";
         ModalClass = "Show";
-        ShowBackdrop = true;
         StateHasChanged();
     }
 
@@ -60,7 +53,6 @@
     {
         ModalDisplay = "none";
         ModalClass = "";
-        ShowBackdrop = false;
         StateHasChanged();
     }
 

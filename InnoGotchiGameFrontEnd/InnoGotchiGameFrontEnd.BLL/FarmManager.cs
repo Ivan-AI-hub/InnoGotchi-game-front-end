@@ -30,9 +30,9 @@ namespace InnoGotchiGameFrontEnd.BLL
 
         public async Task<PetFarmDTO> GetFarmById(int id)
         {
-            var dataUsers = await _service.GetFarmById(id);
-            var user = _mapper.Map<PetFarmDTO>(dataUsers);
-            return user;
+            var dataFarm = await _service.GetFarmById(id);
+            var farm = _mapper.Map<PetFarmDTO>(dataFarm);
+            return farm;
         }
 
         public async Task<ManagerRezult> Create(AddFarmDTOModel addModel)

@@ -40,7 +40,7 @@ namespace InnoGotchiGameFrontEnd.BLL.Mappings
             CreateMap<ColaborationRequestStatus, ColaborationRequestStatusDTO>().ReverseMap();
 
             CreateMap<Pet, PetDTO>().ReverseMap();
-            CreateMap<PetStatistic, PetStatisticDTO>().ReverseMap();
+            CreateMap<PetStatistic, PetStatisticDTO>().ForMember(x => x.IsAlive, opt => opt.MapFrom(x => x.IsAlive)).ReverseMap();
             CreateMap<PetView, PetViewDTO>().ReverseMap();
             CreateMap<PetSorter, PetDTOSorter>().ReverseMap();
             CreateMap<PetSortRule, PetDTOSortRule>().ReverseMap();
