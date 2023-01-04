@@ -1,4 +1,6 @@
-﻿namespace InnoGotchiGameFrontEnd.BLL.Model
+﻿using InnoGotchiGameFrontEnd.DAL.Models.Users;
+
+namespace InnoGotchiGameFrontEnd.BLL.Model
 {
     public class UserDTO
     {
@@ -11,14 +13,15 @@
 
         public PetFarmDTO? OwnPetFarm { get; set; }
 
-        public IEnumerable<ColaborationRequestDTO> UnconfirmedRequest { get; set; }
-        public IEnumerable<PetFarmDTO?> CollaboratedFarms { get; set; }
-        public IEnumerable<int> CollaboratersId { get; set; }
+        public IEnumerable<ColaborationRequestDTO> UnconfirmedRequests { get; set; }
+        public IEnumerable<ColaborationRequestDTO> RejectedRequests { get; set; }
+        public IEnumerable<UserDTO> Collaborators { get; set; }
 
         public UserDTO()
         {
-            UnconfirmedRequest = new List<ColaborationRequestDTO>();
-            CollaboratedFarms = new List<PetFarmDTO?>();
+            UnconfirmedRequests = new List<ColaborationRequestDTO>();
+            RejectedRequests = new List<ColaborationRequestDTO>();
+            Collaborators = new List<UserDTO?>();
         }
     }
 }

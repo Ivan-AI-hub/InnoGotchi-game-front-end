@@ -1,5 +1,8 @@
 ﻿@page "/users/{Id:int}"
-@inject UserManager manager;
+@attribute [Authorize]
+@inject AuthenticationStateProvider stateProvider
+@inject UserManager userManager;
+@inject ColaborationRequestManager requestManager;
 @inject NavigationManager navigator;
 @if (User != null)
 {
@@ -8,11 +11,31 @@
         {
             <div class="col-3">
                 <p>Аватар</p>
-                <ImageFromByteArray Image="User.Picture.Image" Height="200" Width="200"/>
+                <ImageFromByteArray Image="User.Picture.Image" Height="200" Width="200" />
             </div>
         }
         <div class="col">
-            <h1 class="col-sm">@User.FirstName @User.LastName </h1>
+            <h1>@User.FirstName @User.LastName</h1>
+            <h2>Друзей: @User.Collaborators.Count()</h2>
+            @if (Id != AuthUserId)
+            {
+                @if (User.Collaborators.Any(x => x.Id == AuthUserId))
+                {
+                    <button class="btn btn-secondary">Уже в друзьях))))</button>
+                }
+                else if (User.UnconfirmedRequests.Any(x => x.RequestSenderId == AuthUserId))
+                {
+                    <button class="btn btn-secondary">Заявка отправлена</button>
+                }
+                else
+                {
+                    <button class="btn btn-primary" @onclick="AddToCollaborators">Добавить в друзья</button>
+                }
+                @if(IsColaboratorAdding)
+                {
+                    <p>Загрузка</p>
+                }
+            }
         </div>
     </div>
     @if (User.OwnPetFarm != null)
@@ -25,10 +48,10 @@
                 <label>Дата создания: @User.OwnPetFarm.CreateDate.ToShortDateString()</label>
             </div>
             <div>
-                <label>Количество животных: @User.OwnPetFarm.Pets.Count()</label>
+                <label>Количество живых питомцев: @User.OwnPetFarm.Pets.Where(x => x.Statistic.AliveState == AliveState.Alive).Count()</label>
             </div>
             <div>
-                <button @onclick="ToFarm" class="list-group-item list-group-item-action">Перейти на ферму</button>
+                <button @onclick="ToFarmPage" class="btn btn-primary">Посетить ферму</button>
             </div>
         </div>
     }
@@ -48,14 +71,26 @@ else
 
 @code {
     [Parameter] public int Id { get; set; }
+    private int AuthUserId { get; set; }
     UserDTO? User { get; set; }
+    private bool IsColaboratorAdding { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        User = await manager.GetUserById(Id);
+        User = await userManager.GetUserById(Id);
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        AuthUserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
     }
 
-    private void ToFarm()
+    private async Task AddToCollaborators()
+    {
+        IsColaboratorAdding = true;
+        var authUser = await userManager.GetUserById(AuthUserId);
+        await requestManager.AddCollaborator(authUser, User);
+        IsColaboratorAdding = false;
+        StateHasChanged();
+    }
+    private void ToFarmPage()
     {
         navigator.NavigateTo($"/farms/{User.OwnPetFarm.Id}");
     }

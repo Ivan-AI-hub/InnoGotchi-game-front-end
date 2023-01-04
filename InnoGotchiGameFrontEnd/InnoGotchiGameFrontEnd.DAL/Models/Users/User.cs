@@ -13,14 +13,15 @@ namespace InnoGotchiGameFrontEnd.DAL.Models.Users
 
         public PetFarm? OwnPetFarm { get; set; }
 
-        public IEnumerable<ColaborationRequest> UnconfirmedRequest { get; set; }
-        public IEnumerable<PetFarm?> CollaboratedFarms { get; set; }
-        public IEnumerable<int> CollaboratersId { get; set; }
+        public IEnumerable<ColaborationRequest> UnconfirmedRequests { get; set; }
+        public IEnumerable<ColaborationRequest> RejectedRequests { get; set; }
+        public IEnumerable<User> Collaborators { get; set; }
 
         public User()
         {
-            UnconfirmedRequest = new List<ColaborationRequest>();
-            CollaboratedFarms = new List<PetFarm?>();
+            UnconfirmedRequests = new List<ColaborationRequest>();
+            RejectedRequests = new List<ColaborationRequest>();
+            Collaborators = new List<User?>();
         }
     }
 }

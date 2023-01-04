@@ -1,46 +1,65 @@
-﻿using InnoGotchiGameFrontEnd.BLL.Model.Identity;
+﻿using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.DAL.Services;
-using Microsoft.Extensions.Caching.Memory;
+using System.Reflection;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
 	public class ColaborationRequestManager
     {
         private ColaborationRequestService _service;
-        private IMemoryCache _cache;
-        private SecurityToken _authorizeModel;
+        private UserManager _userManager;
 
-        public ColaborationRequestManager(SecurityToken model, HttpClient client, IMemoryCache cache)
+        public ColaborationRequestManager(HttpClient client, UserManager userManager)
         {
             _service = new ColaborationRequestService(client);
-            _authorizeModel = model;
-            _cache = cache;
+            _userManager = userManager;
         }
 
-        public async Task<ManagerRezult> AddCollaborator(int recipientId)
+        public async Task<ManagerRezult> AddCollaborator(UserDTO sender, UserDTO recipient)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.AddCollaborator(_authorizeModel.UserId, recipientId);
+            var serviceRezult = await _service.AddCollaborator(sender.Id, recipient.Id);
             rezult.Errors.AddRange(serviceRezult.Errors);
-            if (rezult.IsComplete) _cache.Remove("AuthodizedUser");
+            if (rezult.IsComplete)
+            {
+                var request = new ColaborationRequestDTO()
+                {
+                    RequestSender = sender,
+                    RequestSenderId = sender.Id,
+                    RequestReceiver = recipient,
+                    RequestReceiverId = recipient.Id
+                };
+                var requests = recipient.UnconfirmedRequests.ToList();
+                requests.Add(request);
+                recipient.UnconfirmedRequests = requests;
+            }
             return rezult;
         }
 
-        public async Task<ManagerRezult> ConfirmRequest(int requestId)
+        public async Task<ManagerRezult> ConfirmRequest(int requestId, UserDTO recipient)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.ConfirmRequest(requestId, _authorizeModel.UserId);
+            var serviceRezult = await _service.ConfirmRequest(requestId, recipient.Id);
             rezult.Errors.AddRange(serviceRezult.Errors);
-            if (rezult.IsComplete) _cache.Remove("AuthodizedUser");
+            if (rezult.IsComplete)
+            {
+                var request = recipient.UnconfirmedRequests.First(x => x.Id == requestId);
+                recipient.UnconfirmedRequests = recipient.UnconfirmedRequests.Where(x => x.Id != requestId);
+                recipient.Collaborators.Concat(new UserDTO[] {request.RequestSender});
+            }
             return rezult;
         }
 
-        public async Task<ManagerRezult> RejectRequest(int requestId)
+        public async Task<ManagerRezult> RejectRequest(int requestId, UserDTO participant)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.RejectRequest(requestId, _authorizeModel.UserId);
+            var serviceRezult = await _service.RejectRequest(requestId, participant.Id);
             rezult.Errors.AddRange(serviceRezult.Errors);
-            if (rezult.IsComplete) _cache.Remove("AuthodizedUser");
+            if (rezult.IsComplete)
+            {
+                var request = participant.UnconfirmedRequests.First(x => x.Id == requestId);
+                participant.UnconfirmedRequests = participant.UnconfirmedRequests.Where(x => x.Id != requestId);
+            }
             return rezult;
         }
 
@@ -49,7 +68,6 @@ namespace InnoGotchiGameFrontEnd.BLL
             var rezult = new ManagerRezult();
             var serviceRezult = await _service.DeleteById(requestId);
             rezult.Errors.AddRange(serviceRezult.Errors);
-            if (rezult.IsComplete) _cache.Remove("AuthodizedUser");
             return rezult;
         }
     }
