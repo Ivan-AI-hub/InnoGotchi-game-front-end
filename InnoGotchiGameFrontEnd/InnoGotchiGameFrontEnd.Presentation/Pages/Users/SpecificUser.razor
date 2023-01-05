@@ -10,18 +10,16 @@
         @if (User.Picture != null)
         {
             <div class="col-3">
-                <p>Аватар</p>
                 <ImageFromByteArray Image="User.Picture.Image" Height="200" Width="200" />
             </div>
         }
         <div class="col">
-            <h1>@User.FirstName @User.LastName</h1>
-            <h2>Друзей: @User.Collaborators.Count()</h2>
+            <h1 style="display:inline">@User.FirstName @User.LastName</h1>
             @if (Id != AuthUserId)
             {
                 @if (User.Collaborators.Any(x => x.Id == AuthUserId))
                 {
-                    <button class="btn btn-secondary">Уже в друзьях))))</button>
+                    <button class="btn btn-success">Друг</button>
                 }
                 else if (User.UnconfirmedRequests.Any(x => x.RequestSenderId == AuthUserId))
                 {
@@ -31,19 +29,31 @@
                 {
                     <button class="btn btn-primary" @onclick="AddToCollaborators">Добавить в друзья</button>
                 }
-                @if(IsColaboratorAdding)
+                @if (IsColaboratorAdding)
                 {
-                    <Loading/>
+                    <Loading />
                 }
             }
-            @foreach (var user in @User.Collaborators)
+            else if (User.MessagesCount > 0)
             {
-                <div class="m-2">
-                    <button class="btn btn-info w-50" @onclick="@(e => ToUserPage(user.Id))">
-                        @user.FirstName @user.LastName
-                    </button>
+
+                <div>
+                    У вас @User.MessagesCount непрочитанных сообщений
+                    <button class="btn btn-primary" @onclick="ToMail">Перейти</button>
                 </div>
             }
+
+            <h2>Друзей: @User.Collaborators.Count()</h2>
+            <div class="overflow-auto" style="max-height: 140px;">
+                @foreach (var user in @User.Collaborators)
+                {
+                    <div class="m-2">
+                        <button class="btn btn-info w-50" @onclick="@(e => ToUserPage(user.Id))">
+                            @user.FirstName @user.LastName
+                        </button>
+                    </div>
+                }
+            </div>
         </div>
     </div>
     @if (User.OwnPetFarm != null)
@@ -99,13 +109,28 @@ else
     {
         IsColaboratorAdding = true;
         var authUser = await userManager.GetUserById(AuthUserId);
-        await requestManager.AddCollaborator(authUser, User);
+        var request = authUser.UnconfirmedRequests.FirstOrDefault(x => x.RequestSenderId == User.Id);
+        if (request != null)
+        {
+            await requestManager.ConfirmRequest(request.Id, authUser);
+            var collaborators = User.Collaborators.ToList();
+            collaborators.Add(authUser);
+            User.Collaborators = collaborators;
+        }
+        else
+        {
+            await requestManager.AddCollaborator(authUser, User);
+        }
         IsColaboratorAdding = false;
         StateHasChanged();
     }
     private void ToFarmPage()
     {
         navigator.NavigateTo($"/farms/{User.OwnPetFarm.Id}");
+    }
+    private void ToMail()
+    {
+        navigator.NavigateTo($"/mail");
     }
     private void ToUserPage(int id)
     {

@@ -28,20 +28,6 @@
                 <div class="nav-item px-3">
                     <NavLink class="nav-link position-relative" href="/mail" Match="NavLinkMatch.All">
                         <span class="oi oi-envelope-closed" aria-hidden="true"></span> Mail
-                        @if (int.Parse(context.User.FindFirst(nameof(SecurityToken.EmailsCount)).Value) != 0)
-                        {
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                @if (int.Parse(context.User.FindFirst(nameof(SecurityToken.EmailsCount)).Value) > 99)
-                                {
-                                    <span>99+</span>
-                                }
-                                else
-                                {
-                                    <span>@int.Parse(context.User.FindFirst(nameof(SecurityToken.EmailsCount)).Value)</span>
-                                }
-                                <span class="visually-hidden">непрочитанные сообщения</span>
-                            </span>
-                        }
                     </NavLink>
                 </div>
             </nav>

@@ -7,7 +7,6 @@
         public string UserName { get; set; }
         public string Email { get; set; }
         public bool HasFarm { get; set; }
-		public int EmailsCount { get; set; }
 		public DateTime ExpireAt { get; set; }
 	}
 }

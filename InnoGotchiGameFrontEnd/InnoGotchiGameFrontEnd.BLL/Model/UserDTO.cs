@@ -1,6 +1,4 @@
-﻿using InnoGotchiGameFrontEnd.DAL.Models.Users;
-
-namespace InnoGotchiGameFrontEnd.BLL.Model
+﻿namespace InnoGotchiGameFrontEnd.BLL.Model
 {
     public class UserDTO
     {
@@ -10,12 +8,13 @@ namespace InnoGotchiGameFrontEnd.BLL.Model
         public string Email { get; set; }
         public string Password { get; set; }
         public PictureDTO? Picture { get; set; }
-
         public PetFarmDTO? OwnPetFarm { get; set; }
 
         public IEnumerable<ColaborationRequestDTO> UnconfirmedRequests { get; set; }
         public IEnumerable<ColaborationRequestDTO> RejectedRequests { get; set; }
         public IEnumerable<UserDTO> Collaborators { get; set; }
+
+        public int MessagesCount => UnconfirmedRequests.Count() + RejectedRequests.Count();
 
         public UserDTO()
         {

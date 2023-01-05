@@ -129,16 +129,11 @@ else
     {
         IsLoading = true;
         var rez = await requestManager.ConfirmRequest(requestId, User);
-        if (rez.IsComplete)
+        if (!rez.IsComplete)
         {
-            var token = await localStorageService.GetAsync<SecurityToken>(nameof(SecurityToken));
-            token.EmailsCount--;
-            await localStorageService.SetAsync<SecurityToken>(nameof(SecurityToken), token);
+            Errors = rez.Errors;            
         }
-        else
-        {
-            Errors = rez.Errors;
-        }
+
         IsLoading = false;
     }
     private async Task RejectRequest(int requestId)
@@ -147,9 +142,6 @@ else
         var rez = await requestManager.RejectRequest(requestId, User);
         if (rez.IsComplete)
         {
-            var token = await localStorageService.GetAsync<SecurityToken>(nameof(SecurityToken));
-            token.EmailsCount--;
-            await localStorageService.SetAsync<SecurityToken>(nameof(SecurityToken), token);
         }
         else
         {
@@ -164,9 +156,6 @@ else
         if (rez.IsComplete)
         {
             User.RejectedRequests = User.RejectedRequests.Where(x => x.Id != requestId);
-            var token = await localStorageService.GetAsync<SecurityToken>(nameof(SecurityToken));
-            token.EmailsCount--;
-            await localStorageService.SetAsync<SecurityToken>(nameof(SecurityToken), token);
         }
         else
         {
