@@ -45,7 +45,10 @@ namespace InnoGotchiGameFrontEnd.BLL
             {
                 var request = recipient.UnconfirmedRequests.First(x => x.Id == requestId);
                 recipient.UnconfirmedRequests = recipient.UnconfirmedRequests.Where(x => x.Id != requestId);
-                recipient.Collaborators.Concat(new UserDTO[] {request.RequestSender});
+
+                var colaborators = recipient.Collaborators.ToList();
+                colaborators.Add(request.RequestSender);
+                recipient.Collaborators = colaborators;
             }
             return rezult;
         }

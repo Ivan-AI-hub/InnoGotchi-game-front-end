@@ -1,12 +1,12 @@
 ﻿
-<div class="row mb-3">
+<div class="row mb-3 align-items-center">
     @if (User.Picture != null)
     {
-        <div class="col-2">
+        <div class="col">
             <ImageFromByteArray Image="@User.Picture.Image" imgClass="img-thumbnail rounded float-right" />
         </div>
     }
-    <div class="col-6">
+    <div class="col">
         <div>@User.FirstName @User.LastName</div>
         <div>@User.Email</div>
     </div>

@@ -1,0 +1,168 @@
+﻿@page "/mail"
+@using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
+@attribute [Authorize]
+@inject ILocalStorageService localStorageService;
+@inject AuthenticationStateProvider stateProvider
+@inject UserManager userManager
+@inject ColaborationRequestManager requestManager
+
+@if (User != null)
+{
+    <div>
+        <h3>Mail</h3>
+        @if(IsLoading)
+        {
+            <div>Loading.......</div>
+        }
+        <div>
+            @foreach (var error in Errors)
+            {
+                <p class="text-danger">@error</p>
+            }
+        </div>
+        @foreach (var request in User.UnconfirmedRequests)
+        {
+            @if (request.RequestSender != null)
+            {
+                <UserRow User="request.RequestSender">
+                    <div class="col">
+                        <div>
+                            <NavLink class="btn btn-primary" href=@($"/users/{request.RequestSender.Id}")>
+                                Подробнее
+                            </NavLink>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <p>
+                            Хочет дружить с вами
+                        </p>
+                    </div>
+                    <div class="col">
+                        <div>
+                            <button class="btn btn-success w-75" @onclick="@(e => ConfirmRequest(request.Id))">
+                                Принять
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-danger w-75" @onclick="@(e => RejectRequest(request.Id))">
+                                Отвергнуть
+                            </button>
+                        </div>
+                    </div>
+                </UserRow>
+            }
+            else
+            {
+                <div>Loading</div>
+            }
+        }
+        @foreach (var request in User.RejectedRequests)
+        {
+            @if (request.RequestReceiver != null)
+            {
+                <UserRow User="request.RequestReceiver">
+                    <div class="col">
+                        <div>
+                            <NavLink class="btn btn-primary" href=@($"/users/{request.RequestReceiver.Id}")>
+                                Подробнее
+                            </NavLink>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <p>
+                            Отверг предложение о дружбе
+                        </p>
+                    </div>
+                    <div class="col">
+                        <div>
+                            <button class="btn btn-danger w-75" @onclick="@(e => DeleteRequest(request.Id))">
+                                Эхххх(
+                            </button>
+                        </div>
+                    </div>
+                </UserRow>
+            }
+            else
+            {
+                <div>Loading</div>
+            }
+        }
+    </div>
+}
+else
+{
+    <div>
+        Loadiiiing.....
+    </div>
+}
+@code {
+    private bool IsLoading { get; set; }
+    private List<string> Errors;
+    private UserDTO User { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Errors = new List<string>();
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        var id = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
+        User = await userManager.GetUserById(id);
+        foreach (var request in User.UnconfirmedRequests)
+        {
+            request.RequestSender = await userManager.GetUserById(request.RequestSenderId);
+        }
+        foreach (var request in User.RejectedRequests)
+        {
+            request.RequestReceiver = await userManager.GetUserById(request.RequestReceiverId);
+        }
+    }
+
+    private async Task ConfirmRequest(int requestId)
+    {
+        IsLoading = true;
+        var rez = await requestManager.ConfirmRequest(requestId, User);
+        if (rez.IsComplete)
+        {
+            var token = await localStorageService.GetAsync<SecurityToken>(nameof(SecurityToken));
+            token.EmailsCount--;
+            await localStorageService.SetAsync<SecurityToken>(nameof(SecurityToken), token);
+        }
+        else
+        {
+            Errors = rez.Errors;
+        }
+        IsLoading = false;
+    }
+    private async Task RejectRequest(int requestId)
+    {
+        IsLoading = true;
+        var rez = await requestManager.RejectRequest(requestId, User);
+        if (rez.IsComplete)
+        {
+            var token = await localStorageService.GetAsync<SecurityToken>(nameof(SecurityToken));
+            token.EmailsCount--;
+            await localStorageService.SetAsync<SecurityToken>(nameof(SecurityToken), token);
+        }
+        else
+        {
+            Errors = rez.Errors;
+        }
+        IsLoading = false;
+    }
+    private async Task DeleteRequest(int requestId)
+    {
+        IsLoading = true;
+        var rez = await requestManager.DeleteById(requestId);
+        if (rez.IsComplete)
+        {
+            User.RejectedRequests = User.RejectedRequests.Where(x => x.Id != requestId);
+            var token = await localStorageService.GetAsync<SecurityToken>(nameof(SecurityToken));
+            token.EmailsCount--;
+            await localStorageService.SetAsync<SecurityToken>(nameof(SecurityToken), token);
+        }
+        else
+        {
+            Errors = rez.Errors;
+        }
+        IsLoading = false;
+    }
+}

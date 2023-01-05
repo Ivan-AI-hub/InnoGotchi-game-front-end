@@ -34,6 +34,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
                     Email = authModel.User.Email,
                     HasFarm = authModel.User.OwnPetFarm != null,
                     UserName = $"{authModel.User.FirstName} {authModel.User.LastName}",
+                    EmailsCount = authModel.User.UnconfirmedRequests.Count() + authModel.User.RejectedRequests.Count(),
                     ExpireAt = DateTime.UtcNow.AddHours(1)
                 };
                 await LocalStorageService.SetAsync(nameof(SecurityToken), token);

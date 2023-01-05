@@ -36,6 +36,14 @@
                     <p>Загрузка</p>
                 }
             }
+            @foreach (var user in @User.Collaborators)
+            {
+                <div>
+                    <NavLink href=@($"/users/{user.Id}") Match="NavLinkMatch.Prefix">
+                        @user.FirstName @user.LastName
+                    </NavLink>
+                </div>
+            }
         </div>
     </div>
     @if (User.OwnPetFarm != null)
@@ -80,6 +88,11 @@ else
         User = await userManager.GetUserById(Id);
         var state = await stateProvider.GetAuthenticationStateAsync();
         AuthUserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await OnInitializedAsync();
     }
 
     private async Task AddToCollaborators()
