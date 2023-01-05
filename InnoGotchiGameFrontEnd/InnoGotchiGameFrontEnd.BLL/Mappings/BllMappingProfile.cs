@@ -44,7 +44,10 @@ namespace InnoGotchiGameFrontEnd.BLL.Mappings
             CreateMap<PetView, PetViewDTO>().ReverseMap();
             CreateMap<PetSorter, PetDTOSorter>().ReverseMap();
             CreateMap<PetSortRule, PetDTOSortRule>().ReverseMap();
-            CreateMap<PetFiltrator, PetDTOFiltrator>().ReverseMap();
+            CreateMap<PetDTOFiltrator, PetFiltrator>()
+                .ForMember(x => x.DaysAlive, opt => opt.MapFrom(x => x.Age * 7))
+                .ForMember(x => x.FeedingInterval, opt => opt.MapFrom(x => DateToHungerLevelConvertor.GetInterval(x.HungerLevel)))
+                .ForMember(x => x.DrinkingInterval, opt => opt.MapFrom(x => DateToThirstyLevelConvertor.GetInterval(x.ThirstyLevel)));
             CreateMap<AddPetModel, AddPetDTOModel>().ReverseMap();
             CreateMap<UpdatePetModel, UpdatePetDTOModel>().ReverseMap();
 
