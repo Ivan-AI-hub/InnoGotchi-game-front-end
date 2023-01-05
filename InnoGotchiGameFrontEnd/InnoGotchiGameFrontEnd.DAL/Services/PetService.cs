@@ -1,4 +1,5 @@
 ﻿using InnoGotchiGameFrontEnd.DAL.Models.Pets;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
@@ -17,30 +18,30 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         public async Task<IEnumerable<Pet>> GetPets(PetSorter? sorter = null, PetFiltrator? filtrator = null)
         {
 
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _baseUri);
+            var requestUrl = new StringBuilder($"?sortField={sorter.SortRule}" +
+                                   $"&isDescendingSort={sorter.IsDescendingSort}");
 
-            var options = new JsonSerializerOptions
+            if (!String.IsNullOrEmpty(filtrator.Name))
             {
-                PropertyNameCaseInsensitive = true
-            };
-
-            using StringContent jsonContent = new(
-                         JsonSerializer.Serialize(new
-                         {
-                             sorter,
-                             filtrator
-                         }),
-                         Encoding.UTF8,
-                         "application/json");
-            request.Content = jsonContent;
-            var httpResponseMessage = await RequestClient.SendAsync(request);
-
-            IEnumerable<Pet> pets = new List<Pet>();
-
-            if (httpResponseMessage.IsSuccessStatusCode)
+                requestUrl.Append($"&Name={filtrator.Name}");
+            }
+            if (filtrator.DrinkingInterval != null)
             {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                pets = await JsonSerializer.DeserializeAsync<IEnumerable<Pet>>(contentStream, options);
+                requestUrl.Append($"&MaxDaysFromLastDrinking={filtrator.DrinkingInterval.MaxDays}" +
+                                  $"&MinDaysFromLastDrinking={filtrator.DrinkingInterval.MinDays}");
+            }
+            if (filtrator.FeedingInterval != null)
+            {
+                requestUrl.Append($"&MaxDaysFromLastFeeding={filtrator.FeedingInterval.MaxDays}" +
+                                  $"&MinDaysFromLastFeeding={filtrator.FeedingInterval.MinDays}");
+            }
+
+
+            var pets = await RequestClient.GetFromJsonAsync<IEnumerable<Pet>>(_baseUri + requestUrl.ToString());
+
+            if (pets == null)
+            {
+                throw new Exception("BadRequest in PetService GetPets");
             }
             return pets;
         }
@@ -48,48 +49,27 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         public async Task<IEnumerable<Pet>> GetPetsPage(int pageSize, int pageNumber, PetSorter sorter, PetFiltrator filtrator)
         {
 
-
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _baseUri+ $"/{pageSize}/{pageNumber}");
-            using StringContent jsonContent = new(
-                         JsonSerializer.Serialize(new
-                         {
-                             sorter,
-                             filtrator
-                         }),
-                         Encoding.UTF8,
-                         "application/json");
-            request.Content = jsonContent;
-            var httpResponseMessage = await RequestClient.SendAsync(request);
-
-            IEnumerable<Pet> pets = new List<Pet>();
-
-            if (httpResponseMessage.IsSuccessStatusCode)
+            var requestUrl = new StringBuilder($"/{pageSize}/{pageNumber}" +
+                            $"?sortField={sorter.SortRule}&isDescendingSort={sorter.IsDescendingSort}");
+           
+            if (!String.IsNullOrEmpty(filtrator.Name))
             {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                pets = await JsonSerializer.DeserializeAsync<IEnumerable<Pet>>(contentStream, options);
+                requestUrl.Append($"&Name={filtrator.Name}");
+            }
+
+
+            var pets = await RequestClient.GetFromJsonAsync<IEnumerable<Pet>>(_baseUri + requestUrl.ToString());
+
+            if (pets == null)
+            {
+                throw new Exception("BadRequest in PetService GetPetsPage");
             }
             return pets;
         }
         public async Task<Pet?> GetPetById(int id)
         {
+            Pet? Pet = await RequestClient.GetFromJsonAsync<Pet>(_baseUri + $"/{id}");
 
-            var httpResponseMessage = await RequestClient.GetAsync(_baseUri+ $"/{id}");
-
-            Pet? Pet = null;
-
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                Pet = await JsonSerializer.DeserializeAsync<Pet>(contentStream, options);
-            }
             return Pet;
         }
 

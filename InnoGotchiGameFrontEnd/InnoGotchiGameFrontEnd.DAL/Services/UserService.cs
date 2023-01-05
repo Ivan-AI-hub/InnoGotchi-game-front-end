@@ -1,4 +1,5 @@
-﻿using InnoGotchiGameFrontEnd.DAL.Models.Users;
+﻿using InnoGotchiGameFrontEnd.DAL.Models.Pets;
+using InnoGotchiGameFrontEnd.DAL.Models.Users;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -76,36 +77,14 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         }
         public async Task<User?> GetUserById(int id)
         {
-            var httpResponseMessage = await RequestClient.GetAsync(_baseUri + $"/{id}");
+            User? user = await RequestClient.GetFromJsonAsync<User>(_baseUri + $"/{id}");
 
-            User? user = null;
-
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                user = await JsonSerializer.DeserializeAsync<User>(contentStream, options);
-            }
             return user;
         }
         public async Task<User?> GetAuthodizedUser()
         {
-            var httpResponseMessage = await RequestClient.GetAsync(_baseUri + $"/Authorized");
+            User? user = await RequestClient.GetFromJsonAsync<User>(_baseUri + $"/Authorized");
 
-            User? user = null;
-
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                user = await JsonSerializer.DeserializeAsync<User>(contentStream, options);
-            }
             return user;
         }
 
