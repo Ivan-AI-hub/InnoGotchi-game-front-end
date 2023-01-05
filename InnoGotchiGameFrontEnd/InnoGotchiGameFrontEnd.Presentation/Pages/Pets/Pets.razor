@@ -1,0 +1,107 @@
+﻿@page "/pets"
+@using InnoGotchiGameFrontEnd.BLL.Sorters;
+@using InnoGotchiGameFrontEnd.Presentation.Pages.Pets.Models;
+@inject PetManager manager
+@inject AuthenticationStateProvider stateProvider
+@attribute [Authorize]
+
+<div class="row">
+    <div class="col-sm-3">
+        <div class="position-fixed">
+            <EditForm Model="Data" OnValidSubmit="PetsUpdate">
+                <div class="container">
+                    <div class="col ">
+                        <label class="form-label">Фильтрация</label>
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+
+                            <InputText @bind-Value="Data.Filtrator.Name" type="text" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label>Сортировка</label>
+                            <InputSelect class="form-control" @bind-Value="@Data.Sorter.SortRule">
+
+                                @foreach (var sortRule in Enum.GetValues<PetDTOSortRule>())
+                                {
+
+                                    <option value="@sortRule">@sortRule</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">Обратная сортировка</label>
+                            <InputCheckbox class="form-check-input" @bind-Value="@Data.Sorter.IsDescendingSort" />
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-primary align-self-center" value="Найти" />
+                </div>
+            </EditForm>
+        </div>
+    </div>
+    <div class="col-sm">
+        @if (@Data.Pets != null)
+        {
+            <div class="row">
+                <div class="d-flex align-items-center justify-content-start col">
+                    @if (@Data.PageStatus != PageStatus.FirstPage)
+                    {
+                        <button class="btn btn-info" @onclick="SetPreviousPage">←Предидущая страница</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-info disabled">←Предидущая страница</button>
+                    }
+                </div>
+                <div class="d-flex align-items-center justify-content-end col">
+                    @if (@Data.PageStatus != PageStatus.LastPage)
+                    {
+                        <button class="btn btn-info" @onclick="SetNextPage">Следующая страница→</button>
+                    }
+                    else
+                    {
+                        <a href="undifinite" class="btn btn-info disabled">Следующая страница→</a>
+                    }
+                </div>
+            </div>
+            @foreach (var pet in Data.Pets)
+            {
+                <PetRow Pet="@pet" />
+            }
+        }
+        else
+        {
+            <Loading />
+        }
+    </div>
+
+</div>
+
+@code
+{
+    private PetsData Data { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Data = new PetsData();
+        await PetsUpdate();
+    }
+
+    protected async Task SetPreviousPage()
+    {
+        Data.Page.Number--;
+        await PetsUpdate();
+    }
+    protected async Task SetNextPage()
+    {
+        Data.Page.Number++;
+        await PetsUpdate();
+    }
+
+    private async Task PetsUpdate()
+    {
+        Data.Pets = null;
+        Data.Pets = await manager.GetPetsPage(Data.Page.PageSize, Data.Page.Number, Data.Sorter, Data.Filtrator);
+    }
+}
