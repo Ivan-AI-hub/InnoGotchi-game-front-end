@@ -14,6 +14,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
         [Inject] public UserManager Manager { get; set; }
 
         protected LoginData LoginData { get; set; }
+        protected bool IsLoading { get; set; }
         protected string ErrorMessage { get; set; }
 
         public LoginModel()
@@ -24,6 +25,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
 
         protected async Task LoginAsync()
         {
+            IsLoading = true;
             var authModel = await Manager.Authorize(LoginData.Email, LoginData.Password);
             if (authModel != null)
             {
@@ -44,6 +46,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
             {
                 ErrorMessage = "Email или пароль введены неверно.";
             }
+            IsLoading = false;
         }
     }
 }

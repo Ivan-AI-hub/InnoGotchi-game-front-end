@@ -33,15 +33,15 @@
                 }
                 @if(IsColaboratorAdding)
                 {
-                    <p>Загрузка</p>
+                    <Loading/>
                 }
             }
             @foreach (var user in @User.Collaborators)
             {
-                <div>
-                    <NavLink href=@($"/users/{user.Id}") Match="NavLinkMatch.Prefix">
+                <div class="m-2">
+                    <button class="btn btn-info w-50" @onclick="@(e => ToUserPage(user.Id))">
                         @user.FirstName @user.LastName
-                    </NavLink>
+                    </button>
                 </div>
             }
         </div>
@@ -73,7 +73,7 @@
 else
 {
     <div>
-        <h2>Загрузка</h2>
+        <Loading />
     </div>
 }
 
@@ -106,5 +106,10 @@ else
     private void ToFarmPage()
     {
         navigator.NavigateTo($"/farms/{User.OwnPetFarm.Id}");
+    }
+    private void ToUserPage(int id)
+    {
+        User = null;
+        navigator.NavigateTo($"/users/{id}");
     }
 }

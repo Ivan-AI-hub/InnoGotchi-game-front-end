@@ -10,95 +10,104 @@
 {
     <div>
         <h3>Mail</h3>
-        @if(IsLoading)
+        @if (IsLoading)
         {
-            <div>Loading.......</div>
+            <Loading />
         }
-        <div>
-            @foreach (var error in Errors)
-            {
-                <p class="text-danger">@error</p>
-            }
-        </div>
-        @foreach (var request in User.UnconfirmedRequests)
+        @if (IsLettersContains)
         {
-            @if (request.RequestSender != null)
+            <div>
+                @foreach (var error in Errors)
+                {
+                    <p class="text-danger">@error</p>
+                }
+            </div>
+
+            @foreach (var request in User.UnconfirmedRequests)
             {
-                <UserRow User="request.RequestSender">
-                    <div class="col">
-                        <div>
-                            <NavLink class="btn btn-primary" href=@($"/users/{request.RequestSender.Id}")>
-                                Подробнее
-                            </NavLink>
+                @if (request.RequestSender != null)
+                {
+                    <UserRow User="request.RequestSender">
+                        <div class="col">
+                            <div>
+                                <NavLink class="btn btn-primary" href=@($"/users/{request.RequestSender.Id}")>
+                                    Подробнее
+                                </NavLink>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col">
-                        <p>
-                            Хочет дружить с вами
-                        </p>
-                    </div>
-                    <div class="col">
-                        <div>
-                            <button class="btn btn-success w-75" @onclick="@(e => ConfirmRequest(request.Id))">
-                                Принять
-                            </button>
+                        <div class="col">
+                            <p>
+                                Хочет дружить с вами
+                            </p>
                         </div>
-                        <div>
-                            <button class="btn btn-danger w-75" @onclick="@(e => RejectRequest(request.Id))">
-                                Отвергнуть
-                            </button>
+                        <div class="col">
+                            <div>
+                                <button class="btn btn-success w-75" @onclick="@(e => ConfirmRequest(request.Id))">
+                                    Принять
+                                </button>
+                            </div>
+                            <div>
+                                <button class="btn btn-danger w-75" @onclick="@(e => RejectRequest(request.Id))">
+                                    Отвергнуть
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </UserRow>
+                    </UserRow>
+                }
+                else
+                {
+                    <div>Loading</div>
+                }
             }
-            else
+            @foreach (var request in User.RejectedRequests)
             {
-                <div>Loading</div>
+                @if (request.RequestReceiver != null)
+                {
+                    <UserRow User="request.RequestReceiver">
+                        <div class="col">
+                            <div>
+                                <NavLink class="btn btn-primary" href=@($"/users/{request.RequestReceiver.Id}")>
+                                    Подробнее
+                                </NavLink>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <p>
+                                Отверг предложение о дружбе
+                            </p>
+                        </div>
+                        <div class="col">
+                            <div>
+                                <button class="btn btn-danger w-75" @onclick="@(e => DeleteRequest(request.Id))">
+                                    Эхххх(
+                                </button>
+                            </div>
+                        </div>
+                    </UserRow>
+                }
+                else
+                {
+                    <Loading />
+                }
             }
         }
-        @foreach (var request in User.RejectedRequests)
+        else
         {
-            @if (request.RequestReceiver != null)
-            {
-                <UserRow User="request.RequestReceiver">
-                    <div class="col">
-                        <div>
-                            <NavLink class="btn btn-primary" href=@($"/users/{request.RequestReceiver.Id}")>
-                                Подробнее
-                            </NavLink>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <p>
-                            Отверг предложение о дружбе
-                        </p>
-                    </div>
-                    <div class="col">
-                        <div>
-                            <button class="btn btn-danger w-75" @onclick="@(e => DeleteRequest(request.Id))">
-                                Эхххх(
-                            </button>
-                        </div>
-                    </div>
-                </UserRow>
-            }
-            else
-            {
-                <div>Loading</div>
-            }
+            <div class="w-100 h-100 align-content-center">
+                <h2>В вашей почте нет писем((</h2>
+            </div>
         }
     </div>
 }
 else
 {
-    <div>
-        Loadiiiing.....
-    </div>
+    <Loading />
 }
 @code {
     private bool IsLoading { get; set; }
     private List<string> Errors;
     private UserDTO User { get; set; }
+    private bool IsLettersContains => User.UnconfirmedRequests.Count() + User.RejectedRequests.Count() > 0;
 
     protected override async Task OnInitializedAsync()
     {

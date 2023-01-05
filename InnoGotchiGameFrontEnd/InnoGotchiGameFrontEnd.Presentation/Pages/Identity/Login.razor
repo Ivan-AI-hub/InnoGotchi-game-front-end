@@ -13,7 +13,14 @@
             <InputText id="username" @bind-Value="LoginData.Email" class="form-control"/>
             <label for="password">Password</label>
             <InputText id="password" @bind-Value="LoginData.Password" class="form-control" />
-            <input type="submit" class="btn btn-primary"/>
+            @if (!IsLoading)
+            {
+                <input type="submit" class="btn btn-primary"/>
+            }
+            else
+            {
+                <Loading/>
+            }
         </EditForm>
     </div>
 </div>
