@@ -1,7 +1,10 @@
 ﻿@page "/farms/{Id:int}"
 @using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 
-@inject FarmManager manager
+@attribute [Authorize]
+@inject AuthenticationStateProvider stateProvider
+@inject FarmManager farmManager
+@inject UserManager userManager
 @inject MouseService mouseSrv;
 @inject NavigationManager navigator;
 
@@ -15,8 +18,14 @@
 }
 <div>
     <div class="row">
+        @if (IsAuthUserFarm)
+        {
+            <div class="col">
+                <button @onclick="ToCreatePetPage" class="list-group-item list-group-item-action">Добавить питомца</button>
+            </div>
+        }
         <div class="col">
-            <button @onclick="ToCreatePetPage" class="list-group-item list-group-item-action">Добавить питомца</button>
+            <button @onclick="ToColaboratorsFarmsPage" class="list-group-item list-group-item-action">Посетить фермы друзей</button>
         </div>
         <div class="col">
             <button class="list-group-item list-group-item-action" @onclick="@ChangeStatisticState">@buttonForStatisticValue</button>
@@ -107,13 +116,23 @@
     private PetFarmDTO Farm { get; set; }
     private List<PetDTO> DiesPets { get; set; }
     private PetModal petModal { get; set; }
+    private bool IsAuthUserFarm { get; set; }
+    private bool IsColaboratorFarm { get; set; }
     private string statisticClass = "visually-hidden";
     private string buttonForStatisticValue = "Статистика";
 
     protected override async Task OnInitializedAsync()
     {
         random = new Random();
-        Farm = await manager.GetFarmById(Id);
+        Farm = await farmManager.GetFarmById(Id);
+
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        var authUserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
+
+        IsAuthUserFarm = authUserId == Farm.OwnerId;
+        var owner = await userManager.GetUserById(Farm.OwnerId);
+        IsColaboratorFarm = owner.Collaborators.Any(x => x.Id == authUserId);
+
         DiesPets = new List<PetDTO>();
         foreach (var pet in Farm.Pets)
         {
@@ -127,10 +146,14 @@
     private void ToCreatePetPage()
     {
         navigator.NavigateTo($"/pets/create/{Id}");
+    }    
+    private void ToColaboratorsFarmsPage()
+    {
+        navigator.NavigateTo($"/colaboratorsFarms");
     }
     private void PetRightClick(MouseEventArgs args, PetDTO pet)
     {
-        if (args.Button == 2)
+        if (args.Button == 2 && (IsAuthUserFarm || IsColaboratorFarm))
         {
             petModal.SetPet(pet);
             petModal.Open();

@@ -10,7 +10,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Models.Users
         public string Email { get; set; }
         public string Password { get; set; }
         public Picture? Picture { get; set; }
-
+        public int OwnPetFarmId { get; set; }
         public PetFarm? OwnPetFarm { get; set; }
 
         public IEnumerable<ColaborationRequest> UnconfirmedRequests { get; set; }
