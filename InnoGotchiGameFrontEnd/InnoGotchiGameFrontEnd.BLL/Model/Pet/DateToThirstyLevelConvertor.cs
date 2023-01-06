@@ -9,7 +9,7 @@ namespace InnoGotchiGameFrontEnd.BLL.Model.Pet
         static DaysInterval DeadLevelInterval;
         static DateToThirstyLevelConvertor()
         {
-            FullLevelInterval = new DaysInterval(0, 1);
+            FullLevelInterval = new DaysInterval(-1, 1);
             NormalLevelInterval = new DaysInterval(1, 2);
             ThirstyLevelInterval = new DaysInterval(3, 5);
             DeadLevelInterval = new DaysInterval(5, 365);

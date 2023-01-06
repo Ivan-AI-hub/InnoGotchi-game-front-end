@@ -22,7 +22,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">HungerLevel</label>
-                            <InputSelect class="form-control" @bind-Value="@Data.Filtrator.HungerLevel">
+                            <InputSelect class="form-control" @bind-Value="@Data.FeedSelectValue">
                                 <option value="null">Any</option>
                                 @foreach (var hungerLevel in Enum.GetValues<HungerLevel>())
                                 {
@@ -32,8 +32,8 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">ThirstyLevel</label>
-                            <InputSelect class="form-control" @bind-Value="@Data.Filtrator.ThirstyLevel">
-                                <option value="">Any</option>
+                            <InputSelect class="form-control" @bind-Value="@Data.ThirstySelectValue">
+                                <option value="null">Any</option>
                                 @foreach (var thirstyLevel in Enum.GetValues<ThirstyLevel>())
                                 {
                                     <option value="@thirstyLevel">@thirstyLevel</option>

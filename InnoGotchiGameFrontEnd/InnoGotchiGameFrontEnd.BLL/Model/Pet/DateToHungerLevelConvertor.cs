@@ -8,7 +8,7 @@
         static DaysInterval DeadLevelInterval;
         static DateToHungerLevelConvertor()
         {
-            FullLevelInterval = new DaysInterval(0, 1);
+            FullLevelInterval = new DaysInterval(-1, 1);
             NormalLevelInterval = new DaysInterval(1, 2);
             HungerLevelInterval = new DaysInterval(3, 5);
             DeadLevelInterval = new DaysInterval(5, 365);
