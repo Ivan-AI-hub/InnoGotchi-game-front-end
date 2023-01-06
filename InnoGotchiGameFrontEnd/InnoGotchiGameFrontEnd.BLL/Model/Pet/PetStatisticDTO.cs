@@ -38,46 +38,14 @@
             if (_currentHungerLevel != null)
                 return (HungerLevel)_currentHungerLevel;
             else
-                return GetHungerLevelByData();
+                return DateToHungerLevelConvertor.GetHungerLevel(DateLastFeed);
         }
         private ThirstyLevel GetThirstyLevel()
         {
             if (_currentThirstyLevel != null)
                 return (ThirstyLevel)_currentThirstyLevel;
             else
-                return GetThirstyLevelByData();
-        }
-        private HungerLevel GetHungerLevelByData()
-        {
-            var dayCount = (DateTime.UtcNow - DateLastFeed).Days;
-            
-            switch(dayCount)
-            {
-                case 0: return HungerLevel.Full;
-
-                case 1: 
-                case 2: return HungerLevel.Normal;
-                case 3: 
-                case 4:
-                case 5: return HungerLevel.Hunger;
-                default: return HungerLevel.Dead;
-            }
-        }
-        private ThirstyLevel GetThirstyLevelByData()
-        {
-            var dayCount = (DateTime.UtcNow - DateLastDrink).Days;
-
-            switch (dayCount)
-            {
-                case 0: return ThirstyLevel.Full;
-
-                case 1:
-                case 2: return ThirstyLevel.Normal;
-                case 3:
-                case 4:
-                case 5: return ThirstyLevel.Thirsty;
-                default: return ThirstyLevel.Dead;
-            }
+                return DateToThirstyLevelConvertor.GetThirstyLevel(DateLastDrink);
         }
     }
 }

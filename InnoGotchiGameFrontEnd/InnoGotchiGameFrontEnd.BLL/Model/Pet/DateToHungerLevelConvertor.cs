@@ -15,11 +15,10 @@
         }
         public static HungerLevel GetHungerLevel(DateTime DateLastFeed)
         {
-            var dayCount = (DateTime.UtcNow - DateLastFeed).Days;
+            if (HungerLevelInterval.InInterval(DateLastFeed)) return HungerLevel.Hunger;
+            if (NormalLevelInterval.InInterval(DateLastFeed)) return HungerLevel.Normal;
+            if (FullLevelInterval.InInterval(DateLastFeed)) return HungerLevel.Full;
 
-            if (FullLevelInterval.InInterval(dayCount)) return HungerLevel.Full;
-            if (NormalLevelInterval.InInterval(dayCount)) return HungerLevel.Normal;
-            if (HungerLevelInterval.InInterval(dayCount)) return HungerLevel.Hunger;
             return HungerLevel.Dead;
         }
         public static DaysInterval GetInterval(HungerLevel hungerLevel)

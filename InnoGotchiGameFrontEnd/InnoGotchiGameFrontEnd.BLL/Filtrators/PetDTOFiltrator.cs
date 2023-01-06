@@ -6,7 +6,7 @@ namespace InnoGotchiGameFrontEnd.BLL.Filtrators
 	{
 		public string Name { get; set; } = "";
 		public int Age { get; set; } = 0;
-		public HungerLevel HungerLevel { get; set; }
-		public ThirstyLevel ThirstyLevel { get; set; }
+		public HungerLevel? HungerLevel { get; set; }
+		public ThirstyLevel? ThirstyLevel { get; set; }
 	}
 }

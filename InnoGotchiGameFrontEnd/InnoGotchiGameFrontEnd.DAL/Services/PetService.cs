@@ -36,6 +36,8 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                   $"&MinDaysFromLastFeeding={filtrator.FeedingInterval.MinDays}");
             }
 
+            requestUrl.Append($"&DaysAlive={filtrator.DaysAlive}");
+            
 
             var pets = await RequestClient.GetFromJsonAsync<IEnumerable<Pet>>(_baseUri + requestUrl.ToString());
 
@@ -56,7 +58,20 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             {
                 requestUrl.Append($"&Name={filtrator.Name}");
             }
-
+            if (filtrator.DrinkingInterval != null)
+            {
+                requestUrl.Append($"&MaxDaysFromLastDrinking={filtrator.DrinkingInterval.MaxDays}" +
+                                  $"&MinDaysFromLastDrinking={filtrator.DrinkingInterval.MinDays}");
+            }
+            if (filtrator.FeedingInterval != null)
+            {
+                requestUrl.Append($"&MaxDaysFromLastFeeding={filtrator.FeedingInterval.MaxDays}" +
+                                  $"&MinDaysFromLastFeeding={filtrator.FeedingInterval.MinDays}");
+            }
+            if (filtrator.DaysAlive != 0)
+            {
+                requestUrl.Append($"&DaysAlive={filtrator.DaysAlive}");
+            }
 
             var pets = await RequestClient.GetFromJsonAsync<IEnumerable<Pet>>(_baseUri + requestUrl.ToString());
 

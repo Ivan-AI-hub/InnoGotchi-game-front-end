@@ -14,13 +14,11 @@ namespace InnoGotchiGameFrontEnd.BLL.Model.Pet
             ThirstyLevelInterval = new DaysInterval(3, 5);
             DeadLevelInterval = new DaysInterval(5, 365);
         }
-        public static ThirstyLevel GetThirstyLevel(DateTime DateLastFeed)
+        public static ThirstyLevel GetThirstyLevel(DateTime dateLastDrink)
         {
-            var dayCount = (DateTime.UtcNow - DateLastFeed).Days;
-
-            if (FullLevelInterval.InInterval(dayCount)) return ThirstyLevel.Full;
-            if (NormalLevelInterval.InInterval(dayCount)) return ThirstyLevel.Normal;
-            if (ThirstyLevelInterval.InInterval(dayCount)) return ThirstyLevel.Thirsty;
+            if (FullLevelInterval.InInterval(dateLastDrink)) return ThirstyLevel.Full;
+            if (NormalLevelInterval.InInterval(dateLastDrink)) return ThirstyLevel.Normal;
+            if (ThirstyLevelInterval.InInterval(dateLastDrink)) return ThirstyLevel.Thirsty;
             return ThirstyLevel.Dead;
         }
         public static DaysInterval GetInterval(ThirstyLevel ThirstyLevel)
