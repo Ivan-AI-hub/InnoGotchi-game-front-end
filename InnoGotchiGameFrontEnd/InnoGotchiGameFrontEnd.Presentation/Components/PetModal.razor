@@ -23,28 +23,7 @@
                 <PetRow Pet="@Pet" />
             </div>
             <div class="modal-footer">
-                <div class="row">
-                    <div class="col">
-                        @if (Pet.Statistic.HungerLevel != HungerLevel.Full)
-                        {
-                            <button type="button" class="btn btn-primary" @onclick="Feeding">Покормить</button>
-                        }
-                        else
-                        {
-                            <button type="button" class="btn btn-primary" disabled>Питомец сыт</button>
-                        }
-                    </div>
-                    <div class="col">
-                        @if (Pet.Statistic.ThirstyLevel != ThirstyLevel.Full)
-                        {
-                            <button type="button" class="btn btn-primary" @onclick="GiveDrink">Напоить</button>
-                        }
-                        else
-                        {
-                            <button type="button" class="btn btn-primary" disabled>Питомец уталил жажду</button>
-                        }
-                    </div>
-                </div>
+                <PetMenu Pet="Pet" Errors="Errors"/>
             </div>
         </div>
     </div>
@@ -94,21 +73,5 @@
     {
         Pet = pet;
         StateHasChanged();
-    }
-
-    private async Task Feeding()
-    {
-        var rez = await petManager.Feed(Pet, UserId);
-
-        Errors = rez.Errors;
-        
-    }
-
-    private async Task GiveDrink()
-    {
-        var rez = await petManager.GiveDrink(Pet, UserId);
-
-        Errors = rez.Errors;
-        
     }
 }

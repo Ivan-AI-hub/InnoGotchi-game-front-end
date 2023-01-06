@@ -8,7 +8,11 @@
 @inject MouseService mouseSrv;
 @inject NavigationManager navigator;
 
-<PetModal @ref="@petModal"/>
+
+@if (IsAuthUserFarm || IsColaboratorFarm)
+{
+    <PetModal @ref="@petModal"/>
+}
 @if (DiesPets != null)
 {
     @foreach (var pet in DiesPets)
@@ -24,6 +28,12 @@
                 <button @onclick="ToCreatePetPage" class="list-group-item list-group-item-action">Добавить питомца</button>
             </div>
         }
+        @if (IsAuthUserFarm || IsColaboratorFarm)
+        {
+            <div class="col">
+                <button class="list-group-item list-group-item-action" @onclick="@ChangePetsOverViewState">@buttonForPetsOverviewValue</button>
+            </div>
+        }
         <div class="col">
             <button @onclick="ToColaboratorsFarmsPage" class="list-group-item list-group-item-action">Посетить фермы друзей</button>
         </div>
@@ -34,6 +44,20 @@
     @if (Farm != null)
     {
         <div class="row">
+            @if (IsAuthUserFarm || IsColaboratorFarm)
+            {
+                @*Питомцы*@
+                <div class="col overflow-auto @petsOverviewClass" style="max-height: 450px;">
+                    <h2>Питомцы</h2>
+                    @foreach (var pet in Farm.Pets.Where(x => x.Statistic.AliveState == AliveState.Alive))
+                    {
+                        <PetRow Pet="@pet">
+                            <PetMenu Pet="pet" />
+                        </PetRow>
+                    }
+                </div>
+            }
+            @*Ферма*@
             <div class="col" style="position: relative;">
                 <h2>@Farm.Name</h2>
                 <svg class="container-fluid bg-success"
@@ -60,7 +84,8 @@
                     }
                 </svg>
             </div>
-            <div class="col @statisticClass">
+            @*Статистика*@
+            <div class="col @statisticClass overflow-auto" style="max-height: 450px;">
                 <h2>Статистика</h2>
                 <div>
                     Количиство живых питомцев: @Farm.AlivesPetsCount
@@ -106,7 +131,7 @@
     }
     else
     {
-        <Loading/>
+        <Loading />
     }
 </div>
 
@@ -119,7 +144,9 @@
     private bool IsAuthUserFarm { get; set; }
     private bool IsColaboratorFarm { get; set; }
     private string statisticClass = "visually-hidden";
+    private string petsOverviewClass = "visually-hidden";
     private string buttonForStatisticValue = "Статистика";
+    private string buttonForPetsOverviewValue = "Питомцы";
 
     protected override async Task OnInitializedAsync()
     {
@@ -146,7 +173,7 @@
     private void ToCreatePetPage()
     {
         navigator.NavigateTo($"/pets/create/{Id}");
-    }    
+    }
     private void ToColaboratorsFarmsPage()
     {
         navigator.NavigateTo($"/colaboratorsFarms");
@@ -162,9 +189,26 @@
     private void ChangeStatisticState()
     {
         if (statisticClass == "")
+        {
             HideStatictic();
+        }
         else
+        {
             ShowStatictic();
+            HidePetsOverview();
+        }
+    }
+    private void ChangePetsOverViewState()
+    {
+        if (petsOverviewClass == "")
+        {
+            HidePetsOverview();
+        }
+        else
+        {
+            ShowPetsOverview();
+            HideStatictic();
+        }
     }
     private void ShowStatictic()
     {
@@ -175,5 +219,15 @@
     {
         statisticClass = "visually-hidden";
         buttonForStatisticValue = "Статистика";
+    }
+    private void ShowPetsOverview()
+    {
+        petsOverviewClass = "";
+        buttonForPetsOverviewValue = "Скрыть";
+    }
+    private void HidePetsOverview()
+    {
+        petsOverviewClass = "visually-hidden";
+        buttonForPetsOverviewValue = "Питомцы";
     }
 }

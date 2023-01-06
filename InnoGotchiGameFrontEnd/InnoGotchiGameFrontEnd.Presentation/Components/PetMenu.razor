@@ -1,0 +1,53 @@
+﻿@inject PetManager petManager
+@inject AuthenticationStateProvider stateProvider
+<div class="row">
+    <div class="col">
+        @if (Pet.Statistic.HungerLevel != HungerLevel.Full)
+        {
+            <button type="button" class="btn btn-success w-100" @onclick="Feeding">Покормить</button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-success w-100" disabled>Питомец сыт</button>
+        }
+    </div>
+    <div class="col">
+        @if (Pet.Statistic.ThirstyLevel != ThirstyLevel.Full)
+        {
+            <button type="button" class="btn btn-primary w-100" @onclick="GiveDrink">Напоить</button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-primary w-100" disabled>Питомец уталил жажду</button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public PetDTO Pet { get; set; }
+    [Parameter] public List<string> Errors { get; set; }
+    private int UserId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Pet = Pet ?? new PetDTO();
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        UserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
+        Errors = Errors ?? new List<string>();
+    }
+    private async Task Feeding()
+    {
+        var rez = await petManager.Feed(Pet, UserId);
+        Errors.Clear();
+        Errors.AddRange(rez.Errors);
+
+    }
+
+    private async Task GiveDrink()
+    {
+        var rez = await petManager.GiveDrink(Pet, UserId);
+        Errors.Clear();
+        Errors.AddRange(rez.Errors);
+
+    }
+}
