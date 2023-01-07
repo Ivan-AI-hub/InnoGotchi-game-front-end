@@ -22,16 +22,16 @@
 }
 <div>
     <div class="row">
-        @if (IsAuthUserFarm)
-        {
-            <div class="col">
-                <button @onclick="ToCreatePetPage" class="list-group-item list-group-item-action">Добавить питомца</button>
-            </div>
-        }
         @if (IsAuthUserFarm || IsColaboratorFarm)
         {
             <div class="col">
                 <button class="list-group-item list-group-item-action" @onclick="@ChangePetsOverViewState">@buttonForPetsOverviewValue</button>
+            </div>
+        }
+        @if (IsAuthUserFarm)
+        {
+            <div class="col">
+                <button @onclick="ToCreatePetPage" class="list-group-item list-group-item-action">Добавить питомца</button>
             </div>
         }
         <div class="col">

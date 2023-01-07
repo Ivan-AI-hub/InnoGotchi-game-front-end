@@ -1,14 +1,13 @@
 ﻿
-<div class="row mb-3">
+<div class="row">
     @if (Pet.View.Picture != null)
     {
         <div class="col-md">
-            <ImageFromByteArray 
-                Image="Pet.View.Picture.Image" 
-                imgClass="img-thumbnail rounded float-right"
-                ImageType="svg+xml"
-                Width="200"
-                Height="200"/>
+            <ImageFromByteArray Image="Pet.View.Picture.Image"
+                            imgClass="img-thumbnail rounded float-right"
+                            ImageType="svg+xml"
+                            Width="200"
+                            Height="200" />
         </div>
     }
     <div class="col-md">
@@ -23,9 +22,12 @@
         <div>Статус жажды: @Pet.Statistic.ThirstyLevel</div>
         <div>Дней счастья: @Pet.Statistic.HappinessDayCount</div>
     </div>
-    <div class="col-md">
-        @ChildContent
-    </div>
+    @if (ChildContent != null)
+    {
+        <div class="col-md">
+            @ChildContent
+        </div>
+    }
 </div>
 
 @code {

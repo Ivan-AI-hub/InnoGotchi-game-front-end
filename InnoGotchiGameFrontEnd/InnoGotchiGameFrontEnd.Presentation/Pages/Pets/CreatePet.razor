@@ -10,7 +10,7 @@
 @inject NavigationManager navigation;
 @inject IElementReferenceService referenceService
 
-<div class="row" @onclick="ElementClick">
+<div class="row">
     <div>
         @foreach (var error in Errors)
         {
@@ -78,36 +78,29 @@
             </svg>
         </div>
         <div class="col">
-            <div>
-                <label>Тело</label>
-                <button @onclick="SetNextBody">След</button>
-                <button @onclick="SetPrevBody">Пред</button>
+            <div class="border rounded mb-2 row bg-light">
+                <label class="col">Тело</label>
+                <button @onclick="SetNextBody" class="btn btn-primary col">Следующий</button>
+                <button @onclick="SetPrevBody" class="btn btn-primary col">Предидущий</button>
             </div>
-            <div>
-                <label>Глаза</label>
-                <button @onclick="SetNextEyes">След</button>
-                <button @onclick="SetPrevEyes">Пред</button>
+            <div class="border rounded mb-2 row bg-light">
+                <label class="col">Глаза</label>
+                <button @onclick="SetNextEyes" class="btn btn-primary col">Следующий</button>
+                <button @onclick="SetPrevEyes" class="btn btn-primary col">Предидущий</button>
                 <input @bind:event="oninput" @bind="@EyesSize" type="range" class="custom-range" min="10" max="200" />
             </div>
-            <div>
-                <label>Нос</label>
-                <button @onclick="SetNextNose">След</button>
-                <button @onclick="SetPrevNose">Пред</button>
+            <div class="border rounded mb-2 row bg-light">
+                <label class="col">Нос</label>
+                <button @onclick="SetNextNose" class="btn btn-primary col">Следующий</button>
+                <button @onclick="SetPrevNose" class="btn btn-primary col">Предидущий</button>
+
                 <input @bind:event="oninput" @bind="@NoseSize" type="range" class="custom-range" min="10" max="200" />
             </div>
-            <div>
-                <label>Рот</label>
-                <button @onclick="SetNextMouth">След</button>
-                <button @onclick="SetPrevMouth">Пред</button>
+            <div class="border rounded mb-2 row bg-light">
+                <label class="col">Рот</label>
+                <button @onclick="SetNextMouth" class="btn btn-primary col">Следующий</button>
+                <button @onclick="SetPrevMouth" class="btn btn-primary col">Предидущий</button>
                 <input @bind:event="oninput" @bind="@MouthSize" type="range" class="custom-range" min="10" max="200" />
-            </div>
-            <div>
-                @if (PetView != null)
-                {
-                    <div class="bg-success" style="position: relative; width: 100px; height: 100px;">
-                        <ImageFromByteArray Image="@PetView" ImageType="svg+xml" />
-                    </div>
-                }
             </div>
             <EditForm Model="AddModel" OnValidSubmit="CreatePetAsync">
                 <DataAnnotationsValidator />
@@ -162,13 +155,6 @@
         NosesPictures = (await pictureManager.GetAllPictures(filtrator)).ToList();
     }
 
-    private async Task ElementClick(MouseEventArgs e)
-    {
-        string html = await referenceService.GetInnerText(svgCanvas);
-
-        var a = e;
-        PetView = Encoding.Default.GetBytes(html);
-    }
     void BodyRightClick(MouseEventArgs args)
     {
         if (args.Button == 2)
@@ -191,6 +177,9 @@
     }
     private async Task CreatePetAsync()
     {
+        string html = await referenceService.GetInnerText(svgCanvas);
+        PetView = Encoding.Default.GetBytes(html);
+
         AddModel.View.Picture = new PictureDTO()
             {
                 Name = Guid.NewGuid().ToString(),

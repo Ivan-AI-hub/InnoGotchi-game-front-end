@@ -73,7 +73,7 @@ else
         var stream = new MemoryStream();
         var file = e.File;
         string imageType = file.ContentType;
-        file = await file.RequestImageFileAsync(imageType, 100, 100);
+        file = await file.RequestImageFileAsync(imageType, 200, 200);
         await file.OpenReadStream().CopyToAsync(stream);
         Data.Picture = new PictureDTO()
             {

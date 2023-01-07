@@ -7,36 +7,37 @@
 {
     @foreach (var user in User.Collaborators)
     {
-        <UserRow User="@user">
-            @if (user.OwnPetFarm != null)
-            {
-                <div class="col">
-                    <p>Ферма: @user.OwnPetFarm.Name</p>
-                    <p>Живых питомцев: @user.OwnPetFarm.AlivesPetsCount</p>
-                    <p>Всего питомцев: @user.OwnPetFarm.Pets.Count</p>
-                </div>
-            }
-            <div class="col d-flex align-items-center justify-content-end">
+        <div class="border rounded bg-light p-2">
+            <UserRow User="@user">
                 @if (user.OwnPetFarm != null)
                 {
-                    <div>
-                        <NavLink class="btn btn-primary" href=@($"/farms/{user.OwnPetFarm.Id}") Match="NavLinkMatch.All">
-                            Перейти на ферму
-                        </NavLink>
+                    <div class="col">
+                        <div>Ферма: @user.OwnPetFarm.Name</div>
+                        <div>Всего питомцев: @user.OwnPetFarm.Pets.Count</div>
                     </div>
                 }
-                else
-                {
-                    <div class="btn btn-secondary">Ферма отсутствует</div>
+                <div class="col d-flex align-items-center justify-content-end">
+                    @if (user.OwnPetFarm != null)
+                    {
+                        <div>
+                            <NavLink class="btn btn-primary" href=@($"/farms/{user.OwnPetFarm.Id}") Match="NavLinkMatch.All">
+                                Перейти на ферму
+                            </NavLink>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="btn btn-secondary">Ферма отсутствует</div>
 
-                }
-            </div>
-        </UserRow>
+                    }
+                </div>
+            </UserRow>
+        </div>
     }
 }
 else
 {
-    <Loading/>
+    <Loading />
 }
 
 @code {
@@ -47,9 +48,9 @@ else
         var authUserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
         User = await userManager.GetUserById(authUserId);
         var colaborators = new List<UserDTO>();
-        foreach(var colaborator in User.Collaborators)
+        foreach (var colaborator in User.Collaborators)
         {
-            colaborators.Add(await userManager.GetUserById(colaborator.Id)); 
+            colaborators.Add(await userManager.GetUserById(colaborator.Id));
         }
         User.Collaborators = colaborators;
     }
