@@ -4,6 +4,7 @@ using InnoGotchiGameFrontEnd.DAL.Services;
 using InnoGotchiGameFrontEnd.DAL.Models;
 using Microsoft.AspNetCore.Http;
 using InnoGotchiGameFrontEnd.BLL.Model.Identity;
+using InnoGotchiGameFrontEnd.BLL.Filtrators;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
@@ -18,9 +19,10 @@ namespace InnoGotchiGameFrontEnd.BLL
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<PictureDTO>> GetAllPictures(string nameTemplate)
+        public async Task<IEnumerable<PictureDTO>> GetAllPictures(PictureDTOFiltrator filtrator)
         {
-            var dataPictures = await _service.GetPictures(nameTemplate);
+            var dataFiltrator = _mapper.Map<PictureFiltrator>(filtrator);
+            var dataPictures = await _service.GetPictures(dataFiltrator);
             var pictures = _mapper.Map<IEnumerable<PictureDTO>>(dataPictures);
             return pictures;
         }

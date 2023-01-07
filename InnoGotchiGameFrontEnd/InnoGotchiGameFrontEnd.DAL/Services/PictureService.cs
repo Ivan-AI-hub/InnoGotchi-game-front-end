@@ -1,5 +1,4 @@
-﻿using InnoGotchiGameFrontEnd.DAL.Models.Farms;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text;
 using InnoGotchiGameFrontEnd.DAL.Models;
 using System.Net.Http.Json;
@@ -15,29 +14,35 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 			_baseUri = new Uri(client.BaseAddress, apiControllerName);
 		}
 
-        public async Task<IEnumerable<Picture>?> GetPictures(string nameTemplate)
+        public async Task<IEnumerable<Picture>?> GetPictures(PictureFiltrator filtrator)
         {
-            var uri = _baseUri + $"/getAll/{nameTemplate}";
-            IEnumerable<Picture> pictures = await RequestClient.GetFromJsonAsync<IEnumerable<Picture>>(uri);
+            var requestUrl = new StringBuilder($"?");
+
+            if (!String.IsNullOrEmpty(filtrator.Name))
+            {
+                requestUrl.Append($"&Name={filtrator.Name}");
+            }
+            if (!String.IsNullOrEmpty(filtrator.Description))
+            {
+                requestUrl.Append($"&Description={filtrator.Description}");
+            }
+            if (!String.IsNullOrEmpty(filtrator.Format))
+            {
+                requestUrl.Append($"&Format={filtrator.Format}");
+            }
+            var pictures = await RequestClient.GetFromJsonAsync<IEnumerable<Picture>>(_baseUri + requestUrl.ToString());
+
+            if (pictures == null)
+            {
+                throw new Exception("BadRequest in PictureService GetPictures");
+            }
             return pictures;
         }
 
         public async Task<Picture?> GetPictureById(int id)
         {
+            Picture? picture = await RequestClient.GetFromJsonAsync<Picture>(_baseUri + $"/{id}");
 
-            var httpResponseMessage = await RequestClient.GetAsync(_baseUri + $"/{id}");
-
-            Picture? picture = null;
-
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                picture = await JsonSerializer.DeserializeAsync<Picture>(contentStream, options);
-            }
             return picture;
         }
 

@@ -4,11 +4,8 @@ using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
-using InnoGotchiGameFrontEnd.DAL.Models;
 using InnoGotchiGameFrontEnd.DAL.Models.Users;
 using InnoGotchiGameFrontEnd.DAL.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
@@ -57,14 +54,14 @@ namespace InnoGotchiGameFrontEnd.BLL
 
 		public async Task<ManagerRezult> Create(AddUserDTOModel addModel)
 		{
-			var addDataModel = _mapper.Map<AddUserModel>(addModel);
-			if (addModel.Image != null)
-			{
-				addDataModel.Picture = new Picture();
-				addDataModel.Picture.Name = "user-avatar-" + Guid.NewGuid().ToString();
-				addDataModel.Picture.Image = addModel.Image.ToArray();
-			}
-			var rezult = new ManagerRezult();
+            var rezult = new ManagerRezult();
+            if (addModel.Password != addModel.RePassword)
+            {
+                rezult.Errors.Add("Пароли не совпадают");
+                return rezult;
+            }
+
+            var addDataModel = _mapper.Map<AddUserModel>(addModel);
 			var serviceRezult = await _service.Create(addDataModel);
 			rezult.Errors.AddRange(serviceRezult.Errors);
 			return rezult;
@@ -73,12 +70,7 @@ namespace InnoGotchiGameFrontEnd.BLL
 		public async Task<ManagerRezult> UpdateUserData(UpdateUserDTODataModel updateModel)
 		{
 			var updateDataModel = _mapper.Map<UpdateUserDataModel>(updateModel);
-			if (updateModel.Image != null)
-			{
-				updateDataModel.Picture = new Picture();
-				updateDataModel.Picture.Name = "user-avatar-" + Guid.NewGuid().ToString();
-				updateDataModel.Picture.Image = updateModel.Image.ToArray();
-			}
+
 			var rezult = new ManagerRezult();
 			var serviceRezult = await _service.UpdateUserData(updateDataModel);
 			rezult.Errors.AddRange(serviceRezult.Errors);
