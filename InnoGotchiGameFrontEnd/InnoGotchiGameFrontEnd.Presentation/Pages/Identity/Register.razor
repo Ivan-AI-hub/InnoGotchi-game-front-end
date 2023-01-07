@@ -34,10 +34,10 @@
                     <label class="form-label">Avatar</label>
                     <InputFile OnChange="@OnFileSelected" accept=".jpeg,.jpg,.png" class="form-control bg-black bg-opacity-25" />
                 </div>
-                @if (Data.Image != null)
+                @if (Data.Picture != null)
                 {
                     <div class="col">
-                        <ImageFromByteArray Image="@Data.Image.ToArray()" />
+                        <ImageFromByteArray Image="@Data.Picture.Image" />
                     </div>
                 }
             </div>
@@ -55,38 +55,32 @@
 </div>
 @code {
     private List<string> Errors;
-    private RegisterData Data;
+    private AddUserDTOModel Data;
     protected override void OnInitialized()
     {
-        Data = new RegisterData();
+        Data = new AddUserDTOModel();
         Errors = new List<string>();
     }
     private async Task OnFileSelected(InputFileChangeEventArgs e)
     {
-        Data.Image = new MemoryStream();
+        var stream = new MemoryStream();
         var file = e.File;
         string imageType = file.ContentType;
         file = await file.RequestImageFileAsync(imageType, 100, 100);
-        await file.OpenReadStream().CopyToAsync(Data.Image);
+        await file.OpenReadStream().CopyToAsync(stream);
+        Data.Picture = new PictureDTO()
+            {
+                Name = Guid.NewGuid().ToString(),
+                Description = "user_avatar",
+                Format = imageType,
+                Image = stream.ToArray()
+            };
         this.StateHasChanged();
     }
 
     private async Task RegisterAsync()
     {
-        if (Data.Password != Data.RePassword)
-        {
-            Errors.Add("Пароли не совпадают");
-            return;
-        }
-        var createModel = new AddUserDTOModel()
-            {
-                FirstName = Data.FirstName,
-                LastName = Data.LastName,
-                Email = Data.Email,
-                Password = Data.Password
-            };
-        createModel.Image = Data.Image;
-        var rezult = await manager.Create(createModel);
+        var rezult = await manager.Create(Data);
         this.StateHasChanged();
         if (!rezult.IsComplete)
         {

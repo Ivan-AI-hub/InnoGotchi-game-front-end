@@ -1,5 +1,6 @@
 ﻿@page "/pets/create/{FarmId:int}";
 @using InnoGotchiGameFrontEnd.BLL.ComandModels.Pet;
+@using InnoGotchiGameFrontEnd.BLL.Filtrators;
 @using InnoGotchiGameFrontEnd.DAL.Models.Pets;
 @using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 @using System.Text;
@@ -139,11 +140,6 @@
     private int MouthSize { get; set; } = 100;
     private int NoseSize { get; set; } = 100;
 
-    private string BodyHref => $"data:image/svg+xml;base64, {Convert.ToBase64String(BodiesPictures[SelectedBodyId].Image)}";
-    private string EyesHref => $"data:image/svg+xml;base64, {Convert.ToBase64String(EyesPictures[SelectedEyesId].Image)}";
-    private string MouthHref => $"data:image/svg+xml;base64, {Convert.ToBase64String(MouthsPictures[SelectedMouthId].Image)}";
-    private string NoseHref => $"data:image/svg+xml;base64, {Convert.ToBase64String(NosesPictures[SelectedNoseId].Image)}";
-
     private byte[] PetView { get; set; }
     protected override async Task OnInitializedAsync()
     {
@@ -152,10 +148,18 @@
                 FarmId = FarmId
             };
         Errors = new List<string>();
-        BodiesPictures = (await pictureManager.GetAllPictures("body")).ToList();
-        EyesPictures = (await pictureManager.GetAllPictures("eye")).ToList();
-        MouthsPictures = (await pictureManager.GetAllPictures("mouth")).ToList();
-        NosesPictures = (await pictureManager.GetAllPictures("nose")).ToList();
+        var filtrator = new PictureDTOFiltrator();
+        filtrator.Description = "body";
+        BodiesPictures = (await pictureManager.GetAllPictures(filtrator)).ToList();
+
+        filtrator.Description = "eye";
+        EyesPictures = (await pictureManager.GetAllPictures(filtrator)).ToList();
+
+        filtrator.Description = "mouth";
+        MouthsPictures = (await pictureManager.GetAllPictures(filtrator)).ToList();
+
+        filtrator.Description = "nose";
+        NosesPictures = (await pictureManager.GetAllPictures(filtrator)).ToList();
     }
 
     private async Task ElementClick(MouseEventArgs e)
@@ -187,10 +191,12 @@
     }
     private async Task CreatePetAsync()
     {
-        AddModel.View.BodyPicture = new PictureDTO()
+        AddModel.View.Picture = new PictureDTO()
             {
-                Name = "petView",
-                Image = PetView
+                Name = Guid.NewGuid().ToString(),
+                Image = PetView,
+                Description = "pet_view_picture",
+                Format = "svg"
             };
         var rezult = await petManager.Create(AddModel);
         this.StateHasChanged();

@@ -73,7 +73,7 @@
                             <g @oncontextmenu="@(e => PetRightClick(e, pet))">
                                 <Draggable X=random.Next(0,900) Y=random.Next(0,100)>
                                     <text x="90" y="30">@pet.Statistic.Name</text>
-                                    <ImageFromByteArray Image="pet.View.BodyPicture.Image"
+                                    <ImageFromByteArray Image="pet.View.Picture.Image"
                                             ImageType="svg+xml"
                                             Height="200"
                                             Width="200"
@@ -116,7 +116,7 @@
 
                                 <div class="col">
                                     <p>@pet.Statistic.Name умер @pet.Statistic.DeadDate.ToShortDateString()</p>
-                                    <ImageFromByteArray Image="pet.View.BodyPicture.Image"
+                                    <ImageFromByteArray Image="pet.View.Picture.Image"
                                         ImageType="svg+xml"
                                         Height="200"
                                         Width="200" />

@@ -25,10 +25,10 @@
                         <label class="form-label">Avatar</label>
                         <InputFile OnChange="@OnFileSelected" accept=".jpeg,.jpg,.png" class="form-control bg-opacity-25" />
                     </div>
-                    @if (Data.Image != null)
+                    @if (Data.Picture != null)
                     {
                         <div class="col-md-3">
-                            <ImageFromByteArray Image="@Data.Image.ToArray()" imgClass="img-fluid img-thumbnail" />
+                            <ImageFromByteArray Image="@Data.Picture.Image" imgClass="img-fluid img-thumbnail" />
                         </div>
                     }
                 </div>
@@ -64,17 +64,24 @@ else
             };
         if (user.Picture != null)
         {
-            Data.Image = new MemoryStream(user.Picture.Image);
+            Data.Picture = user.Picture;
         }
         IsLoading = false;
     }
     private async Task OnFileSelected(InputFileChangeEventArgs e)
     {
-        Data.Image = new MemoryStream();
+        var stream = new MemoryStream();
         var file = e.File;
         string imageType = file.ContentType;
-        file = await file.RequestImageFileAsync(imageType, 200, 200);
-        await file.OpenReadStream().CopyToAsync(Data.Image);
+        file = await file.RequestImageFileAsync(imageType, 100, 100);
+        await file.OpenReadStream().CopyToAsync(stream);
+        Data.Picture = new PictureDTO()
+            {
+                Name = Guid.NewGuid().ToString(),
+                Description = "user_avatar",
+                Format = imageType,
+                Image = stream.ToArray()
+            };
         this.StateHasChanged();
     }
     private async Task UpdateAsync()
