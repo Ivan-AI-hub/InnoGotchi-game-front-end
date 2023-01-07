@@ -4,6 +4,7 @@
     {
         FirstPage,
         MiddlePage,
-        LastPage
+        LastPage,
+        OnlyPage
     }
 }

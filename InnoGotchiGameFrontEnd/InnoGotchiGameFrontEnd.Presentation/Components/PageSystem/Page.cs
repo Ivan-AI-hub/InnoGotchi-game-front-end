@@ -14,7 +14,11 @@
         public PageStatus GetPageStatus(int itemsCount)
         {
             PageStatus pageStatus;
-            if (Number <= 1)
+            if (itemsCount < PageSize && Number <= 1)
+            {
+                pageStatus = PageStatus.OnlyPage;
+            }
+            else if (Number <= 1)
             {
                 pageStatus = PageStatus.FirstPage;
             }

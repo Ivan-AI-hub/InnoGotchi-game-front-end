@@ -5,12 +5,12 @@
 
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity?.Name!
-        <a href="/logout">Log out</a>
+        Приветствуем вас, @context.User.Identity?.Name!
+        <a href="/logout">Выйти</a>
     </Authorized>
     <NotAuthorized>
-        <a href="/login">Log in</a>
-        <a href="/register">Register</a>
+        <a href="/login">Войти</a>
+        <a href="/register">Зарегистрироватся</a>
     </NotAuthorized>
 </AuthorizeView>
 

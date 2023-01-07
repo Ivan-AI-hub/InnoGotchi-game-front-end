@@ -28,7 +28,7 @@
                     @if (Data.Image != null)
                     {
                         <div class="col-md-3">
-                            <ImageFromByteArray Image="@Data.Image.ToArray()"/>
+                            <ImageFromByteArray Image="@Data.Image.ToArray()" imgClass="img-fluid img-thumbnail" />
                         </div>
                     }
                 </div>
@@ -73,7 +73,7 @@ else
         Data.Image = new MemoryStream();
         var file = e.File;
         string imageType = file.ContentType;
-        file = await file.RequestImageFileAsync(imageType, 100, 100);
+        file = await file.RequestImageFileAsync(imageType, 200, 200);
         await file.OpenReadStream().CopyToAsync(Data.Image);
         this.StateHasChanged();
     }
