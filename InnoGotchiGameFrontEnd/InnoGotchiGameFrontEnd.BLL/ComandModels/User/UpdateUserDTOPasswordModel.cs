@@ -10,5 +10,7 @@ namespace InnoGotchiGameFrontEnd.BLL.ComandModels.User
         public string OldPassword { get; set; }
         [Required]
         public string NewPassword { get; set; }
+        [Required]
+        public string ConfirmPassword { get; set; }
     }
 }

@@ -7,20 +7,24 @@
         <h1>Enter zone</h1>
         <p class="text-danger">@ErrorMessage</p>
         <EditForm Model="@LoginData" OnValidSubmit="LoginAsync">
-            <DataAnnotationsValidator/>
-            <ValidationSummary/>
+            <DataAnnotationsValidator />
+            <ValidationSummary />
             <label for="username">Email</label>
-            <InputText id="username" @bind-Value="LoginData.Email" class="form-control"/>
+            <InputText id="username" @bind-Value="LoginData.Email" class="form-control" />
             <label for="password">Password</label>
             <InputText id="password" @bind-Value="LoginData.Password" class="form-control" />
-            @if (!IsLoading)
-            {
-                <input type="submit" class="btn btn-primary"/>
-            }
-            else
-            {
-                <Loading/>
-            }
+            <div class="row">
+                <div class="col-md-6 offset-md-4">
+                    @if (!IsLoading)
+                    {
+                        <input type="submit" class="btn btn-primary" />
+                    }
+                    else
+                    {
+                        <Loading />
+                    }
+                </div>
+            </div>
         </EditForm>
     </div>
 </div>

@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
+using InnoGotchiGameFrontEnd.BLL.Validators.Farms;
+using InnoGotchiGameFrontEnd.BLL.Validators.Users;
 using InnoGotchiGameFrontEnd.DAL.Models.Users;
 using InnoGotchiGameFrontEnd.DAL.Services;
 
@@ -37,6 +40,7 @@ namespace InnoGotchiGameFrontEnd.BLL
 			var users = _mapper.Map<IEnumerable<UserDTO>>(dataUsers);
 			return users;
 		}
+
 		public async Task<UserDTO> GetUserById(int id)
 		{
 			var dataUsers = await _service.GetUserById(id);
@@ -54,35 +58,43 @@ namespace InnoGotchiGameFrontEnd.BLL
 
 		public async Task<ManagerRezult> Create(AddUserDTOModel addModel)
 		{
-            var rezult = new ManagerRezult();
-            if (addModel.Password != addModel.RePassword)
-            {
-                rezult.Errors.Add("Пароли не совпадают");
-                return rezult;
-            }
-
-            var addDataModel = _mapper.Map<AddUserModel>(addModel);
-			var serviceRezult = await _service.Create(addDataModel);
-			rezult.Errors.AddRange(serviceRezult.Errors);
+            var validator = new AddUserDTOValidator();
+            var validationResult = validator.Validate(addModel);
+            var rezult = new ManagerRezult(validationResult);
+			if (validationResult.IsValid)
+			{
+				var addDataModel = _mapper.Map<AddUserModel>(addModel);
+				var serviceRezult = await _service.Create(addDataModel);
+				rezult.Errors.AddRange(serviceRezult.Errors);
+			}
 			return rezult;
 		}
 
 		public async Task<ManagerRezult> UpdateUserData(UpdateUserDTODataModel updateModel)
 		{
-			var updateDataModel = _mapper.Map<UpdateUserDataModel>(updateModel);
-
-			var rezult = new ManagerRezult();
-			var serviceRezult = await _service.UpdateUserData(updateDataModel);
-			rezult.Errors.AddRange(serviceRezult.Errors);
+            var validator = new UpdateUserDTODataValidator();
+            var validationResult = validator.Validate(updateModel);
+            var rezult = new ManagerRezult(validationResult);
+			if (validationResult.IsValid)
+			{
+				var updateDataModel = _mapper.Map<UpdateUserDataModel>(updateModel);
+				var serviceRezult = await _service.UpdateUserData(updateDataModel);
+				rezult.Errors.AddRange(serviceRezult.Errors);
+			}
 			return rezult;
 		}
 
 		public async Task<ManagerRezult> UpdateUserPassword(UpdateUserDTOPasswordModel updateModel)
 		{
-			var updateDataModel = _mapper.Map<UpdateUserPasswordModel>(updateModel);
-			var rezult = new ManagerRezult();
-			var serviceRezult = await _service.UpdateUserPassword(updateDataModel);
-			rezult.Errors.AddRange(serviceRezult.Errors);
+            var validator = new UpdateUserDTOPasswordValidator();
+            var validationResult = validator.Validate(updateModel);
+            var rezult = new ManagerRezult(validationResult);
+			if (validationResult.IsValid)
+			{
+				var updateDataModel = _mapper.Map<UpdateUserPasswordModel>(updateModel);
+				var serviceRezult = await _service.UpdateUserPassword(updateDataModel);
+				rezult.Errors.AddRange(serviceRezult.Errors);
+			}
 			return rezult;
 		}
 

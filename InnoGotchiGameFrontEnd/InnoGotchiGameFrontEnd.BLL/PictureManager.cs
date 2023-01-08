@@ -3,7 +3,6 @@ using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.DAL.Services;
 using InnoGotchiGameFrontEnd.DAL.Models;
 using Microsoft.AspNetCore.Http;
-using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 
 namespace InnoGotchiGameFrontEnd.BLL

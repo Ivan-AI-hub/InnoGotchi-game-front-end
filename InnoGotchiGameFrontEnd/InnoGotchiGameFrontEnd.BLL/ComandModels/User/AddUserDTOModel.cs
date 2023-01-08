@@ -1,5 +1,4 @@
 ﻿using InnoGotchiGameFrontEnd.BLL.Model;
-using InnoGotchiGameFrontEnd.DAL.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace InnoGotchiGameFrontEnd.BLL.ComandModels.User

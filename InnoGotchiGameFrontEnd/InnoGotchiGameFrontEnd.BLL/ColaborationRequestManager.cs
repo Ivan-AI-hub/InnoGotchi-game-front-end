@@ -1,18 +1,15 @@
 ﻿using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.DAL.Services;
-using System.Reflection;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
 	public class ColaborationRequestManager
     {
         private ColaborationRequestService _service;
-        private UserManager _userManager;
 
-        public ColaborationRequestManager(HttpClient client, UserManager userManager)
+        public ColaborationRequestManager(HttpClient client)
         {
             _service = new ColaborationRequestService(client);
-            _userManager = userManager;
         }
 
         public async Task<ManagerRezult> AddCollaborator(UserDTO sender, UserDTO recipient)

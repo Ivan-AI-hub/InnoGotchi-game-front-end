@@ -2,9 +2,9 @@
 using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.Pet;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
-using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.BLL.Model.Pet;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
+using InnoGotchiGameFrontEnd.BLL.Validators.Pets;
 using InnoGotchiGameFrontEnd.DAL.Models.Pets;
 using InnoGotchiGameFrontEnd.DAL.Services;
 
@@ -39,6 +39,7 @@ namespace InnoGotchiGameFrontEnd.BLL
 			var pets = _mapper.Map<IEnumerable<PetDTO>>(dataPets);
 			return pets;
 		}
+
 		public async Task<PetDTO> GetPetById(int id)
 		{
 			var dataPets = await _service.GetPetById(id);
@@ -48,20 +49,29 @@ namespace InnoGotchiGameFrontEnd.BLL
 
 		public async Task<ManagerRezult> Create(AddPetDTOModel addModel)
 		{
-			var addDataModel = _mapper.Map<AddPetModel>(addModel);
-			var rezult = new ManagerRezult();
-			var serviceRezult = await _service.Create(addDataModel);
-			rezult.Errors.AddRange(serviceRezult.Errors);
+            var validator = new AddPetDTOValidator();
+            var validationResult = validator.Validate(addModel);
+            var rezult = new ManagerRezult(validationResult);
+			if (validationResult.IsValid)
+			{
+				var addDataModel = _mapper.Map<AddPetModel>(addModel);
+				var serviceRezult = await _service.Create(addDataModel);
+				rezult.Errors.AddRange(serviceRezult.Errors);
+			}
 			return rezult;
 		}
 
 		public async Task<ManagerRezult> UpdatePet(UpdatePetDTOModel updateModel)
 		{
-			var updateDataModel = _mapper.Map<UpdatePetModel>(updateModel);
-			var rezult = new ManagerRezult();
-			var serviceRezult = await _service.UpdatePet(updateDataModel);
-			rezult.Errors.AddRange(serviceRezult.Errors);
-
+            var validator = new UpdatePetDTOValidator();
+            var validationResult = validator.Validate(updateModel);
+            var rezult = new ManagerRezult(validationResult);
+			if (validationResult.IsValid)
+			{
+				var updateDataModel = _mapper.Map<UpdatePetModel>(updateModel);
+				var serviceRezult = await _service.UpdatePet(updateDataModel);
+				rezult.Errors.AddRange(serviceRezult.Errors);
+			}
 			return rezult;
 		}
 
