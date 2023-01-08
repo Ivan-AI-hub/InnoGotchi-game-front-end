@@ -65,10 +65,10 @@ namespace InnoGotchiGameFrontEnd.BLL
 			return rezult;
 		}
 
-		public async Task<ManagerRezult> Feed(PetDTO pet, int feederId)
+		public async Task<ManagerRezult> Feed(PetDTO pet)
 		{
 			var rezult = new ManagerRezult();
-			var serviceRezult = await _service.Feed(pet.Id, feederId);
+			var serviceRezult = await _service.Feed(pet.Id);
 			rezult.Errors.AddRange(serviceRezult.Errors);
 
             if (rezult.IsComplete)
@@ -81,10 +81,10 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
 		}
 
-		public async Task<ManagerRezult> GiveDrink(PetDTO pet, int drinkerId)
+		public async Task<ManagerRezult> GiveDrink(PetDTO pet)
 		{
 			var rezult = new ManagerRezult();
-			var serviceRezult = await _service.GiveDrink(pet.Id, drinkerId);
+			var serviceRezult = await _service.GiveDrink(pet.Id);
 			rezult.Errors.AddRange(serviceRezult.Errors);
 
 			if(rezult.IsComplete)

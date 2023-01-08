@@ -18,7 +18,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         public async Task<ManagerRezult> AddCollaborator(UserDTO sender, UserDTO recipient)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.AddCollaborator(sender.Id, recipient.Id);
+            var serviceRezult = await _service.AddCollaborator(recipient.Id);
             rezult.Errors.AddRange(serviceRezult.Errors);
             if (rezult.IsComplete)
             {
@@ -39,7 +39,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         public async Task<ManagerRezult> ConfirmRequest(int requestId, UserDTO recipient)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.ConfirmRequest(requestId, recipient.Id);
+            var serviceRezult = await _service.ConfirmRequest(requestId);
             rezult.Errors.AddRange(serviceRezult.Errors);
             if (rezult.IsComplete)
             {
@@ -56,7 +56,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         public async Task<ManagerRezult> RejectRequest(int requestId, UserDTO participant)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.RejectRequest(requestId, participant.Id);
+            var serviceRezult = await _service.RejectRequest(requestId);
             rezult.Errors.AddRange(serviceRezult.Errors);
             if (rezult.IsComplete)
             {

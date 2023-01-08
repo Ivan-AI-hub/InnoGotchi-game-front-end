@@ -115,22 +115,20 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return await GetCommandRezult(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> Feed(int petId, int feederId)
+        public async Task<ServiceRezult> Feed(int petId)
         {
 
             var parameters = new Dictionary<string, string>();
-            parameters["feederId"] = feederId.ToString();
 
             var httpResponseMessage = await RequestClient.PutAsync(_baseUri+ $"/{petId}/feed", new FormUrlEncodedContent(parameters));
 
             return await GetCommandRezult(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> GiveDrink(int petId, int drinkerId)
+        public async Task<ServiceRezult> GiveDrink(int petId)
         {
 
             var parameters = new Dictionary<string, string>();
-            parameters["drinkerId"] = drinkerId.ToString();
 
             var httpResponseMessage = await RequestClient.PutAsync(_baseUri+ $"/{petId}/drink", new FormUrlEncodedContent(parameters));
 

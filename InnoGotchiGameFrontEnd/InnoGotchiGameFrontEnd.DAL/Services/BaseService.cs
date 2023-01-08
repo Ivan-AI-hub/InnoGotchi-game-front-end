@@ -23,7 +23,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             else
             {
                 using var contentStream = await responseMessage.Content.ReadAsStreamAsync();
-                if (contentStream.CanSeek)
+                if (contentStream.CanRead)
                 {
                     var options = new JsonSerializerOptions
                     {

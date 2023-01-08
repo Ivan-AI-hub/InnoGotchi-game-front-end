@@ -1,4 +1,5 @@
 ﻿using InnoGotchiGameFrontEnd.DAL.Models.Farms;
+using InnoGotchiGameFrontEnd.DAL.Models.Pets;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -16,30 +17,20 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         public async Task<IEnumerable<PetFarm>> GetFarms(FarmSorter? sorter = null, FarmFiltrator? filtrator = null)
         {
 
-            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _baseUri);
+            var requestUrl = new StringBuilder($"?sortField={sorter.SortRule}" +
+                                   $"&isDescendingSort={sorter.IsDescendingSort}");
 
-            var options = new JsonSerializerOptions
+            if (!String.IsNullOrEmpty(filtrator.Name))
             {
-                PropertyNameCaseInsensitive = true
-            };
+                requestUrl.Append($"&Name={filtrator.Name}");
+            }
 
-            using StringContent jsonContent = new(
-                         JsonSerializer.Serialize(new
-                         {
-                             sorter,
-                             filtrator
-                         }),
-                         Encoding.UTF8,
-                         "application/json");
-            request.Content = jsonContent;
-            var httpResponseMessage = await RequestClient.SendAsync(request);
 
-            IEnumerable<PetFarm> farms = new List<PetFarm>();
+            var farms = await RequestClient.GetFromJsonAsync<IEnumerable<PetFarm>>(_baseUri + requestUrl.ToString());
 
-            if (httpResponseMessage.IsSuccessStatusCode)
+            if (farms == null)
             {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                farms = await JsonSerializer.DeserializeAsync<IEnumerable<PetFarm>>(contentStream, options);
+                throw new Exception("BadRequest in FarmService GetFarms");
             }
             return farms;
         }
