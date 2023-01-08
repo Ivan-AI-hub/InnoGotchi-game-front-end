@@ -37,8 +37,8 @@
     protected override async Task OnInitializedAsync()
     {
         var state = await stateProvider.GetAuthenticationStateAsync();
-        Id = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
-        HasFarm = bool.Parse(state.User.FindFirst(nameof(SecurityToken.HasFarm)).Value);
+        Id = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId))!.Value);
+        HasFarm = int.Parse(state.User.FindFirst(nameof(SecurityToken.FarmId))!.Value) != 0;
     }
     private void ChangeSettingState()
     {

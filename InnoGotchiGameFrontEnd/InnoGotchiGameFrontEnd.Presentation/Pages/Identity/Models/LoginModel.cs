@@ -1,9 +1,7 @@
 ﻿using InnoGotchiGameFrontEnd.BLL;
-using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 using Microsoft.AspNetCore.Components;
-using System.ComponentModel.DataAnnotations;
 
 namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
 {
@@ -34,7 +32,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
                     AccessToken = authModel.AccessToken,
                     UserId = authModel.User.Id,
                     Email = authModel.User.Email,
-                    HasFarm = authModel.User.OwnPetFarm != null,
+                    FarmId = authModel.User.OwnPetFarmId,
                     UserName = $"{authModel.User.FirstName} {authModel.User.LastName}",
                     ExpireAt = DateTime.UtcNow.AddHours(1)
                 };

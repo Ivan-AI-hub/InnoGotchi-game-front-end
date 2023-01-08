@@ -34,7 +34,7 @@ internal class TokenStateProvider : AuthenticationStateProvider
             new Claim(ClaimTypes.Email, token.Email),
             new Claim(ClaimTypes.Expired, token.ExpireAt.ToLongDateString()),
             new Claim(nameof(SecurityToken.UserId), token.UserId.ToString()),
-            new Claim(nameof(SecurityToken.HasFarm), token.HasFarm.ToString())
+            new Claim(nameof(SecurityToken.FarmId), token.FarmId.ToString())
         };
 
 		var identity = new ClaimsIdentity(claims, "Bearer");

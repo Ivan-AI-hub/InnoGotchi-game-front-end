@@ -1,9 +1,11 @@
-﻿@page "/pets/create/{FarmId:int}";
+﻿@page "/pets/create";
 @using InnoGotchiGameFrontEnd.BLL.ComandModels.Pet;
 @using InnoGotchiGameFrontEnd.BLL.Filtrators;
 @using InnoGotchiGameFrontEnd.DAL.Models.Pets;
 @using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 @using System.Text;
+@attribute [Authorize]
+@inject AuthenticationStateProvider stateProvider;
 @inject PictureManager pictureManager;
 @inject PetManager petManager;
 @inject MouseService mouseSrv;
@@ -102,19 +104,23 @@
                 <button @onclick="SetPrevMouth" class="btn btn-primary col">Предидущий</button>
                 <input @bind:event="oninput" @bind="@MouthSize" type="range" class="custom-range" min="10" max="200" />
             </div>
-            <EditForm Model="AddModel" OnValidSubmit="CreatePetAsync">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-                <InputText @bind-Value="AddModel.Name" />
-                <input type="submit" value="Создать прекрасного питомца" class="btn btn-primary" />
-            </EditForm>
+            @if (AddModel != null)
+            {
+                <EditForm Model="AddModel" OnValidSubmit="CreatePetAsync">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <InputText @bind-Value="AddModel.Name" />
+                    <input type="submit" value="Создать прекрасного питомца" class="btn btn-primary" />
+                </EditForm>
+            }
         </div>
     </div>
 
 </div>
 
 @code {
-    [Parameter] public int FarmId { get; set; }
+    public int FarmId { get; set; }
+
     private AddPetDTOModel AddModel { get; set; }
     private List<string> Errors;
 
@@ -136,11 +142,13 @@
     private byte[] PetView { get; set; }
     protected override async Task OnInitializedAsync()
     {
+        Errors = new List<string>();
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        FarmId = int.Parse(state.User.FindFirst(nameof(SecurityToken.FarmId)).Value);
         AddModel = new AddPetDTOModel()
             {
                 FarmId = FarmId
             };
-        Errors = new List<string>();
         var filtrator = new PictureDTOFiltrator();
         filtrator.Description = "body";
         BodiesPictures = (await pictureManager.GetAllPictures(filtrator)).ToList();
