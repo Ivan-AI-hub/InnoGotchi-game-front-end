@@ -28,6 +28,7 @@ namespace InnoGotchiGameFrontEnd.BLL
 			var dataFiltrator = _mapper.Map<PetFiltrator>(filtrator);
 			var dataPets = await _service.GetPets(dataSorter, dataFiltrator);
 			var pets = _mapper.Map<IEnumerable<PetDTO>>(dataPets);
+			CheckHappinessStatus(pets);
 			return pets;
 		}
 
@@ -37,14 +38,16 @@ namespace InnoGotchiGameFrontEnd.BLL
 			var dataFiltrator = _mapper.Map<PetFiltrator>(filtrator);
 			var dataPets = await _service.GetPetsPage(pageSize, pageNumber, dataSorter, dataFiltrator);
 			var pets = _mapper.Map<IEnumerable<PetDTO>>(dataPets);
-			return pets;
+            CheckHappinessStatus(pets);
+            return pets;
 		}
 
 		public async Task<PetDTO> GetPetById(int id)
 		{
 			var dataPets = await _service.GetPetById(id);
 			var pet = _mapper.Map<PetDTO>(dataPets);
-			return pet;
+            CheckHappinessStatus(pet);
+            return pet;
 		}
 
 		public async Task<ManagerRezult> Create(AddPetDTOModel addModel)
@@ -125,5 +128,26 @@ namespace InnoGotchiGameFrontEnd.BLL
 			}
 			return rezult;
 		}
-	}
+
+        private void CheckHappinessStatus(IEnumerable<PetDTO> pets)
+		{
+			foreach (var pet in pets)
+			{
+				CheckHappinessStatus(pet);
+			}
+		}
+
+        private void CheckHappinessStatus(PetDTO pet)
+		{
+			if (pet.Statistic.HappinessDayCount > 0)
+			{
+				if (pet.Statistic.HungerLevel == HungerLevel.Hunger || pet.Statistic.ThirstyLevel == ThirstyLevel.Thirsty)
+				{
+                    pet.Statistic.FirstHappinessDay = DateTime.UtcNow;
+                    _service.ResetHappinessDay(pet.Id);
+				}
+			}
+		}
+
+    }
 }

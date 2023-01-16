@@ -134,6 +134,15 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             return await GetCommandRezult(httpResponseMessage);
         }
+        public async Task<ServiceRezult> ResetHappinessDay(int petId)
+        {
+
+            var parameters = new Dictionary<string, string>();
+
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + $"/{petId}/resetHappinessDay", new FormUrlEncodedContent(parameters));
+
+            return await GetCommandRezult(httpResponseMessage);
+        }
         public async Task<ServiceRezult> SetDeadStatus(int petId, DateTime deadDate)
         {
             var parameters = new Dictionary<string, string>();
