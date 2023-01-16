@@ -6,7 +6,7 @@
         public DateTime BornDate { get; set; }
         internal bool IsAlive { get; set; }
         public AliveState AliveState => GetAliveState();
-        public DateTime DeadDate { get; set; }
+        public DateTime? DeadDate { get; set; }
         public int FeedingCount { get; set; }
         public int DrinkingCount { get; set; }
         public DateTime FirstHappinessDay { get; set; }
@@ -22,14 +22,34 @@
         public ThirstyLevel ThirstyLevel { get => GetThirstyLevel(); set => _currentThirstyLevel = value; }
         private HungerLevel? _currentHungerLevel;
         private ThirstyLevel? _currentThirstyLevel;
-        private int _daysAliveCount => IsAlive ? (DateTime.Now - BornDate).Days : (DeadDate - BornDate).Days;
+        private int _daysAliveCount => IsAlive ? (DateTime.Now - BornDate).Days : (DeadDate!.Value - BornDate).Days;
 
+        public PetStatisticDTO()
+        {
+            if(DeadDate == null)
+            {
+                IsAlive = true;
+            }
+            else
+            {
+                IsAlive = false;
+            }
+
+        }
         private AliveState GetAliveState()
         {
             if (IsAlive == false)
                 return AliveState.Dead;
-            else if (HungerLevel == HungerLevel.Dead || ThirstyLevel == ThirstyLevel.Dead)
+            else if (HungerLevel == HungerLevel.Dead)
+            {
+                DeadDate = DateLastFeed.AddDays(DateToHungerLevelConvertor.GetInterval(HungerLevel.Dead).MinDays);
                 return AliveState.NotAnnouncedDead;
+            }
+            else if (ThirstyLevel == ThirstyLevel.Dead)
+            {
+                DeadDate = DateLastFeed.AddDays(DateToThirstyLevelConvertor.GetInterval(ThirstyLevel.Dead).MinDays);
+                return AliveState.NotAnnouncedDead;
+            }
             else
                 return AliveState.Alive;
         }

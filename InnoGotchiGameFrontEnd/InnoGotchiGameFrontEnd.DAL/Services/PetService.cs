@@ -134,9 +134,12 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             return await GetCommandRezult(httpResponseMessage);
         }
-        public async Task<ServiceRezult> SetDeadStatus(int petId)
+        public async Task<ServiceRezult> SetDeadStatus(int petId, DateTime deadDate)
         {
-            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + $"/{petId}/dead", null);
+            var parameters = new Dictionary<string, string>();
+            parameters.Add(nameof(deadDate), deadDate.ToString());
+
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + $"/{petId}/dead", new FormUrlEncodedContent(parameters));
 
             return await GetCommandRezult(httpResponseMessage);
         }

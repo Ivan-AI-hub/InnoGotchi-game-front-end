@@ -12,12 +12,13 @@
 @if (IsAuthUserFarm || IsColaboratorFarm)
 {
     <PetModal @ref="@petModal"/>
-}
-@if (DiesPets != null)
-{
-    @foreach (var pet in DiesPets)
+
+    @if (DiesPets != null && IsAuthUserFarm)
     {
-        <PetDiedModal Pet="pet" />
+        @foreach (var pet in DiesPets)
+        {
+            <PetDiedModal Pet="pet" />
+        }
     }
 }
 <div>
@@ -106,16 +107,16 @@
                     Средний возраст питомцев: @String.Format("{0:0.00}", @Farm.AveragePetsAge) Лет
                 </div>
                 <div class="row">
-                    @if (Farm.Pets.Any(x => x.Statistic.AliveState == AliveState.Dead))
+                    @if (Farm.Pets.Any(x => x.Statistic.AliveState != AliveState.Alive))
                     {
                         <h3>Скорбим по</h3>
                         @foreach (var pet in Farm.Pets)
                         {
-                            @if (pet.Statistic.AliveState == AliveState.Dead)
+                            @if (pet.Statistic.AliveState != AliveState.Alive)
                             {
 
                                 <div class="col">
-                                    <p>@pet.Statistic.Name умер @pet.Statistic.DeadDate.ToShortDateString()</p>
+                                    <p>@pet.Statistic.Name умер @pet.Statistic.DeadDate.Value.ToShortDateString()</p>
                                     <ImageFromByteArray Image="pet.View.Picture.Image"
                                         ImageType="svg+xml"
                                         Height="200"

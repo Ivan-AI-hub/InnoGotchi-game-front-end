@@ -110,13 +110,18 @@ namespace InnoGotchiGameFrontEnd.BLL
 		public async Task<ManagerRezult> SetDeadStatus(PetDTO pet)
 		{
 			var rezult = new ManagerRezult();
-			var serviceRezult = await _service.SetDeadStatus(pet.Id);
-			rezult.Errors.AddRange(serviceRezult.Errors);
+			ServiceRezult serviceRezult;
+			if(pet.Statistic.DeadDate != null)
+				serviceRezult = await _service.SetDeadStatus(pet.Id, pet.Statistic.DeadDate.Value);
+			else
+                serviceRezult = await _service.SetDeadStatus(pet.Id, DateTime.Now);
+
+            rezult.Errors.AddRange(serviceRezult.Errors);
 
 			if(rezult.IsComplete)
 			{
 				pet.Statistic.IsAlive = false;
-				pet.Statistic.DeadDate = DateTime.UtcNow;
+				pet.Statistic.DeadDate = pet.Statistic.DeadDate ?? DateTime.UtcNow;
 			}
 			return rezult;
 		}
