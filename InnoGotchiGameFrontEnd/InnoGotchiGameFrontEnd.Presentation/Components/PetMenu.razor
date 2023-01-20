@@ -26,6 +26,7 @@
 @code {
     [Parameter] public PetDTO Pet { get; set; }
     [Parameter] public List<string> Errors { get; set; }
+    [Parameter] public Action OnPetStatsChanges { get; set; }
 
     protected override Task OnInitializedAsync()
     {
@@ -38,6 +39,7 @@
         var rez = await petManager.Feed(Pet);
         Errors.Clear();
         Errors.AddRange(rez.Errors);
+        OnPetStatsChanges?.Invoke();
     }
 
     private async Task GiveDrink()
@@ -45,5 +47,6 @@
         var rez = await petManager.GiveDrink(Pet);
         Errors.Clear();
         Errors.AddRange(rez.Errors);
+        OnPetStatsChanges?.Invoke();
     }
 }

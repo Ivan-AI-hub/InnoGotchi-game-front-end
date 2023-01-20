@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.Pet;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model.Pet;
