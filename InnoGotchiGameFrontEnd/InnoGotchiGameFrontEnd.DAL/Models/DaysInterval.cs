@@ -1,5 +1,4 @@
-﻿
-namespace InnoGotchiGameFrontEnd.BLL.Model.Pet
+﻿namespace InnoGotchiGameFrontEnd.DAL.Models
 {
     public class DaysInterval
     {

@@ -1,6 +1,4 @@
-﻿using InnoGotchiGameFrontEnd.BLL.Model.Pet;
-
-namespace InnoGotchiGameFrontEnd.DAL.Models.Pets
+﻿namespace InnoGotchiGameFrontEnd.DAL.Models.Pets
 {
     public class PetFiltrator
     {
