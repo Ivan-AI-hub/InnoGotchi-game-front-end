@@ -1,4 +1,6 @@
-﻿namespace InnoGotchiGameFrontEnd.BLL.Model.Pet
+﻿using InnoGotchiGameFrontEnd.DAL.Models;
+
+namespace InnoGotchiGameFrontEnd.BLL.Model.Pet
 {
     internal static class DateToHungerLevelConvertor
     {

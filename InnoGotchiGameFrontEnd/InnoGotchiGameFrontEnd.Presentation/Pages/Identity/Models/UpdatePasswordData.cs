@@ -9,6 +9,6 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
         [Required]
         public string NewPassword { get; set; }
         [Required]
-        public string ConfirmPassword { get; set;}
+        public string ConfirmPassword { get; set; }
     }
 }

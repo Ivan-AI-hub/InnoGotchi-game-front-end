@@ -1,5 +1,4 @@
 ﻿using InnoGotchiGameFrontEnd.DAL.Models.Pets;
-using System.Text.Json.Serialization;
 
 namespace InnoGotchiGameFrontEnd.DAL.Models.Farms
 {

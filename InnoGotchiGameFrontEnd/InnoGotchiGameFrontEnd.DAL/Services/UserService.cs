@@ -1,5 +1,4 @@
-﻿using InnoGotchiGameFrontEnd.DAL.Models.Pets;
-using InnoGotchiGameFrontEnd.DAL.Models.Users;
+﻿using InnoGotchiGameFrontEnd.DAL.Models.Users;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -51,7 +50,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             var requestUrl = new StringBuilder($"/{pageSize}/{pageNumber}" +
                              $"?sortField={sorter.SortRule}&isDescendingSort={sorter.IsDescendingSort}");
 
-            if(!String.IsNullOrEmpty(filtrator.FirstName))
+            if (!String.IsNullOrEmpty(filtrator.FirstName))
             {
                 requestUrl.Append($"&firstName={filtrator.FirstName}");
             }
@@ -138,12 +137,12 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
-				using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-				var options = new JsonSerializerOptions
-				{
-					PropertyNameCaseInsensitive = true
-				};
-				var token = await JsonSerializer.DeserializeAsync<AuthorizeModel>(contentStream, options);
+                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var token = await JsonSerializer.DeserializeAsync<AuthorizeModel>(contentStream, options);
                 return token;
             }
             return null;

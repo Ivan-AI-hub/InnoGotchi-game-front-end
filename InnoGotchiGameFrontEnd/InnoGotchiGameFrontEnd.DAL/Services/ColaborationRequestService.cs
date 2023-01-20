@@ -4,12 +4,12 @@
     {
         private Uri _baseUri;
         public ColaborationRequestService(HttpClient client) : base(client)
-		{
-			var apiControllerName = "colaborators";
-			_baseUri = new Uri(client.BaseAddress, apiControllerName);
-		}
+        {
+            var apiControllerName = "colaborators";
+            _baseUri = new Uri(client.BaseAddress, apiControllerName);
+        }
 
-        public async Task<ServiceRezult> AddCollaborator( int recipientId)
+        public async Task<ServiceRezult> AddCollaborator(int recipientId)
         {
 
             var parameters = new Dictionary<string, string>();

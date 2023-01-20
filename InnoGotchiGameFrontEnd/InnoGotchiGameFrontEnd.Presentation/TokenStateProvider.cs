@@ -7,8 +7,8 @@ using System.Security.Claims;
 internal class TokenStateProvider : AuthenticationStateProvider
 {
     private readonly HttpClient _httpClient;
-	private ILocalStorageService _localStorageService;
-    public TokenStateProvider(HttpClient httpClient,ILocalStorageService localStorageService)
+    private ILocalStorageService _localStorageService;
+    public TokenStateProvider(HttpClient httpClient, ILocalStorageService localStorageService)
     {
         _httpClient = httpClient;
         _localStorageService = localStorageService;
@@ -16,19 +16,19 @@ internal class TokenStateProvider : AuthenticationStateProvider
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var token = await _localStorageService.GetAsync<SecurityToken>(nameof(SecurityToken));
-        if(token == null)
+        if (token == null)
         {
             return GetAnonymous();
         }
 
-        if(String.IsNullOrEmpty(token.AccessToken) || token.ExpireAt < DateTime.UtcNow) 
+        if (String.IsNullOrEmpty(token.AccessToken) || token.ExpireAt < DateTime.UtcNow)
         {
             return GetAnonymous();
         }
 
-		_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
-		var claims = new List<Claim>()
+        var claims = new List<Claim>()
         {
             new Claim(ClaimTypes.Name, token.UserName),
             new Claim(ClaimTypes.Email, token.Email),
@@ -37,7 +37,7 @@ internal class TokenStateProvider : AuthenticationStateProvider
             new Claim(nameof(SecurityToken.FarmId), token.FarmId.ToString())
         };
 
-		var identity = new ClaimsIdentity(claims, "Bearer");
+        var identity = new ClaimsIdentity(claims, "Bearer");
         var principal = new ClaimsPrincipal(identity);
         return new AuthenticationState(principal);
     }
@@ -50,10 +50,10 @@ internal class TokenStateProvider : AuthenticationStateProvider
         NotifyAuthenticationStateChanged(authState);
     }
 
-	private AuthenticationState GetAnonymous()
-	{
-		var anonymousIdentity = new ClaimsIdentity();
-		var anonymousPrincipal = new ClaimsPrincipal(anonymousIdentity);
-		return new AuthenticationState(anonymousPrincipal);
-	}
+    private AuthenticationState GetAnonymous()
+    {
+        var anonymousIdentity = new ClaimsIdentity();
+        var anonymousPrincipal = new ClaimsPrincipal(anonymousIdentity);
+        return new AuthenticationState(anonymousPrincipal);
+    }
 }

@@ -3,7 +3,7 @@ using InnoGotchiGameFrontEnd.DAL.Services;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
-	public class ColaborationRequestManager
+    public class ColaborationRequestManager
     {
         private ColaborationRequestService _service;
 

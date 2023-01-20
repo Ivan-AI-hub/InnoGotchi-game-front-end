@@ -13,7 +13,7 @@
         public DateTime DateLastFeed { get; set; }
         public DateTime DateLastDrink { get; set; }
 
-        public int Age => _daysAliveCount/7;
+        public int Age => _daysAliveCount / 7;
         public int HappinessDayCount => IsAlive ? (DateTime.Now - FirstHappinessDay).Days : 0;
         public double AverageDrinkingPeriod => DrinkingCount != 0 ? _daysAliveCount / DrinkingCount : DrinkingCount;
         public double AverageFeedingPeriod => FeedingCount != 0 ? _daysAliveCount / FeedingCount : FeedingCount;
@@ -26,7 +26,7 @@
 
         public PetStatisticDTO()
         {
-            if(DeadDate == null)
+            if (DeadDate == null)
             {
                 IsAlive = true;
             }

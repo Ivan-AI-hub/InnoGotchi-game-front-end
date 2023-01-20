@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using InnoGotchiGameFrontEnd.BLL.Model;
-using InnoGotchiGameFrontEnd.DAL.Services;
-using InnoGotchiGameFrontEnd.DAL.Models;
-using Microsoft.AspNetCore.Http;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
+using InnoGotchiGameFrontEnd.BLL.Model;
+using InnoGotchiGameFrontEnd.DAL.Models;
+using InnoGotchiGameFrontEnd.DAL.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
-	public class PictureManager
+    public class PictureManager
     {
         private PictureService _service;
         private IMapper _mapper;

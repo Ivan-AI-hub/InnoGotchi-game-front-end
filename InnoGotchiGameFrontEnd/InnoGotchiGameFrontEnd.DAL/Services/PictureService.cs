@@ -1,7 +1,7 @@
-﻿using System.Text.Json;
-using System.Text;
-using InnoGotchiGameFrontEnd.DAL.Models;
+﻿using InnoGotchiGameFrontEnd.DAL.Models;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.DAL.Services
 {
@@ -9,10 +9,10 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
     {
         private Uri _baseUri;
         public PictureService(HttpClient client) : base(client)
-		{
-			var apiControllerName = "pictures";
-			_baseUri = new Uri(client.BaseAddress, apiControllerName);
-		}
+        {
+            var apiControllerName = "pictures";
+            _baseUri = new Uri(client.BaseAddress, apiControllerName);
+        }
 
         public async Task<IEnumerable<Picture>?> GetPictures(PictureFiltrator filtrator)
         {

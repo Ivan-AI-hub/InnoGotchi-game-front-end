@@ -9,7 +9,7 @@ using InnoGotchiGameFrontEnd.DAL.Services;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
-	public class FarmManager
+    public class FarmManager
     {
         private FarmService _service;
         private IMapper _mapper;

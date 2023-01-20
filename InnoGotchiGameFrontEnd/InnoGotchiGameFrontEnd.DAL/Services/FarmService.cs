@@ -1,5 +1,4 @@
 ﻿using InnoGotchiGameFrontEnd.DAL.Models.Farms;
-using InnoGotchiGameFrontEnd.DAL.Models.Pets;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -10,10 +9,10 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
     {
         private Uri _baseUri;
         public FarmService(HttpClient client) : base(client)
-		{
-			var apiControllerName = "farms";
+        {
+            var apiControllerName = "farms";
             _baseUri = new Uri(client.BaseAddress, apiControllerName);
-		}
+        }
         public async Task<IEnumerable<PetFarm>> GetFarms(FarmSorter? sorter = null, FarmFiltrator? filtrator = null)
         {
 

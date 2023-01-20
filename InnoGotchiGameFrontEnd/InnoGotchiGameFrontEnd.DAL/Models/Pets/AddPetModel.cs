@@ -8,7 +8,7 @@
 
         public AddPetModel()
         {
-            View = new PetView();  
+            View = new PetView();
         }
     }
 }

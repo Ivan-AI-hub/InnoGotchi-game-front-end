@@ -9,10 +9,10 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
     {
         private Uri _baseUri;
         public PetService(HttpClient client) : base(client)
-		{
-			var apiControllerName = "pets";
-			_baseUri= new Uri(client.BaseAddress, apiControllerName);
-		}
+        {
+            var apiControllerName = "pets";
+            _baseUri = new Uri(client.BaseAddress, apiControllerName);
+        }
 
 
         public async Task<IEnumerable<Pet>> GetPets(PetSorter? sorter = null, PetFiltrator? filtrator = null)
@@ -37,7 +37,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             }
 
             requestUrl.Append($"&DaysAlive={filtrator.DaysAlive}");
-            
+
 
             var pets = await RequestClient.GetFromJsonAsync<IEnumerable<Pet>>(_baseUri + requestUrl.ToString());
 
@@ -53,7 +53,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var requestUrl = new StringBuilder($"/{pageSize}/{pageNumber}" +
                             $"?sortField={sorter.SortRule}&isDescendingSort={sorter.IsDescendingSort}");
-           
+
             if (!String.IsNullOrEmpty(filtrator.Name))
             {
                 requestUrl.Append($"&Name={filtrator.Name}");
@@ -110,7 +110,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PutAsync(_baseUri+ "/data", jsonContent);
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + "/data", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -120,7 +120,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var parameters = new Dictionary<string, string>();
 
-            var httpResponseMessage = await RequestClient.PutAsync(_baseUri+ $"/{petId}/feed", new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + $"/{petId}/feed", new FormUrlEncodedContent(parameters));
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -130,7 +130,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var parameters = new Dictionary<string, string>();
 
-            var httpResponseMessage = await RequestClient.PutAsync(_baseUri+ $"/{petId}/drink", new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + $"/{petId}/drink", new FormUrlEncodedContent(parameters));
 
             return await GetCommandRezult(httpResponseMessage);
         }

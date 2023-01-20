@@ -6,7 +6,7 @@ namespace InnoGotchiGameFrontEnd.BLL.Validators.Pets
 {
     internal class AddPetDTOValidator : AbstractValidator<AddPetDTOModel>
     {
-        public AddPetDTOValidator() 
+        public AddPetDTOValidator()
         {
             RuleFor(x => x.FarmId).NotNull().Must(x => x > 0);
             RuleFor(x => x.Name).NotNull().NotEmpty();

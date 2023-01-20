@@ -9,13 +9,13 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Pets.Models
     {
         private string _feedSelectValue;
         private string _thirstySelectValue;
-        public string FeedSelectValue 
-        { 
+        public string FeedSelectValue
+        {
             get => _feedSelectValue;
-            set 
+            set
             {
-                _feedSelectValue = value; 
-                if(_feedSelectValue == "null")
+                _feedSelectValue = value;
+                if (_feedSelectValue == "null")
                 {
                     Filtrator.HungerLevel = null;
                 }
@@ -23,7 +23,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Pets.Models
                 {
                     Filtrator.HungerLevel = Enum.Parse<HungerLevel>(_feedSelectValue);
                 }
-            } 
+            }
         }
         public string ThirstySelectValue
         {
@@ -37,7 +37,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Pets.Models
                 }
                 else
                 {
-                    Filtrator.ThirstyLevel= Enum.Parse<ThirstyLevel>(_thirstySelectValue);
+                    Filtrator.ThirstyLevel = Enum.Parse<ThirstyLevel>(_thirstySelectValue);
                 }
             }
         }
@@ -45,13 +45,13 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Pets.Models
         public PetDTOFiltrator Filtrator { get; set; }
         public PetDTOSorter Sorter { get; set; }
         public Page Page { get; set; }
-        public PageStatus PageStatus => Page.GetPageStatus(Pets == null? 0 : Pets.Count());
+        public PageStatus PageStatus => Page.GetPageStatus(Pets == null ? 0 : Pets.Count());
         public PetsData()
         {
             Pets = null;
             Filtrator = new PetDTOFiltrator();
-            Sorter = new PetDTOSorter() 
-            { 
+            Sorter = new PetDTOSorter()
+            {
                 SortRule = PetDTOSortRule.happinessDays
             };
             Page = new Page(1, 15);

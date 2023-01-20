@@ -15,10 +15,10 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddTransient<ILocalStorageService, LocalStorageService>();
 builder.Services.AddTransient<IElementReferenceService, ElementReferenceService>();
 builder.Services.AddScoped<AuthenticationStateProvider, TokenStateProvider>();
-builder.Services.AddScoped(sp => 
-new HttpClient 
-{ 
-	BaseAddress = new Uri(builder.Configuration.GetSection("BackEndAddress").Value + "api/") 
+builder.Services.AddScoped(sp =>
+new HttpClient
+{
+    BaseAddress = new Uri(builder.Configuration.GetSection("BackEndAddress").Value + "api/")
 });
 
 var config = new MapperConfiguration(cnf => cnf.AddProfiles(new List<Profile>() { new BllMappingProfile() }));

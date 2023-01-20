@@ -3,7 +3,7 @@ using InnoGotchiGameFrontEnd.BLL.ComandModels.Pet;
 
 namespace InnoGotchiGameFrontEnd.BLL.Validators.Pets
 {
-    internal class UpdatePetDTOValidator :AbstractValidator<UpdatePetDTOModel>
+    internal class UpdatePetDTOValidator : AbstractValidator<UpdatePetDTOModel>
     {
         public UpdatePetDTOValidator()
         {

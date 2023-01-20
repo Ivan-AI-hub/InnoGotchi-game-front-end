@@ -2,9 +2,9 @@
 
 namespace InnoGotchiGameFrontEnd.BLL.ComandModels.Farm
 {
-	public class AddFarmDTOModel
-	{
-		[Required]
-		public string Name { get; set; }
-	}
+    public class AddFarmDTOModel
+    {
+        [Required]
+        public string Name { get; set; }
+    }
 }

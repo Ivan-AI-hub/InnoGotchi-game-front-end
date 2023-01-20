@@ -12,7 +12,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Users.Models
         public UserDTOFiltrator Filtrator { get; set; }
         public UserDTOSorter Sorter { get; set; }
         public Page Page { get; set; }
-        public PageStatus PageStatus => Page.GetPageStatus(Users == null? 0 : Users.Count());
+        public PageStatus PageStatus => Page.GetPageStatus(Users == null ? 0 : Users.Count());
         public UsersData()
         {
             Users = null;

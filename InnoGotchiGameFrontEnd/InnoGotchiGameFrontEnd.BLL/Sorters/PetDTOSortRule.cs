@@ -1,10 +1,10 @@
 ﻿namespace InnoGotchiGameFrontEnd.BLL.Sorters
 {
-	public enum PetDTOSortRule
-	{
-		Age,
-		Drink,
-		Feeding,
+    public enum PetDTOSortRule
+    {
+        Age,
+        Drink,
+        Feeding,
         happinessDays
     }
 }
