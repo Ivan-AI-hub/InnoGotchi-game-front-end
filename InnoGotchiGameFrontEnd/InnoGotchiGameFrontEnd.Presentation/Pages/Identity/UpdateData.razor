@@ -3,6 +3,7 @@
 @attribute [Authorize]
 @inject AuthenticationStateProvider stateProvider;
 @inject UserManager manager;
+@inject IConfiguration configuration;
 @inject NavigationManager navigation;
 
 @if (!IsLoading)
@@ -77,7 +78,8 @@ else
         var stream = new MemoryStream();
         var file = e.File;
         string imageType = file.ContentType;
-        file = await file.RequestImageFileAsync(imageType, 200, 200);
+        int imgSize = int.Parse(configuration.GetSection("ImageSizePx").Value);
+        file = await file.RequestImageFileAsync(imageType, imgSize, imgSize);
         await file.OpenReadStream().CopyToAsync(stream);
         Data.Picture = new PictureDTO()
             {

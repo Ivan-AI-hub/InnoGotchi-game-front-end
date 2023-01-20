@@ -4,6 +4,7 @@
 @using InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models;
 @using Microsoft.AspNetCore.Http;
 @inject UserManager manager;
+@inject IConfiguration configuration;
 @inject NavigationManager navigation;
 
 
@@ -72,7 +73,8 @@
         var stream = new MemoryStream();
         var file = e.File;
         string imageType = file.ContentType;
-        file = await file.RequestImageFileAsync(imageType, 200, 200);
+        int imgSize = int.Parse(configuration.GetSection("ImageSizePx").Value);
+        file = await file.RequestImageFileAsync(imageType, imgSize, imgSize);
         await file.OpenReadStream().CopyToAsync(stream);
         Data.Picture = new PictureDTO()
             {
