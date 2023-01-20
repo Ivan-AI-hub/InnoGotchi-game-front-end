@@ -18,7 +18,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, TokenStateProvider>();
 builder.Services.AddScoped(sp => 
 new HttpClient 
 { 
-	BaseAddress = new Uri("https://localhost:10000/api/") 
+	BaseAddress = new Uri(builder.Configuration.GetSection("BackEndAddress").Value + "api/") 
 });
 
 var config = new MapperConfiguration(cnf => cnf.AddProfiles(new List<Profile>() { new BllMappingProfile() }));
