@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using InnoGotchiGame.Web.Models.ErrorModel;
+using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.DAL.Services
 {
@@ -28,7 +29,8 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                     {
                         PropertyNameCaseInsensitive = true
                     };
-                    rezult.Errors.AddRange(await JsonSerializer.DeserializeAsync<List<string>>(contentStream, options));
+                    var error = await JsonSerializer.DeserializeAsync<ErrorDetails>(contentStream, options);
+                    rezult.Errors.AddRange(error.Message.Split('\n'));
                 }
                 else
                 {

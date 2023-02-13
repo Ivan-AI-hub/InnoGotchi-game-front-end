@@ -66,6 +66,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             {
                 requestUrl.Append($"&petFarnId={filtrator.PetFarmId}");
             }
+
             var users = await RequestClient.GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString());
 
             if (users == null)
