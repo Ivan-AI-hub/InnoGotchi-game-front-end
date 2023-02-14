@@ -26,8 +26,8 @@ builder.Services.AddScoped<PictureManager>();
 
 builder.Services.AddHttpClient<IAuthorizedClient, AuthorizedClient>()
     .ConfigureHttpClient(client =>
-    { 
-    client.BaseAddress = new Uri(builder.Configuration.GetSection("BackEndAddress").Value + "api/"); 
+    {
+        client.BaseAddress = new Uri(builder.Configuration.GetSection("BackEndAddress").Value + "api/");
     });
 
 builder.Services

@@ -1,5 +1,5 @@
-﻿using System.Net.Http.Headers;
-using AuthorizationInfrastructure.Tokens;
+﻿using AuthorizationInfrastructure.Tokens;
+using System.Net.Http.Headers;
 
 namespace AuthorizationInfrastructure.HttpClients
 {
@@ -25,7 +25,7 @@ namespace AuthorizationInfrastructure.HttpClients
         private async Task SetTokenAsync(IStorageService storage)
         {
             var token = await storage.GetAsync<SecurityToken>(nameof(SecurityToken));
-            if(token != null)
+            if (token != null)
                 _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token.AccessToken);
         }
     }

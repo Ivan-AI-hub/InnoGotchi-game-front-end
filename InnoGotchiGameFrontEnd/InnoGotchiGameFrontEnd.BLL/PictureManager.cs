@@ -1,6 +1,6 @@
-﻿using AutoMapper;
+﻿using AuthorizationInfrastructure.HttpClients;
+using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
-using AuthorizationInfrastructure.HttpClients;
 using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.DAL.Models;
 using InnoGotchiGameFrontEnd.DAL.Services;

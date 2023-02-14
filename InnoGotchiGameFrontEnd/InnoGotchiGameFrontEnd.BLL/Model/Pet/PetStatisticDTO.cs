@@ -15,8 +15,8 @@
 
         public int Age => _daysAliveCount / 7;
         public int HappinessDayCount => IsAlive ? (DateTime.Now - FirstHappinessDay).Days : 0;
-        public double AverageDrinkingPeriod => _daysAliveCount != 0? DrinkingCount / _daysAliveCount : DrinkingCount;
-        public double AverageFeedingPeriod => _daysAliveCount != 0?  FeedingCount / _daysAliveCount : FeedingCount;
+        public double AverageDrinkingPeriod => _daysAliveCount != 0 ? DrinkingCount / _daysAliveCount : DrinkingCount;
+        public double AverageFeedingPeriod => _daysAliveCount != 0 ? FeedingCount / _daysAliveCount : FeedingCount;
 
         public HungerLevel HungerLevel { get => GetHungerLevel(); set => _currentHungerLevel = value; }
         public ThirstyLevel ThirstyLevel { get => GetThirstyLevel(); set => _currentThirstyLevel = value; }
