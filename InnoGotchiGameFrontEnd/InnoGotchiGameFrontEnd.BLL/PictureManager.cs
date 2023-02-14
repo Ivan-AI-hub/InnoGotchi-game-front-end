@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
+using AuthorizationInfrastructure.HttpClients;
 using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.DAL.Models;
 using InnoGotchiGameFrontEnd.DAL.Services;
@@ -12,7 +13,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         private PictureService _service;
         private IMapper _mapper;
 
-        public PictureManager(HttpClient client, IMapper mapper)
+        public PictureManager(IAuthorizedClient client, IMapper mapper)
         {
             _service = new PictureService(client);
             _mapper = mapper;

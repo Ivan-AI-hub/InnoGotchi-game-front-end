@@ -1,4 +1,5 @@
-﻿using InnoGotchiGameFrontEnd.BLL.Model;
+﻿using AuthorizationInfrastructure.HttpClients;
+using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.DAL.Services;
 
 namespace InnoGotchiGameFrontEnd.BLL
@@ -7,7 +8,7 @@ namespace InnoGotchiGameFrontEnd.BLL
     {
         private ColaborationRequestService _service;
 
-        public ColaborationRequestManager(HttpClient client)
+        public ColaborationRequestManager(IAuthorizedClient client)
         {
             _service = new ColaborationRequestService(client);
         }

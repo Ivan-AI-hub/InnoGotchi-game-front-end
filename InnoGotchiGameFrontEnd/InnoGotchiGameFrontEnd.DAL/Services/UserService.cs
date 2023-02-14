@@ -1,4 +1,5 @@
-﻿using InnoGotchiGameFrontEnd.DAL.Models.Users;
+﻿using AuthorizationInfrastructure.HttpClients;
+using InnoGotchiGameFrontEnd.DAL.Models.Users;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -9,7 +10,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
     {
         private Uri _baseUri;
 
-        public UserService(HttpClient client) : base(client)
+        public UserService(IAuthorizedClient client) : base(client)
         {
             var apiControllerName = "Users";
             _baseUri = new Uri(client.BaseAddress, apiControllerName);
@@ -36,7 +37,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             {
                 requestUrl.Append($"&petFarnId={filtrator.PetFarmId}");
             }
-            var users = await RequestClient.GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString());
+            var users = await (await RequestClient).GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString());
 
             if (users == null)
             {
@@ -67,7 +68,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                 requestUrl.Append($"&petFarnId={filtrator.PetFarmId}");
             }
 
-            var users = await RequestClient.GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString());
+            var users = await (await RequestClient).GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString());
 
             if (users == null)
             {
@@ -77,13 +78,13 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         }
         public async Task<User?> GetUserById(int id)
         {
-            User? user = await RequestClient.GetFromJsonAsync<User>(_baseUri + $"/{id}");
+            User? user = await (await RequestClient).GetFromJsonAsync<User>(_baseUri + $"/{id}");
 
             return user;
         }
         public async Task<User?> GetAuthodizedUser()
         {
-            User? user = await RequestClient.GetFromJsonAsync<User>(_baseUri + $"/Authorized");
+            User? user = await (await RequestClient).GetFromJsonAsync<User>(_baseUri + $"/Authorized");
 
             return user;
         }
@@ -95,7 +96,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PostAsync(_baseUri, jsonContent);
+            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -107,7 +108,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + "/data", jsonContent);
+            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/data", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -118,13 +119,13 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + "/password", jsonContent);
+            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/password", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
         public async Task<ServiceRezult> DeleteById(int userId)
         {
-            var httpResponseMessage = await RequestClient.DeleteAsync(_baseUri + $"/{userId}");
+            var httpResponseMessage = await (await RequestClient).DeleteAsync(_baseUri + $"/{userId}");
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -134,7 +135,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             var parameters = new Dictionary<string, string>();
             parameters["email"] = email;
             parameters["password"] = password;
-            var httpResponseMessage = await RequestClient.PostAsync(_baseUri + "/token", new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri + "/token", new FormUrlEncodedContent(parameters));
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {

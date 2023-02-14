@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using AuthorizationInfrastructure.HttpClients;
+using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
@@ -15,7 +16,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         private UserService _service;
         private IMapper _mapper;
 
-        public UserManager(HttpClient client, IMapper mapper)
+        public UserManager(IAuthorizedClient client, IMapper mapper)
         {
             _service = new UserService(client);
             _mapper = mapper;

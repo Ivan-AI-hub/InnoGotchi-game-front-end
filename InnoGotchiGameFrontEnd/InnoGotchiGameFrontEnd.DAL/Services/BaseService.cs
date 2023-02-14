@@ -1,16 +1,17 @@
-﻿using InnoGotchiGame.Web.Models.ErrorModel;
+﻿using AuthorizationInfrastructure.HttpClients;
+using InnoGotchiGameFrontEnd.DAL.Models.ErrorModel;
 using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.DAL.Services
 {
     public class BaseService
     {
-        protected HttpClient RequestClient;
+        protected Task<HttpClient> RequestClient => _client.GetHttpClientAsync();
+        private IAuthorizedClient _client;
 
-
-        public BaseService(HttpClient client)
+        public BaseService(IAuthorizedClient client)
         {
-            RequestClient = client;
+            _client = client;
         }
 
         protected async Task<ServiceRezult> GetCommandRezult(HttpResponseMessage responseMessage)

@@ -1,5 +1,4 @@
-﻿
-namespace InnoGotchiGame.Web.Models.ErrorModel
+﻿namespace InnoGotchiGameFrontEnd.DAL.Models.ErrorModel
 {
     public class ErrorDetails
     {

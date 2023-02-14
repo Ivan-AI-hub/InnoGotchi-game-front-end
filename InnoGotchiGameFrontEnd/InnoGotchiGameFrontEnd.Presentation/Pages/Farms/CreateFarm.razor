@@ -1,8 +1,10 @@
 ﻿@page "/farms/create"
+@using AuthorizationInfrastructure;
+@using AuthorizationInfrastructure.Tokens;
 @using InnoGotchiGameFrontEnd.BLL.ComandModels.Farm;
 @using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 @attribute [Authorize]
-@inject ILocalStorageService localStorageService;
+@inject IStorageService localStorageService;
 @inject NavigationManager navigation;
 @inject FarmManager farmManager;
 @inject UserManager userManager;

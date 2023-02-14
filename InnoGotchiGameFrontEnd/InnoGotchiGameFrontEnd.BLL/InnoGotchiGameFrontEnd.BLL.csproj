@@ -11,10 +11,12 @@
     <PackageReference Include="FluentValidation" Version="11.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\InnoGotchiGameFrontEnd.DAL\InnoGotchiGameFrontEnd.DAL.csproj" />
+    <ProjectReference Include="..\JavaScriptBehaviorInterfaces\AuthorizationInfrastructure.csproj" />
   </ItemGroup>
 
 </Project>

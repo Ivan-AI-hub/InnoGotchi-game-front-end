@@ -1,6 +1,6 @@
-﻿namespace InnoGotchiGameFrontEnd.Presentation.Infrastructure
+﻿namespace AuthorizationInfrastructure
 {
-    public interface ILocalStorageService
+    public interface IStorageService
     {
         Task SetAsync<T>(string key, T item) where T : class;
 

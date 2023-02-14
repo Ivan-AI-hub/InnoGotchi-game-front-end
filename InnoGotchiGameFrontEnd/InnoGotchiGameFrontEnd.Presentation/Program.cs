@@ -1,4 +1,5 @@
-using AutoMapper;
+using AuthorizationInfrastructure;
+using AuthorizationInfrastructure.HttpClients;
 using InnoGotchiGameFrontEnd.BLL;
 using InnoGotchiGameFrontEnd.BLL.Mappings;
 using InnoGotchiGameFrontEnd.Presentation;
@@ -12,23 +13,22 @@ builder.RootComponents.Add<App>("#app");
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
-builder.Services.AddTransient<ILocalStorageService, LocalStorageService>();
-builder.Services.AddTransient<IElementReferenceService, ElementReferenceService>();
+builder.Services.AddScoped<IStorageService, LocalStorageService>();
+builder.Services.AddScoped<IElementReferenceService, ElementReferenceService>();
 builder.Services.AddScoped<AuthenticationStateProvider, TokenStateProvider>();
-builder.Services.AddScoped(sp =>
-new HttpClient
-{
-    BaseAddress = new Uri(builder.Configuration.GetSection("BackEndAddress").Value + "api/")
-});
 
-var config = new MapperConfiguration(cnf => cnf.AddProfiles(new List<Profile>() { new BllMappingProfile() }));
-
-builder.Services.AddTransient<IMapper>(x => new Mapper(config));
+builder.Services.AddAutoMapper(typeof(BllMappingProfile));
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<ColaborationRequestManager>();
 builder.Services.AddScoped<FarmManager>();
 builder.Services.AddScoped<PetManager>();
 builder.Services.AddScoped<PictureManager>();
+
+builder.Services.AddHttpClient<IAuthorizedClient, AuthorizedClient>()
+    .ConfigureHttpClient(client =>
+    { 
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("BackEndAddress").Value + "api/"); 
+    });
 
 builder.Services
     .AddSingleton<MouseService>()

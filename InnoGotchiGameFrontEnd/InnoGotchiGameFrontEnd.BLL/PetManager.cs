@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using AuthorizationInfrastructure.HttpClients;
+using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.Pet;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model.Pet;
@@ -14,7 +15,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         private PetService _service;
         private IMapper _mapper;
 
-        public PetManager(HttpClient client, IMapper mapper)
+        public PetManager(IAuthorizedClient client, IMapper mapper)
         {
             _service = new PetService(client);
             _mapper = mapper;

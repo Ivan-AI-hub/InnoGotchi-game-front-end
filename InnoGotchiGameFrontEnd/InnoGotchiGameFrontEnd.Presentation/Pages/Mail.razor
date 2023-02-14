@@ -1,7 +1,7 @@
 ﻿@page "/mail"
 @using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 @attribute [Authorize]
-@inject ILocalStorageService localStorageService;
+@inject IStorageService localStorageService;
 @inject AuthenticationStateProvider stateProvider
 @inject UserManager userManager
 @inject ColaborationRequestManager requestManager

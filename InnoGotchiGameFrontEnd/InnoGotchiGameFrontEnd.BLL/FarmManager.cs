@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using AuthorizationInfrastructure.HttpClients;
+using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.Farm;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
@@ -14,7 +15,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         private FarmService _service;
         private IMapper _mapper;
 
-        public FarmManager(HttpClient client, IMapper mapper)
+        public FarmManager(IAuthorizedClient client, IMapper mapper)
         {
             _service = new FarmService(client);
             _mapper = mapper;

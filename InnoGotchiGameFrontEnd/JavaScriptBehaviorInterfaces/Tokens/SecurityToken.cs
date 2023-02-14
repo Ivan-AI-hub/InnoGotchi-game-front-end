@@ -1,4 +1,4 @@
-﻿namespace InnoGotchiGameFrontEnd.BLL.Model.Identity
+﻿namespace AuthorizationInfrastructure.Tokens
 {
     public class SecurityToken
     {

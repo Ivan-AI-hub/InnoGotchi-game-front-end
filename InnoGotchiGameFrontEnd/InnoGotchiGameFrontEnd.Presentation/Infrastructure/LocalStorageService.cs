@@ -1,9 +1,10 @@
-﻿using Microsoft.JSInterop;
+﻿using AuthorizationInfrastructure;
+using Microsoft.JSInterop;
 using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.Presentation.Infrastructure
 {
-    public class LocalStorageService : ILocalStorageService
+    public class LocalStorageService : IStorageService
     {
         private readonly IJSRuntime _jsRuntime;
 

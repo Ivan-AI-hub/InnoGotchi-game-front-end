@@ -1,13 +1,13 @@
-﻿using InnoGotchiGameFrontEnd.BLL;
-using InnoGotchiGameFrontEnd.BLL.Model.Identity;
-using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
+﻿using AuthorizationInfrastructure;
+using AuthorizationInfrastructure.Tokens;
+using InnoGotchiGameFrontEnd.BLL;
 using Microsoft.AspNetCore.Components;
 
 namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
 {
     public class LoginModel : ComponentBase
     {
-        [Inject] public ILocalStorageService LocalStorageService { get; set; }
+        [Inject] public IStorageService LocalStorageService { get; set; }
         [Inject] public NavigationManager Navigation { get; set; }
         [Inject] public UserManager Manager { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using InnoGotchiGameFrontEnd.DAL.Models.Farms;
+﻿using AuthorizationInfrastructure.HttpClients;
+using InnoGotchiGameFrontEnd.DAL.Models.Farms;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -8,7 +9,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
     public class FarmService : BaseService
     {
         private Uri _baseUri;
-        public FarmService(HttpClient client) : base(client)
+        public FarmService(IAuthorizedClient client) : base(client)
         {
             var apiControllerName = "farms";
             _baseUri = new Uri(client.BaseAddress, apiControllerName);
@@ -25,7 +26,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             }
 
 
-            var farms = await RequestClient.GetFromJsonAsync<IEnumerable<PetFarm>>(_baseUri + requestUrl.ToString());
+            var farms = await (await RequestClient).GetFromJsonAsync<IEnumerable<PetFarm>>(_baseUri + requestUrl.ToString());
 
             if (farms == null)
             {
@@ -36,12 +37,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<PetFarm?> GetFarmById(int id)
         {
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                IncludeFields = true
-            };
-            PetFarm? farm = await RequestClient.GetFromJsonAsync<PetFarm>(_baseUri + $"/{id}", options);
+            PetFarm? farm = await (await RequestClient).GetFromJsonAsync<PetFarm>(_baseUri + $"/{id}");
             return farm;
         }
 
@@ -53,7 +49,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PostAsync(_baseUri, jsonContent);
+            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -67,7 +63,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PutAsync(_baseUri, jsonContent);
+            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri, jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }

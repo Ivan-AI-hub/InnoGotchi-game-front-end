@@ -1,5 +1,5 @@
-﻿using InnoGotchiGameFrontEnd.BLL.Model.Identity;
-using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
+﻿using AuthorizationInfrastructure;
+using AuthorizationInfrastructure.Tokens;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -7,8 +7,8 @@ using System.Security.Claims;
 internal class TokenStateProvider : AuthenticationStateProvider
 {
     private readonly HttpClient _httpClient;
-    private ILocalStorageService _localStorageService;
-    public TokenStateProvider(HttpClient httpClient, ILocalStorageService localStorageService)
+    private IStorageService _localStorageService;
+    public TokenStateProvider(HttpClient httpClient, IStorageService localStorageService)
     {
         _httpClient = httpClient;
         _localStorageService = localStorageService;

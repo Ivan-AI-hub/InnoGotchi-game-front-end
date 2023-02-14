@@ -1,4 +1,5 @@
-﻿using InnoGotchiGameFrontEnd.DAL.Models;
+﻿using AuthorizationInfrastructure.HttpClients;
+using InnoGotchiGameFrontEnd.DAL.Models;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -8,7 +9,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
     public class PictureService : BaseService
     {
         private Uri _baseUri;
-        public PictureService(HttpClient client) : base(client)
+        public PictureService(IAuthorizedClient client) : base(client)
         {
             var apiControllerName = "pictures";
             _baseUri = new Uri(client.BaseAddress, apiControllerName);
@@ -30,7 +31,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             {
                 requestUrl.Append($"&Format={filtrator.Format}");
             }
-            var pictures = await RequestClient.GetFromJsonAsync<IEnumerable<Picture>>(_baseUri + requestUrl.ToString());
+            var pictures = await (await RequestClient).GetFromJsonAsync<IEnumerable<Picture>>(_baseUri + requestUrl.ToString());
 
             if (pictures == null)
             {
@@ -41,7 +42,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<Picture?> GetPictureById(int id)
         {
-            Picture? picture = await RequestClient.GetFromJsonAsync<Picture>(_baseUri + $"/{id}");
+            Picture? picture = await (await RequestClient).GetFromJsonAsync<Picture>(_baseUri + $"/{id}");
 
             return picture;
         }
@@ -54,7 +55,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PostAsync(_baseUri, jsonContent);
+            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
@@ -66,7 +67,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await RequestClient.PutAsync(_baseUri + $"/{updatedId}", jsonContent);
+            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{updatedId}", jsonContent);
 
             return await GetCommandRezult(httpResponseMessage);
         }
