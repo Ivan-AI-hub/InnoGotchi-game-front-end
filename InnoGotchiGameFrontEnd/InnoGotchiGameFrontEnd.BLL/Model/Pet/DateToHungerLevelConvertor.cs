@@ -25,11 +25,14 @@ namespace InnoGotchiGameFrontEnd.BLL.Model.Pet
         }
         public static DaysInterval GetInterval(HungerLevel hungerLevel)
         {
-            if (hungerLevel == HungerLevel.Full) return FullLevelInterval;
-            if (hungerLevel == HungerLevel.Normal) return NormalLevelInterval;
-            if (hungerLevel == HungerLevel.Hunger) return HungerLevelInterval;
-            if (hungerLevel == HungerLevel.Dead) return DeadLevelInterval;
-            return DeadLevelInterval;
+            switch (hungerLevel)
+            {
+                case HungerLevel.Full: return FullLevelInterval;
+                case HungerLevel.Normal: return NormalLevelInterval;
+                case HungerLevel.Hunger: return HungerLevelInterval;
+                case HungerLevel.Dead: return DeadLevelInterval;
+                default: return DeadLevelInterval;
+            }
         }
     }
 }
