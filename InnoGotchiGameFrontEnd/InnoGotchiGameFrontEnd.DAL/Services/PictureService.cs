@@ -1,12 +1,13 @@
 ﻿using AuthorizationInfrastructure.HttpClients;
-using InnoGotchiGameFrontEnd.DAL.Models;
+using InnoGotchiGameFrontEnd.Domain;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PictureAggregate;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.DAL.Services
 {
-    public class PictureService : BaseService
+    public class PictureService : BaseService, IPictureService
     {
         private Uri _baseUri;
         public PictureService(IAuthorizedClient client, CancellationToken cancellationToken = default) : base(client)
@@ -47,7 +48,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return picture;
         }
 
-        public async Task<ServiceRezult> CreateAsync(Picture picture, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> CreateAsync(Picture picture, CancellationToken cancellationToken = default)
         {
 
             using StringContent jsonContent = new(
@@ -60,7 +61,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return await GetCommandRezultAsync(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> UpdateAsync(int updatedId, Picture picture, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> UpdateAsync(int updatedId, Picture picture, CancellationToken cancellationToken = default)
         {
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(picture),

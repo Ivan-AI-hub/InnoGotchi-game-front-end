@@ -1,21 +1,19 @@
-﻿using AuthorizationInfrastructure.HttpClients;
-using AutoMapper;
+﻿using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
-using InnoGotchiGameFrontEnd.DAL.Models;
-using InnoGotchiGameFrontEnd.DAL.Services;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PictureAggregate;
 using Microsoft.AspNetCore.Http;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
     public class PictureManager
     {
-        private PictureService _pictureService;
+        private IPictureService _pictureService;
         private IMapper _mapper;
 
-        public PictureManager(IAuthorizedClient client, IMapper mapper)
+        public PictureManager(IPictureService pictureService, IMapper mapper)
         {
-            _pictureService = new PictureService(client);
+            _pictureService = pictureService;
             _mapper = mapper;
         }
 
@@ -53,7 +51,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             var pictureData = await _pictureService.GetByIdAsync(updatedId, cancellationToken);
             pictureData.Image = GetByteArrayFromImage(file);
             var rezult = new ManagerRezult();
-            var serviceRezult = await _pictureService.UpdateAsync(updatedId, pictureData,cancellationToken);
+            var serviceRezult = await _pictureService.UpdateAsync(updatedId, pictureData, cancellationToken);
             rezult.Errors.AddRange(serviceRezult.Errors);
 
             return rezult;

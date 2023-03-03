@@ -1,23 +1,25 @@
-﻿using AuthorizationInfrastructure.HttpClients;
-using AutoMapper;
+﻿using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.Pet;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model.Pet;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.BLL.Validators.Pets;
-using InnoGotchiGameFrontEnd.DAL.Models.Pets;
-using InnoGotchiGameFrontEnd.DAL.Services;
+using InnoGotchiGameFrontEnd.Domain;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate.Comands;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate.Filtrators;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate.Sorters;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
     public class PetManager
     {
-        private PetService _petService;
+        private IPetService _petService;
         private IMapper _mapper;
 
-        public PetManager(IAuthorizedClient client, IMapper mapper)
+        public PetManager(IPetService petService, IMapper mapper)
         {
-            _petService = new PetService(client);
+            _petService = petService;
             _mapper = mapper;
         }
 
@@ -113,7 +115,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         public async Task<ManagerRezult> SetDeadStatusAsync(PetDTO pet, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
-            ServiceRezult serviceRezult;
+            IServiceRezult serviceRezult;
             if (pet.Statistic.DeadDate != null)
                 serviceRezult = await _petService.SetDeadStatus(pet.Id, pet.Statistic.DeadDate.Value, cancellationToken);
             else

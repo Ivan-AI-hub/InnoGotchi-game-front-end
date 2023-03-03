@@ -1,8 +1,8 @@
 using AuthorizationInfrastructure;
 using AuthorizationInfrastructure.HttpClients;
-using InnoGotchiGameFrontEnd.BLL;
 using InnoGotchiGameFrontEnd.BLL.Mappings;
 using InnoGotchiGameFrontEnd.Presentation;
+using InnoGotchiGameFrontEnd.Presentation.Extensios;
 using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -18,11 +18,8 @@ builder.Services.AddScoped<IElementReferenceService, ElementReferenceService>();
 builder.Services.AddScoped<AuthenticationStateProvider, TokenStateProvider>();
 
 builder.Services.AddAutoMapper(typeof(BllMappingProfile));
-builder.Services.AddScoped<UserManager>();
-builder.Services.AddScoped<ColaborationRequestManager>();
-builder.Services.AddScoped<FarmManager>();
-builder.Services.AddScoped<PetManager>();
-builder.Services.AddScoped<PictureManager>();
+builder.Services.ConfigureServices();
+builder.Services.ConfigureManagers();
 
 builder.Services.AddHttpClient<IAuthorizedClient, AuthorizedClient>()
     .ConfigureHttpClient(client =>

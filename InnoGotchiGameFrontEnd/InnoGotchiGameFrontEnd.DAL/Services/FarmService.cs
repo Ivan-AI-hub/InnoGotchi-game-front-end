@@ -1,12 +1,16 @@
 ﻿using AuthorizationInfrastructure.HttpClients;
-using InnoGotchiGameFrontEnd.DAL.Models.Farms;
+using InnoGotchiGameFrontEnd.Domain;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate.Comands;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate.Filtrators;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate.Sorters;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.DAL.Services
 {
-    public class FarmService : BaseService
+    public class FarmService : BaseService, IFarmService
     {
         private Uri _baseUri;
         public FarmService(IAuthorizedClient client, CancellationToken cancellationToken = default) : base(client)
@@ -41,7 +45,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return farm;
         }
 
-        public async Task<ServiceRezult> CreateAsync(AddFarmModel addModel, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> CreateAsync(AddFarmModel addModel, CancellationToken cancellationToken = default)
         {
 
             using StringContent jsonContent = new(
@@ -54,7 +58,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return await GetCommandRezultAsync(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> UpdateAsync(UpdateFarmModel updateModel, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> UpdateAsync(UpdateFarmModel updateModel, CancellationToken cancellationToken = default)
         {
 
 

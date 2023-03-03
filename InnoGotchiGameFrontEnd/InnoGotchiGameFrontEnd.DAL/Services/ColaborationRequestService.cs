@@ -1,8 +1,10 @@
 ﻿using AuthorizationInfrastructure.HttpClients;
+using InnoGotchiGameFrontEnd.Domain;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.ColaborationRequestAggregate;
 
 namespace InnoGotchiGameFrontEnd.DAL.Services
 {
-    public class ColaborationRequestService : BaseService
+    public class ColaborationRequestService : BaseService, IColaborationRequestService
     {
         private Uri _baseUri;
         public ColaborationRequestService(IAuthorizedClient client) : base(client)
@@ -11,7 +13,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             _baseUri = new Uri(client.BaseAddress, apiControllerName);
         }
 
-        public async Task<ServiceRezult> CreateAsync(int recipientId, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> CreateAsync(int recipientId, CancellationToken cancellationToken = default)
         {
 
             var parameters = new Dictionary<string, string>();
@@ -22,7 +24,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return await GetCommandRezultAsync(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> ConfirmAsync(int requestId, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> ConfirmAsync(int requestId, CancellationToken cancellationToken = default)
         {
             var parameters = new Dictionary<string, string>();
 
@@ -31,7 +33,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return await GetCommandRezultAsync(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> RejectAsync(int requestId, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> RejectAsync(int requestId, CancellationToken cancellationToken = default)
         {
 
             var parameters = new Dictionary<string, string>();
@@ -41,7 +43,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return await GetCommandRezultAsync(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> DeleteByIdAsync(int requestId, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> DeleteByIdAsync(int requestId, CancellationToken cancellationToken = default)
         {
             var httpResponseMessage = await (await RequestClient).DeleteAsync(_baseUri + $"/{requestId}", cancellationToken);
 

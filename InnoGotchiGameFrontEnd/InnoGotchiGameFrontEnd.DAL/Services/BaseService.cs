@@ -1,5 +1,6 @@
 ﻿using AuthorizationInfrastructure.HttpClients;
-using InnoGotchiGameFrontEnd.DAL.Models.ErrorModel;
+using InnoGotchiGameFrontEnd.Domain;
+using InnoGotchiGameFrontEnd.Domain.ErrorModel;
 using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.DAL.Services
@@ -14,7 +15,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             _client = client;
         }
 
-        protected async Task<ServiceRezult> GetCommandRezultAsync(HttpResponseMessage responseMessage)
+        protected async Task<IServiceRezult> GetCommandRezultAsync(HttpResponseMessage responseMessage)
         {
             var rezult = new ServiceRezult();
             if (responseMessage.IsSuccessStatusCode)

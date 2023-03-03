@@ -7,10 +7,20 @@ using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.BLL.Model.Pet;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
-using InnoGotchiGameFrontEnd.DAL.Models;
-using InnoGotchiGameFrontEnd.DAL.Models.Farms;
-using InnoGotchiGameFrontEnd.DAL.Models.Pets;
-using InnoGotchiGameFrontEnd.DAL.Models.Users;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.ColaborationRequestAggregate;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate.Comands;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate.Filtrators;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate.Sorters;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate.Comands;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate.Filtrators;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate.Sorters;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PictureAggregate;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate.Comands;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate.Filtrators;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate.Sorters;
 
 namespace InnoGotchiGameFrontEnd.BLL.Mappings
 {

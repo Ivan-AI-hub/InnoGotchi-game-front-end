@@ -1,24 +1,25 @@
-﻿using AuthorizationInfrastructure.HttpClients;
-using AutoMapper;
+﻿using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.BLL.Model.Identity;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.BLL.Validators.Users;
-using InnoGotchiGameFrontEnd.DAL.Models.Users;
-using InnoGotchiGameFrontEnd.DAL.Services;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate.Comands;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate.Filtrators;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate.Sorters;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
     public class UserManager
     {
-        private UserService _userService;
+        private IUserService _userService;
         private IMapper _mapper;
 
-        public UserManager(IAuthorizedClient client, IMapper mapper)
+        public UserManager(IUserService userService, IMapper mapper)
         {
-            _userService = new UserService(client);
+            _userService = userService;
             _mapper = mapper;
         }
 
@@ -97,7 +98,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             if (validationResult.IsValid)
             {
                 var updateDataModel = _mapper.Map<UpdateUserPasswordModel>(updateModel);
-                var serviceRezult = await _userService.UpdatePasswordAsync(updateDataModel,cancellationToken);
+                var serviceRezult = await _userService.UpdatePasswordAsync(updateDataModel, cancellationToken);
                 rezult.Errors.AddRange(serviceRezult.Errors);
             }
             return rezult;
@@ -106,14 +107,14 @@ namespace InnoGotchiGameFrontEnd.BLL
         public async Task<ManagerRezult> DeleteByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _userService.DeleteByIdAsync(id,cancellationToken);
+            var serviceRezult = await _userService.DeleteByIdAsync(id, cancellationToken);
             rezult.Errors.AddRange(serviceRezult.Errors);
             return rezult;
         }
 
         public async Task<AuthorizeModelDTO?> Authorize(string email, string password, CancellationToken cancellationToken = default)
         {
-            var token = await _userService.AuthorizeAsync(email, password,cancellationToken);
+            var token = await _userService.AuthorizeAsync(email, password, cancellationToken);
 
             return _mapper.Map<AuthorizeModelDTO?>(token);
         }

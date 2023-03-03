@@ -1,23 +1,24 @@
-﻿using AuthorizationInfrastructure.HttpClients;
-using AutoMapper;
+﻿using AutoMapper;
 using InnoGotchiGameFrontEnd.BLL.ComandModels.Farm;
 using InnoGotchiGameFrontEnd.BLL.Filtrators;
 using InnoGotchiGameFrontEnd.BLL.Model;
 using InnoGotchiGameFrontEnd.BLL.Sorters;
 using InnoGotchiGameFrontEnd.BLL.Validators.Farms;
-using InnoGotchiGameFrontEnd.DAL.Models.Farms;
-using InnoGotchiGameFrontEnd.DAL.Services;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate.Comands;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate.Filtrators;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate.Sorters;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
     public class FarmManager
     {
-        private FarmService _farmService;
+        private IFarmService _farmService;
         private IMapper _mapper;
 
-        public FarmManager(IAuthorizedClient client, IMapper mapper)
+        public FarmManager(IFarmService farmService, IMapper mapper)
         {
-            _farmService = new FarmService(client);
+            _farmService = farmService;
             _mapper = mapper;
         }
 

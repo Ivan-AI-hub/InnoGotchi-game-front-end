@@ -1,16 +1,15 @@
-﻿using AuthorizationInfrastructure.HttpClients;
-using InnoGotchiGameFrontEnd.BLL.Model;
-using InnoGotchiGameFrontEnd.DAL.Services;
+﻿using InnoGotchiGameFrontEnd.BLL.Model;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.ColaborationRequestAggregate;
 
 namespace InnoGotchiGameFrontEnd.BLL
 {
     public class ColaborationRequestManager
     {
-        private ColaborationRequestService _requestService;
+        private IColaborationRequestService _requestService;
 
-        public ColaborationRequestManager(IAuthorizedClient client)
+        public ColaborationRequestManager(IColaborationRequestService requestService)
         {
-            _requestService = new ColaborationRequestService(client);
+            _requestService = requestService;
         }
 
         public async Task<ManagerRezult> AddCollaboratorAsync(UserDTO sender, UserDTO recipient, CancellationToken cancellationToken = default)

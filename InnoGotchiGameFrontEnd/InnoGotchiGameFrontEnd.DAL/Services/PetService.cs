@@ -1,12 +1,16 @@
 ﻿using AuthorizationInfrastructure.HttpClients;
-using InnoGotchiGameFrontEnd.DAL.Models.Pets;
+using InnoGotchiGameFrontEnd.Domain;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate.Comands;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate.Filtrators;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate.Sorters;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
 namespace InnoGotchiGameFrontEnd.DAL.Services
 {
-    public class PetService : BaseService
+    public class PetService : BaseService, IPetService
     {
         private Uri _baseUri;
         public PetService(IAuthorizedClient client, CancellationToken cancellationToken = default) : base(client)
@@ -89,7 +93,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return Pet;
         }
 
-        public async Task<ServiceRezult> CreateAsync(AddPetModel addModel, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> CreateAsync(AddPetModel addModel, CancellationToken cancellationToken = default)
         {
 
             using StringContent jsonContent = new(
@@ -102,7 +106,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return await GetCommandRezultAsync(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> UpdateAsync(UpdatePetModel updateModel, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> UpdateAsync(UpdatePetModel updateModel, CancellationToken cancellationToken = default)
         {
 
 
@@ -116,7 +120,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return await GetCommandRezultAsync(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> FeedAsync(int petId, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> FeedAsync(int petId, CancellationToken cancellationToken = default)
         {
 
             var parameters = new Dictionary<string, string>();
@@ -126,7 +130,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return await GetCommandRezultAsync(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> GiveDrinkAsync(int petId, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> GiveDrinkAsync(int petId, CancellationToken cancellationToken = default)
         {
 
             var parameters = new Dictionary<string, string>();
@@ -135,7 +139,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             return await GetCommandRezultAsync(httpResponseMessage);
         }
-        public async Task<ServiceRezult> ResetHappinessDay(int petId, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> ResetHappinessDay(int petId, CancellationToken cancellationToken = default)
         {
 
             var parameters = new Dictionary<string, string>();
@@ -144,7 +148,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             return await GetCommandRezultAsync(httpResponseMessage);
         }
-        public async Task<ServiceRezult> SetDeadStatus(int petId, DateTime deadDate, CancellationToken cancellationToken = default)
+        public async Task<IServiceRezult> SetDeadStatus(int petId, DateTime deadDate, CancellationToken cancellationToken = default)
         {
             var parameters = new Dictionary<string, string>
             {

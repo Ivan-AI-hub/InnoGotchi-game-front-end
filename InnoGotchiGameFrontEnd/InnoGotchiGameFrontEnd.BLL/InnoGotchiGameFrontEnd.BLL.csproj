@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\InnoGotchiGameFrontEnd.DAL\InnoGotchiGameFrontEnd.DAL.csproj" />
+    <ProjectReference Include="..\InnoGotchiGameFrontEnd.Domain\InnoGotchiGameFrontEnd.Domain.csproj" />
     <ProjectReference Include="..\JavaScriptBehaviorInterfaces\AuthorizationInfrastructure.csproj" />
   </ItemGroup>
 

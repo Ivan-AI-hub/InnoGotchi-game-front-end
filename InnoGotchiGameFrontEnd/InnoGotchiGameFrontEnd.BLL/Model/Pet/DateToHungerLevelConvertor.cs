@@ -1,4 +1,6 @@
-﻿using InnoGotchiGameFrontEnd.DAL.Models;
+﻿
+
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate;
 
 namespace InnoGotchiGameFrontEnd.BLL.Model.Pet
 {
