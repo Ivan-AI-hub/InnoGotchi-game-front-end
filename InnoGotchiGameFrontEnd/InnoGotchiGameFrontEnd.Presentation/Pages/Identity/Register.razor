@@ -89,11 +89,11 @@
 
     private async Task RegisterAsync()
     {
-        var rezult = await userManager.CreateAsync(Data, _cts.Token);
+        var result = await userManager.CreateAsync(Data, _cts.Token);
         this.StateHasChanged();
-        if (!rezult.IsComplete)
+        if (!result.IsComplete)
         {
-            Errors = rezult.Errors;
+            Errors = result.Errors;
         }
         else
         {

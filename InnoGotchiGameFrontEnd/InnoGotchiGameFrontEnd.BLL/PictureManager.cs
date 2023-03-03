@@ -32,29 +32,29 @@ namespace InnoGotchiGameFrontEnd.BLL
             return picture;
         }
 
-        public async Task<ManagerRezult> CreateAsync(IFormFile file, string nameTemplate, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> CreateAsync(IFormFile file, string nameTemplate, CancellationToken cancellationToken = default)
         {
             var pictureData = new Picture()
             {
                 Image = GetByteArrayFromImage(file),
                 Name = nameTemplate + "-" + Guid.NewGuid().ToString()
             };
-            var rezult = new ManagerRezult();
-            var serviceRezult = await _pictureService.CreateAsync(pictureData, cancellationToken);
-            rezult.Errors.AddRange(serviceRezult.Errors);
+            var result = new ManagerResult();
+            var serviceResult = await _pictureService.CreateAsync(pictureData, cancellationToken);
+            result.Errors.AddRange(serviceResult.Errors);
 
-            return rezult;
+            return result;
         }
 
-        public async Task<ManagerRezult> UpdateAsync(int updatedId, IFormFile file, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> UpdateAsync(int updatedId, IFormFile file, CancellationToken cancellationToken = default)
         {
             var pictureData = await _pictureService.GetByIdAsync(updatedId, cancellationToken);
             pictureData.Image = GetByteArrayFromImage(file);
-            var rezult = new ManagerRezult();
-            var serviceRezult = await _pictureService.UpdateAsync(updatedId, pictureData, cancellationToken);
-            rezult.Errors.AddRange(serviceRezult.Errors);
+            var result = new ManagerResult();
+            var serviceResult = await _pictureService.UpdateAsync(updatedId, pictureData, cancellationToken);
+            result.Errors.AddRange(serviceResult.Errors);
 
-            return rezult;
+            return result;
         }
 
         private byte[] GetByteArrayFromImage(IFormFile file)

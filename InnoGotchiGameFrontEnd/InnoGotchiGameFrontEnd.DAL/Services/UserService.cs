@@ -93,7 +93,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return user;
         }
 
-        public async Task<IServiceRezult> CreateAsync(AddUserModel addModel, CancellationToken cancellationToken = default)
+        public async Task<IServiceResult> CreateAsync(AddUserModel addModel, CancellationToken cancellationToken = default)
         {
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(addModel),
@@ -102,10 +102,10 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
-            return await GetCommandRezultAsync(httpResponseMessage);
+            return await GetCommandResultAsync(httpResponseMessage);
         }
 
-        public async Task<IServiceRezult> UpdateDataAsync(UpdateUserDataModel updateModel, CancellationToken cancellationToken = default)
+        public async Task<IServiceResult> UpdateDataAsync(UpdateUserDataModel updateModel, CancellationToken cancellationToken = default)
         {
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(updateModel),
@@ -114,9 +114,9 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/data", jsonContent, cancellationToken);
 
-            return await GetCommandRezultAsync(httpResponseMessage);
+            return await GetCommandResultAsync(httpResponseMessage);
         }
-        public async Task<IServiceRezult> UpdatePasswordAsync(UpdateUserPasswordModel updateModel, CancellationToken cancellationToken = default)
+        public async Task<IServiceResult> UpdatePasswordAsync(UpdateUserPasswordModel updateModel, CancellationToken cancellationToken = default)
         {
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(updateModel),
@@ -125,13 +125,13 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/password", jsonContent, cancellationToken);
 
-            return await GetCommandRezultAsync(httpResponseMessage);
+            return await GetCommandResultAsync(httpResponseMessage);
         }
-        public async Task<IServiceRezult> DeleteByIdAsync(int userId, CancellationToken cancellationToken = default)
+        public async Task<IServiceResult> DeleteByIdAsync(int userId, CancellationToken cancellationToken = default)
         {
             var httpResponseMessage = await (await RequestClient).DeleteAsync(_baseUri + $"/{userId}", cancellationToken);
 
-            return await GetCommandRezultAsync(httpResponseMessage);
+            return await GetCommandResultAsync(httpResponseMessage);
         }
 
         public async Task<AuthorizeModel?> AuthorizeAsync(string email, string password, CancellationToken cancellationToken = default)

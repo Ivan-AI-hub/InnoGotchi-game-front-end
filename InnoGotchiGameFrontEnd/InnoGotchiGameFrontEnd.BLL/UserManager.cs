@@ -56,60 +56,55 @@ namespace InnoGotchiGameFrontEnd.BLL
             return user;
         }
 
-        public async Task<ManagerRezult> CreateAsync(AddUserDTOModel addModel, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> CreateAsync(AddUserDTOModel addModel, CancellationToken cancellationToken = default)
         {
             var validator = new AddUserDTOValidator();
             var validationResult = validator.Validate(addModel);
-            var rezult = new ManagerRezult(validationResult);
             if (!validationResult.IsValid)
             {
-                return rezult;
+                return new ManagerResult(validationResult);
             }
 
             var addDataModel = _mapper.Map<AddUserModel>(addModel);
-            var serviceRezult = await _userService.CreateAsync(addDataModel, cancellationToken);
-            rezult.Errors.AddRange(serviceRezult.Errors);
+            var serviceResult = await _userService.CreateAsync(addDataModel, cancellationToken);
 
-            return rezult;
+            return new ManagerResult(validationResult);
         }
 
-        public async Task<ManagerRezult> UpdateDataAsync(UpdateUserDTODataModel updateModel, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> UpdateDataAsync(UpdateUserDTODataModel updateModel, CancellationToken cancellationToken = default)
         {
             var validator = new UpdateUserDTODataValidator();
             var validationResult = validator.Validate(updateModel);
-            var rezult = new ManagerRezult(validationResult);
             if (!validationResult.IsValid)
             {
-                return rezult;
+                return new ManagerResult(validationResult);
             }
 
             var updateDataModel = _mapper.Map<UpdateUserDataModel>(updateModel);
-            var serviceRezult = await _userService.UpdateDataAsync(updateDataModel, cancellationToken);
-            rezult.Errors.AddRange(serviceRezult.Errors);
+            var serviceResult = await _userService.UpdateDataAsync(updateDataModel, cancellationToken);
 
-            return rezult;
+            return new ManagerResult(serviceResult);
         }
 
-        public async Task<ManagerRezult> UpdatePasswordAsync(UpdateUserDTOPasswordModel updateModel, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> UpdatePasswordAsync(UpdateUserDTOPasswordModel updateModel, CancellationToken cancellationToken = default)
         {
             var validator = new UpdateUserDTOPasswordValidator();
             var validationResult = validator.Validate(updateModel);
-            var rezult = new ManagerRezult(validationResult);
-            if (validationResult.IsValid)
+
+            if (!validationResult.IsValid)
             {
-                var updateDataModel = _mapper.Map<UpdateUserPasswordModel>(updateModel);
-                var serviceRezult = await _userService.UpdatePasswordAsync(updateDataModel, cancellationToken);
-                rezult.Errors.AddRange(serviceRezult.Errors);
+                return new ManagerResult(validationResult);
             }
-            return rezult;
+
+            var updateDataModel = _mapper.Map<UpdateUserPasswordModel>(updateModel);
+            var serviceResult = await _userService.UpdatePasswordAsync(updateDataModel, cancellationToken);
+            return new ManagerResult(serviceResult);
         }
 
-        public async Task<ManagerRezult> DeleteByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> DeleteByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            var rezult = new ManagerRezult();
-            var serviceRezult = await _userService.DeleteByIdAsync(id, cancellationToken);
-            rezult.Errors.AddRange(serviceRezult.Errors);
-            return rezult;
+            var serviceResult = await _userService.DeleteByIdAsync(id, cancellationToken);
+            return new ManagerResult(serviceResult);
         }
 
         public async Task<AuthorizeModelDTO?> Authorize(string email, string password, CancellationToken cancellationToken = default)

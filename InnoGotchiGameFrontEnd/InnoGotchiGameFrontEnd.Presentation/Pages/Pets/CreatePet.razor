@@ -196,11 +196,11 @@
                 Description = "pet_view_picture",
                 Format = "svg"
             };
-        var rezult = await petManager.CreateAsync(AddModel, _cts.Token);
+        var result = await petManager.CreateAsync(AddModel, _cts.Token);
         this.StateHasChanged();
-        if (!rezult.IsComplete)
+        if (!result.IsComplete)
         {
-            Errors = rezult.Errors;
+            Errors = result.Errors;
         }
         else
         {

@@ -48,7 +48,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return picture;
         }
 
-        public async Task<IServiceRezult> CreateAsync(Picture picture, CancellationToken cancellationToken = default)
+        public async Task<IServiceResult> CreateAsync(Picture picture, CancellationToken cancellationToken = default)
         {
 
             using StringContent jsonContent = new(
@@ -58,10 +58,10 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
-            return await GetCommandRezultAsync(httpResponseMessage);
+            return await GetCommandResultAsync(httpResponseMessage);
         }
 
-        public async Task<IServiceRezult> UpdateAsync(int updatedId, Picture picture, CancellationToken cancellationToken = default)
+        public async Task<IServiceResult> UpdateAsync(int updatedId, Picture picture, CancellationToken cancellationToken = default)
         {
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(picture),
@@ -70,7 +70,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{updatedId}", jsonContent, cancellationToken);
 
-            return await GetCommandRezultAsync(httpResponseMessage);
+            return await GetCommandResultAsync(httpResponseMessage);
         }
     }
 }

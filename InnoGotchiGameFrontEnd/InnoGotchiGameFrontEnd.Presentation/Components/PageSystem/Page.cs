@@ -13,24 +13,19 @@
 
         public PageStatus GetPageStatus(int itemsCount)
         {
-            PageStatus pageStatus;
             if (itemsCount < PageSize && Number <= 1)
             {
-                pageStatus = PageStatus.OnlyPage;
+                return PageStatus.OnlyPage;
             }
-            else if (Number <= 1)
+            if (Number <= 1)
             {
-                pageStatus = PageStatus.FirstPage;
+                return PageStatus.FirstPage;
             }
-            else if (itemsCount < PageSize)
+            if (itemsCount < PageSize)
             {
-                pageStatus = PageStatus.LastPage;
+                return PageStatus.LastPage;
             }
-            else
-            {
-                pageStatus = PageStatus.MiddlePage;
-            }
-            return pageStatus;
+            return PageStatus.MiddlePage;
         }
     }
 }

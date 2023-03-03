@@ -28,6 +28,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         {
             var dataSorter = _mapper.Map<PetSorter>(sorter);
             var dataFiltrator = _mapper.Map<PetFiltrator>(filtrator);
+
             var dataPets = await _petService.GetAsync(dataSorter, dataFiltrator, cancellationToken);
             var pets = _mapper.Map<IEnumerable<PetDTO>>(dataPets);
             CheckHappinessStatus(pets);
@@ -38,6 +39,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         {
             var dataSorter = _mapper.Map<PetSorter>(sorter);
             var dataFiltrator = _mapper.Map<PetFiltrator>(filtrator);
+
             var dataPets = await _petService.GetPageAsync(pageSize, pageNumber, dataSorter, dataFiltrator, cancellationToken);
             var pets = _mapper.Map<IEnumerable<PetDTO>>(dataPets);
             CheckHappinessStatus(pets);
@@ -52,83 +54,71 @@ namespace InnoGotchiGameFrontEnd.BLL
             return pet;
         }
 
-        public async Task<ManagerRezult> CreateAsync(AddPetDTOModel addModel, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> CreateAsync(AddPetDTOModel addModel, CancellationToken cancellationToken = default)
         {
             var validator = new AddPetDTOValidator();
             var validationResult = validator.Validate(addModel);
-            var rezult = new ManagerRezult(validationResult);
-            if (validationResult.IsValid)
+            if (!validationResult.IsValid)
             {
-                var addDataModel = _mapper.Map<AddPetModel>(addModel);
-                var serviceRezult = await _petService.CreateAsync(addDataModel, cancellationToken);
-                rezult.Errors.AddRange(serviceRezult.Errors);
+                return new ManagerResult(validationResult);
             }
-            return rezult;
+
+            var addDataModel = _mapper.Map<AddPetModel>(addModel);
+            var serviceResult = await _petService.CreateAsync(addDataModel, cancellationToken);
+
+            return new ManagerResult(serviceResult);
         }
 
-        public async Task<ManagerRezult> UpdateAsync(UpdatePetDTOModel updateModel, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> UpdateAsync(UpdatePetDTOModel updateModel, CancellationToken cancellationToken = default)
         {
             var validator = new UpdatePetDTOValidator();
             var validationResult = validator.Validate(updateModel);
-            var rezult = new ManagerRezult(validationResult);
-            if (validationResult.IsValid)
+            if (!validationResult.IsValid)
             {
-                var updateDataModel = _mapper.Map<UpdatePetModel>(updateModel);
-                var serviceRezult = await _petService.UpdateAsync(updateDataModel, cancellationToken);
-                rezult.Errors.AddRange(serviceRezult.Errors);
+                return new ManagerResult(validationResult);
             }
-            return rezult;
+
+            var updateDataModel = _mapper.Map<UpdatePetModel>(updateModel);
+            var serviceResult = await _petService.UpdateAsync(updateDataModel, cancellationToken);
+
+            return new ManagerResult(serviceResult);
         }
 
-        public async Task<ManagerRezult> FeedAsync(PetDTO pet, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> FeedAsync(PetDTO pet, CancellationToken cancellationToken = default)
         {
-            var rezult = new ManagerRezult();
-            var serviceRezult = await _petService.FeedAsync(pet.Id, cancellationToken);
-            rezult.Errors.AddRange(serviceRezult.Errors);
+            var serviceResult = await _petService.FeedAsync(pet.Id, cancellationToken);
 
-            if (rezult.IsComplete)
+            if (serviceResult.IsComplete)
             {
-                pet.Statistic.HungerLevel = HungerLevel.Full;
-                pet.Statistic.FeedingCount++;
-                pet.Statistic.DateLastFeed = DateTime.UtcNow;
+                pet.Statistic.Feed();
             }
 
-            return rezult;
+            return new ManagerResult(serviceResult);
         }
 
-        public async Task<ManagerRezult> GiveDrinkAsync(PetDTO pet, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> GiveDrinkAsync(PetDTO pet, CancellationToken cancellationToken = default)
         {
-            var rezult = new ManagerRezult();
-            var serviceRezult = await _petService.GiveDrinkAsync(pet.Id, cancellationToken);
-            rezult.Errors.AddRange(serviceRezult.Errors);
+            var serviceResult = await _petService.GiveDrinkAsync(pet.Id, cancellationToken);
 
-            if (rezult.IsComplete)
+            if (serviceResult.IsComplete)
             {
-                pet.Statistic.ThirstyLevel = ThirstyLevel.Full;
-                pet.Statistic.DrinkingCount++;
-                pet.Statistic.DateLastDrink = DateTime.UtcNow;
+                pet.Statistic.GiveDrink();
             }
 
-            return rezult;
+            return new ManagerResult(serviceResult);
         }
 
-        public async Task<ManagerRezult> SetDeadStatusAsync(PetDTO pet, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> SetDeadStatusAsync(PetDTO pet, CancellationToken cancellationToken = default)
         {
-            var rezult = new ManagerRezult();
-            IServiceRezult serviceRezult;
-            if (pet.Statistic.DeadDate != null)
-                serviceRezult = await _petService.SetDeadStatus(pet.Id, pet.Statistic.DeadDate.Value, cancellationToken);
-            else
-                serviceRezult = await _petService.SetDeadStatus(pet.Id, DateTime.Now, cancellationToken);
+            pet.Statistic.DeadDate ??= DateTime.Now;
+            var serviceResult = await _petService.SetDeadStatus(pet.Id, pet.Statistic.DeadDate.Value, cancellationToken);
 
-            rezult.Errors.AddRange(serviceRezult.Errors);
-
-            if (rezult.IsComplete)
+            if (serviceResult.IsComplete)
             {
-                pet.Statistic.IsAlive = false;
-                pet.Statistic.DeadDate = pet.Statistic.DeadDate ?? DateTime.UtcNow;
+                pet.Statistic.SetDeadStatus();
             }
-            return rezult;
+
+            return new ManagerResult(serviceResult);
         }
 
         private void CheckHappinessStatus(IEnumerable<PetDTO> pets)
@@ -141,13 +131,15 @@ namespace InnoGotchiGameFrontEnd.BLL
 
         private void CheckHappinessStatus(PetDTO pet)
         {
-            if (pet.Statistic.HappinessDayCount > 0)
+            if (pet.Statistic.HappinessDayCount <= 0)
             {
-                if (pet.Statistic.HungerLevel == HungerLevel.Hunger || pet.Statistic.ThirstyLevel == ThirstyLevel.Thirsty)
-                {
-                    pet.Statistic.FirstHappinessDay = DateTime.UtcNow;
-                    _petService.ResetHappinessDay(pet.Id);
-                }
+                return;
+            }
+
+            if (pet.Statistic.HungerLevel == HungerLevel.Hunger || pet.Statistic.ThirstyLevel == ThirstyLevel.Thirsty)
+            {
+                pet.Statistic.ResetHappinesDay();
+                _petService.ResetHappinessDay(pet.Id);
             }
         }
 

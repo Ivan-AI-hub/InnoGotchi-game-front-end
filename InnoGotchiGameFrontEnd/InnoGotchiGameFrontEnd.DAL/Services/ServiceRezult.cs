@@ -2,12 +2,12 @@
 
 namespace InnoGotchiGameFrontEnd.DAL.Services
 {
-    public class ServiceRezult : IServiceRezult
+    public class ServiceResult : IServiceResult
     {
         public bool IsComplete => Errors.Count() == 0;
         public List<string> Errors { get; }
 
-        public ServiceRezult()
+        public ServiceResult()
         {
             Errors = new List<string>();
         }

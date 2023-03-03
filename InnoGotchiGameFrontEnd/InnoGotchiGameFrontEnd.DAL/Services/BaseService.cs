@@ -15,31 +15,29 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             _client = client;
         }
 
-        protected async Task<IServiceRezult> GetCommandRezultAsync(HttpResponseMessage responseMessage)
+        protected async Task<IServiceResult> GetCommandResultAsync(HttpResponseMessage responseMessage)
         {
-            var rezult = new ServiceRezult();
+            var result = new ServiceResult();
             if (responseMessage.IsSuccessStatusCode)
             {
-                return rezult;
+                return result;
             }
-            else
+
+            using var contentStream = await responseMessage.Content.ReadAsStreamAsync();
+            if (!contentStream.CanRead)
             {
-                using var contentStream = await responseMessage.Content.ReadAsStreamAsync();
-                if (contentStream.CanRead)
-                {
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    };
-                    var error = await JsonSerializer.DeserializeAsync<ErrorDetails>(contentStream, options);
-                    rezult.Errors.AddRange(error.Message.Split('\n'));
-                }
-                else
-                {
-                    rezult.Errors.Add("Bad request");
-                }
-                return rezult;
+                result.Errors.Add("Bad request");
+                return result;
             }
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            var error = await JsonSerializer.DeserializeAsync<ErrorDetails>(contentStream, options);
+            result.Errors.AddRange(error.Message.Split('\n'));
+
+            return result;
         }
     }
 }

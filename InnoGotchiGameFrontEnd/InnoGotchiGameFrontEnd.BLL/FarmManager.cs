@@ -26,6 +26,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         {
             var dataSorter = _mapper.Map<FarmSorter>(sorter);
             var dataFiltrator = _mapper.Map<FarmFiltrator>(filtrator);
+
             var dataFarms = await _farmService.GetAsync(dataSorter, dataFiltrator, cancellationToken);
             var farms = _mapper.Map<IEnumerable<PetFarmDTO>>(dataFarms);
             return farms;
@@ -38,35 +39,32 @@ namespace InnoGotchiGameFrontEnd.BLL
             return farm;
         }
 
-        public async Task<ManagerRezult> CreateAsync(AddFarmDTOModel addModel, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> CreateAsync(AddFarmDTOModel addModel, CancellationToken cancellationToken = default)
         {
             var validator = new AddFarmDTOValidator();
             var validationResult = validator.Validate(addModel);
             if (!validationResult.IsValid)
             {
-                return new ManagerRezult(validationResult);
+                return new ManagerResult(validationResult);
             }
 
-            var rezult = new ManagerRezult();
             var addDataModel = _mapper.Map<AddFarmModel>(addModel);
-            var serviceRezult = await _farmService.CreateAsync(addDataModel, cancellationToken);
-            rezult.Errors.AddRange(serviceRezult.Errors);
-
-            return rezult;
+            var serviceResult = await _farmService.CreateAsync(addDataModel, cancellationToken);
+            return new ManagerResult(serviceResult);
         }
 
-        public async Task<ManagerRezult> UpdateAsync(UpdateFarmDTOModel updateModel, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> UpdateAsync(UpdateFarmDTOModel updateModel, CancellationToken cancellationToken = default)
         {
             var validator = new UpdateFarmDTOValidator();
             var validationResult = validator.Validate(updateModel);
-            var rezult = new ManagerRezult(validationResult);
-            if (validationResult.IsValid)
+            if (!validationResult.IsValid)
             {
-                var updateDataModel = _mapper.Map<UpdateFarmModel>(updateModel);
-                var serviceRezult = await _farmService.UpdateAsync(updateDataModel, cancellationToken);
-                rezult.Errors.AddRange(serviceRezult.Errors);
+                return new ManagerResult(validationResult);
             }
-            return rezult;
+
+            var updateDataModel = _mapper.Map<UpdateFarmModel>(updateModel);
+            var serviceResult = await _farmService.UpdateAsync(updateDataModel, cancellationToken);
+            return new ManagerResult(serviceResult);
         }
     }
 }

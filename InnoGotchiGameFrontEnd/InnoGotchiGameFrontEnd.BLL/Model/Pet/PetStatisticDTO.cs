@@ -1,4 +1,6 @@
-﻿namespace InnoGotchiGameFrontEnd.BLL.Model.Pet
+﻿using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate;
+
+namespace InnoGotchiGameFrontEnd.BLL.Model.Pet
 {
     public record PetStatisticDTO
     {
@@ -30,42 +32,61 @@
             {
                 IsAlive = true;
             }
-            else
-            {
-                IsAlive = false;
-            }
-
         }
+        public void Feed()
+        {
+            HungerLevel = HungerLevel.Full;
+            FeedingCount++;
+            DateLastFeed = DateTime.UtcNow;
+        }
+
+        public void GiveDrink()
+        {
+            ThirstyLevel = ThirstyLevel.Full;
+            DrinkingCount++;
+            DateLastDrink = DateTime.UtcNow;
+        }
+
+        public void SetDeadStatus()
+        {
+            IsAlive = false;
+            DeadDate ??= DateTime.UtcNow;
+        }
+        public void ResetHappinesDay()
+        {
+            FirstHappinessDay = DateTime.UtcNow;
+        }
+
         private AliveState GetAliveState()
         {
             if (IsAlive == false)
                 return AliveState.Dead;
-            else if (HungerLevel == HungerLevel.Dead)
+            if (HungerLevel == HungerLevel.Dead)
             {
                 DeadDate = DateLastFeed.AddDays(DateToHungerLevelConvertor.GetInterval(HungerLevel.Dead).MinDays);
                 return AliveState.NotAnnouncedDead;
             }
-            else if (ThirstyLevel == ThirstyLevel.Dead)
+            if (ThirstyLevel == ThirstyLevel.Dead)
             {
                 DeadDate = DateLastFeed.AddDays(DateToThirstyLevelConvertor.GetInterval(ThirstyLevel.Dead).MinDays);
                 return AliveState.NotAnnouncedDead;
             }
-            else
-                return AliveState.Alive;
+
+            return AliveState.Alive;
         }
         private HungerLevel GetHungerLevel()
         {
             if (_currentHungerLevel != null)
                 return (HungerLevel)_currentHungerLevel;
-            else
-                return DateToHungerLevelConvertor.GetHungerLevel(DateLastFeed);
+
+            return DateToHungerLevelConvertor.GetHungerLevel(DateLastFeed);
         }
         private ThirstyLevel GetThirstyLevel()
         {
             if (_currentThirstyLevel != null)
                 return (ThirstyLevel)_currentThirstyLevel;
-            else
-                return DateToThirstyLevelConvertor.GetThirstyLevel(DateLastDrink);
+            
+            return DateToThirstyLevelConvertor.GetThirstyLevel(DateLastDrink);
         }
     }
 }

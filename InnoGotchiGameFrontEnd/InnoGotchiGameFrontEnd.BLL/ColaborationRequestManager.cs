@@ -12,63 +12,53 @@ namespace InnoGotchiGameFrontEnd.BLL
             _requestService = requestService;
         }
 
-        public async Task<ManagerRezult> AddCollaboratorAsync(UserDTO sender, UserDTO recipient, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> AddCollaboratorAsync(UserDTO sender, UserDTO recipient, CancellationToken cancellationToken = default)
         {
-            var rezult = new ManagerRezult();
-            var serviceRezult = await _requestService.CreateAsync(recipient.Id, cancellationToken);
-            rezult.Errors.AddRange(serviceRezult.Errors);
-            if (rezult.IsComplete)
+
+            var serviceResult = await _requestService.CreateAsync(recipient.Id, cancellationToken);
+
+            if (!serviceResult.IsComplete)
             {
-                var request = new ColaborationRequestDTO()
-                {
-                    RequestSender = sender,
-                    RequestSenderId = sender.Id,
-                    RequestReceiver = recipient,
-                    RequestReceiverId = recipient.Id
-                };
-                var requests = recipient.UnconfirmedRequests.ToList();
-                requests.Add(request);
-                recipient.UnconfirmedRequests = requests;
+                return new ManagerResult(serviceResult);
             }
-            return rezult;
+
+            var request = new ColaborationRequestDTO(0, ColaborationRequestStatusDTO.Undefined, sender, recipient);
+            recipient.UnconfirmedRequests.Add(request);
+            return new ManagerResult();
         }
 
-        public async Task<ManagerRezult> ConfirmAsync(int requestId, UserDTO recipient, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> ConfirmAsync(int requestId, UserDTO recipient, CancellationToken cancellationToken = default)
         {
-            var rezult = new ManagerRezult();
-            var serviceRezult = await _requestService.ConfirmAsync(requestId, cancellationToken);
-            rezult.Errors.AddRange(serviceRezult.Errors);
-            if (rezult.IsComplete)
+            var serviceResult = await _requestService.ConfirmAsync(requestId, cancellationToken);
+            if (!serviceResult.IsComplete)
             {
-                var request = recipient.UnconfirmedRequests.First(x => x.Id == requestId);
-                recipient.UnconfirmedRequests = recipient.UnconfirmedRequests.Where(x => x.Id != requestId);
-
-                var colaborators = recipient.Collaborators.ToList();
-                colaborators.Add(request.RequestSender);
-                recipient.Collaborators = colaborators;
+                return new ManagerResult(serviceResult);
             }
-            return rezult;
+
+            var request = recipient.UnconfirmedRequests.First(x => x.Id == requestId);
+            recipient.UnconfirmedRequests.Remove(request);
+
+            recipient.Collaborators.Add(request.RequestSender);
+            return new ManagerResult();
         }
 
-        public async Task<ManagerRezult> RejectAsync(int requestId, UserDTO participant, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> RejectAsync(int requestId, UserDTO participant, CancellationToken cancellationToken = default)
         {
-            var rezult = new ManagerRezult();
-            var serviceRezult = await _requestService.RejectAsync(requestId, cancellationToken);
-            rezult.Errors.AddRange(serviceRezult.Errors);
-            if (rezult.IsComplete)
+            var serviceResult = await _requestService.RejectAsync(requestId, cancellationToken);
+            if (!serviceResult.IsComplete)
             {
-                var request = participant.UnconfirmedRequests.First(x => x.Id == requestId);
-                participant.UnconfirmedRequests = participant.UnconfirmedRequests.Where(x => x.Id != requestId);
+                return new ManagerResult(serviceResult);
             }
-            return rezult;
+
+            var request = participant.UnconfirmedRequests.First(x => x.Id == requestId);
+            participant.UnconfirmedRequests.Remove(request);
+            return new ManagerResult();
         }
 
-        public async Task<ManagerRezult> DeleteByIdAsync(int requestId, CancellationToken cancellationToken = default)
+        public async Task<ManagerResult> DeleteByIdAsync(int requestId, CancellationToken cancellationToken = default)
         {
-            var rezult = new ManagerRezult();
-            var serviceRezult = await _requestService.DeleteByIdAsync(requestId, cancellationToken);
-            rezult.Errors.AddRange(serviceRezult.Errors);
-            return rezult;
+            var serviceResult = await _requestService.DeleteByIdAsync(requestId, cancellationToken);
+            return new ManagerResult(serviceResult);
         }
     }
 }

@@ -65,6 +65,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\InnoGotchiGameFrontEnd.BLL\InnoGotchiGameFrontEnd.BLL.csproj" />
+    <ProjectReference Include="..\InnoGotchiGameFrontEnd.DAL\InnoGotchiGameFrontEnd.DAL.csproj" />
   </ItemGroup>
 
 </Project>

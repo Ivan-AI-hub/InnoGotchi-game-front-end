@@ -6,9 +6,9 @@ namespace InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate
 {
     public interface IFarmService
     {
-        Task<IServiceRezult> CreateAsync(AddFarmModel addModel, CancellationToken cancellationToken = default);
+        Task<IServiceResult> CreateAsync(AddFarmModel addModel, CancellationToken cancellationToken = default);
         Task<IEnumerable<PetFarm>> GetAsync(FarmSorter? sorter = null, FarmFiltrator? filtrator = null, CancellationToken cancellationToken = default);
         Task<PetFarm?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
-        Task<IServiceRezult> UpdateAsync(UpdateFarmModel updateModel, CancellationToken cancellationToken = default);
+        Task<IServiceResult> UpdateAsync(UpdateFarmModel updateModel, CancellationToken cancellationToken = default);
     }
 }

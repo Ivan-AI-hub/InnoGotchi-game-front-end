@@ -45,7 +45,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return farm;
         }
 
-        public async Task<IServiceRezult> CreateAsync(AddFarmModel addModel, CancellationToken cancellationToken = default)
+        public async Task<IServiceResult> CreateAsync(AddFarmModel addModel, CancellationToken cancellationToken = default)
         {
 
             using StringContent jsonContent = new(
@@ -55,10 +55,10 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
-            return await GetCommandRezultAsync(httpResponseMessage);
+            return await GetCommandResultAsync(httpResponseMessage);
         }
 
-        public async Task<IServiceRezult> UpdateAsync(UpdateFarmModel updateModel, CancellationToken cancellationToken = default)
+        public async Task<IServiceResult> UpdateAsync(UpdateFarmModel updateModel, CancellationToken cancellationToken = default)
         {
 
 
@@ -69,7 +69,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri, jsonContent, cancellationToken);
 
-            return await GetCommandRezultAsync(httpResponseMessage);
+            return await GetCommandResultAsync(httpResponseMessage);
         }
     }
 }

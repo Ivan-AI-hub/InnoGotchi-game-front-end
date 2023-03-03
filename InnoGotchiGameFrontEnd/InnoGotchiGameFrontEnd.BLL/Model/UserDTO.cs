@@ -11,9 +11,9 @@
         public PictureDTO? Picture { get; set; }
         public PetFarmDTO? OwnPetFarm { get; set; }
 
-        public IEnumerable<ColaborationRequestDTO> UnconfirmedRequests { get; set; }
-        public IEnumerable<ColaborationRequestDTO> RejectedRequests { get; set; }
-        public IEnumerable<UserDTO> Collaborators { get; set; }
+        public IList<ColaborationRequestDTO> UnconfirmedRequests { get; set; }
+        public IList<ColaborationRequestDTO> RejectedRequests { get; set; }
+        public IList<UserDTO> Collaborators { get; set; }
 
         public int MessagesCount => UnconfirmedRequests.Count() + RejectedRequests.Count();
 
@@ -21,7 +21,7 @@
         {
             UnconfirmedRequests = new List<ColaborationRequestDTO>();
             RejectedRequests = new List<ColaborationRequestDTO>();
-            Collaborators = new List<UserDTO?>();
+            Collaborators = new List<UserDTO>();
         }
     }
 }

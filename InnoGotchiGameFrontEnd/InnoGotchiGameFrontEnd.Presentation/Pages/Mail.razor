@@ -119,11 +119,11 @@ else
         User = await userManager.GetByIdAsync(id, _cts.Token);
         foreach (var request in User.UnconfirmedRequests)
         {
-            request.RequestSender = await userManager.GetByIdAsync(request.RequestSenderId, _cts.Token);
+            request.SetSender(await userManager.GetByIdAsync(request.RequestSenderId, _cts.Token));
         }
         foreach (var request in User.RejectedRequests)
         {
-            request.RequestReceiver = await userManager.GetByIdAsync(request.RequestReceiverId, _cts.Token);
+            request.SetReceiver(await userManager.GetByIdAsync(request.RequestReceiverId, _cts.Token));
         }
     }
 
@@ -131,24 +131,16 @@ else
     {
         IsLoading = true;
         var rez = await requestManager.ConfirmAsync(requestId, User, _cts.Token);
-        if (!rez.IsComplete)
-        {
-            Errors = rez.Errors;            
-        }
 
+        Errors = rez.Errors;            
         IsLoading = false;
     }
     private async Task RejectRequest(int requestId)
     {
         IsLoading = true;
         var rez = await requestManager.RejectAsync(requestId, User, _cts.Token);
-        if (rez.IsComplete)
-        {
-        }
-        else
-        {
-            Errors = rez.Errors;
-        }
+
+        Errors = rez.Errors;       
         IsLoading = false;
     }
     private async Task DeleteRequest(int requestId)
@@ -157,12 +149,10 @@ else
         var rez = await requestManager.DeleteByIdAsync(requestId, _cts.Token);
         if (rez.IsComplete)
         {
-            User.RejectedRequests = User.RejectedRequests.Where(x => x.Id != requestId);
+            User.RejectedRequests.Remove(User.RejectedRequests.First(x => x.Id == requestId));
         }
-        else
-        {
-            Errors = rez.Errors;
-        }
+
+        Errors = rez.Errors;
         IsLoading = false;
     }
 }
