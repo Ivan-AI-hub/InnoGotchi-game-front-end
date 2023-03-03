@@ -6,6 +6,7 @@
 @using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 @using System.Text;
 @attribute [Authorize]
+@inherits CancellableComponent 
 @inject AuthenticationStateProvider stateProvider;
 @inject PictureManager pictureManager;
 @inject PetManager petManager;
@@ -152,16 +153,16 @@
             };
         var filtrator = new PictureDTOFiltrator();
         filtrator.Description = "body";
-        BodiesPictures = (await pictureManager.GetAllPictures(filtrator)).ToList();
+        BodiesPictures = (await pictureManager.GetAllPictures(filtrator, _cts.Token)).ToList();
 
         filtrator.Description = "eye";
-        EyesPictures = (await pictureManager.GetAllPictures(filtrator)).ToList();
+        EyesPictures = (await pictureManager.GetAllPictures(filtrator, _cts.Token)).ToList();
 
         filtrator.Description = "mouth";
-        MouthsPictures = (await pictureManager.GetAllPictures(filtrator)).ToList();
+        MouthsPictures = (await pictureManager.GetAllPictures(filtrator, _cts.Token)).ToList();
 
         filtrator.Description = "nose";
-        NosesPictures = (await pictureManager.GetAllPictures(filtrator)).ToList();
+        NosesPictures = (await pictureManager.GetAllPictures(filtrator, _cts.Token)).ToList();
     }
 
     void BodyRightClick(MouseEventArgs args)
@@ -196,7 +197,7 @@
                 Description = "pet_view_picture",
                 Format = "svg"
             };
-        var rezult = await petManager.Create(AddModel);
+        var rezult = await petManager.Create(AddModel, _cts.Token);
         this.StateHasChanged();
         if (!rezult.IsComplete)
         {

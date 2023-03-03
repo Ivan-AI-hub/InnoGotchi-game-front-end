@@ -1,5 +1,6 @@
 ﻿@page "/users/{Id:int}"
 @attribute [Authorize]
+@inherits CancellableComponent
 @inject AuthenticationStateProvider stateProvider
 @inject UserManager userManager;
 @inject ColaborationRequestManager requestManager;
@@ -104,7 +105,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        User = await userManager.GetUserById(Id);
+        User = await userManager.GetByIdAsync(Id, _cts.Token);
         var state = await stateProvider.GetAuthenticationStateAsync();
         AuthUserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
     }
@@ -117,23 +118,22 @@ else
     private async Task AddToCollaborators()
     {
         IsColaboratorAdding = true;
-        var authUser = await userManager.GetUserById(AuthUserId);
+        var authUser = await userManager.GetByIdAsync(AuthUserId, _cts.Token);
         var request = authUser.UnconfirmedRequests.FirstOrDefault(x => x.RequestSenderId == User.Id);
         if (request != null)
         {
-            await requestManager.ConfirmRequest(request.Id, authUser);
+            await requestManager.ConfirmAsync(request.Id, authUser);
             var collaborators = User.Collaborators.ToList();
             collaborators.Add(authUser);
             User.Collaborators = collaborators;
         }
         else
         {
-            await requestManager.AddCollaborator(authUser, User);
+            await requestManager.AddCollaboratorAsync(authUser, User, _cts.Token);
         }
         IsColaboratorAdding = false;
         StateHasChanged();
     }
-
 
     private void ToFarmPage()
     {

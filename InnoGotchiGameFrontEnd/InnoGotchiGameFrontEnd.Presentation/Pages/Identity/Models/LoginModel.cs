@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
 {
-    public class LoginModel : ComponentBase
+    public class LoginModel : CancellableComponent
     {
         [Inject] public IStorageService LocalStorageService { get; set; }
         [Inject] public NavigationManager Navigation { get; set; }
@@ -24,7 +24,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
         protected async Task LoginAsync()
         {
             IsLoading = true;
-            var authModel = await Manager.Authorize(LoginData.Email, LoginData.Password);
+            var authModel = await Manager.Authorize(LoginData.Email, LoginData.Password, _cts.Token);
             if (authModel != null)
             {
                 var token = new SecurityToken

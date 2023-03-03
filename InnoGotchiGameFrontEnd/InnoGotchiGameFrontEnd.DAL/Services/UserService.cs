@@ -16,7 +16,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             _baseUri = new Uri(client.BaseAddress, apiControllerName);
         }
 
-        public async Task<IEnumerable<User>> GetUsers(UserSorter? sorter = null, UserFiltrator? filtrator = null)
+        public async Task<IEnumerable<User>> GetAsync(UserSorter? sorter = null, UserFiltrator? filtrator = null, CancellationToken cancellationToken = default)
         {
             var requestUrl = new StringBuilder($"?sortField={sorter.SortRule}" +
                                                $"&isDescendingSort={sorter.IsDescendingSort}");
@@ -37,7 +37,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             {
                 requestUrl.Append($"&petFarnId={filtrator.PetFarmId}");
             }
-            var users = await (await RequestClient).GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString());
+            var users = await (await RequestClient).GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString(), cancellationToken);
 
             if (users == null)
             {
@@ -46,7 +46,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return users;
         }
 
-        public async Task<IEnumerable<User>> GetUsersPage(int pageSize, int pageNumber, UserSorter sorter, UserFiltrator filtrator)
+        public async Task<IEnumerable<User>> GetPageAsync(int pageSize, int pageNumber, UserSorter sorter, UserFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var requestUrl = new StringBuilder($"/{pageSize}/{pageNumber}" +
                              $"?sortField={sorter.SortRule}&isDescendingSort={sorter.IsDescendingSort}");
@@ -68,7 +68,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                 requestUrl.Append($"&petFarnId={filtrator.PetFarmId}");
             }
 
-            var users = await (await RequestClient).GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString());
+            var users = await (await RequestClient).GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString(), cancellationToken);
 
             if (users == null)
             {
@@ -76,66 +76,66 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             }
             return users;
         }
-        public async Task<User?> GetUserById(int id)
+        public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            User? user = await (await RequestClient).GetFromJsonAsync<User>(_baseUri + $"/{id}");
+            User? user = await (await RequestClient).GetFromJsonAsync<User>(_baseUri + $"/{id}", cancellationToken);
 
             return user;
         }
-        public async Task<User?> GetAuthodizedUser()
+        public async Task<User?> GetAuthodizedUserAsync(CancellationToken cancellationToken = default)
         {
-            User? user = await (await RequestClient).GetFromJsonAsync<User>(_baseUri + $"/Authorized");
+            User? user = await (await RequestClient).GetFromJsonAsync<User>(_baseUri + $"/Authorized", cancellationToken);
 
             return user;
         }
 
-        public async Task<ServiceRezult> Create(AddUserModel addModel)
+        public async Task<ServiceRezult> CreateAsync(AddUserModel addModel, CancellationToken cancellationToken = default)
         {
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(addModel),
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent);
+            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
             return await GetCommandRezult(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> UpdateUserData(UpdateUserDataModel updateModel)
+        public async Task<ServiceRezult> UpdateDataAsync(UpdateUserDataModel updateModel, CancellationToken cancellationToken = default)
         {
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(updateModel),
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/data", jsonContent);
+            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/data", jsonContent, cancellationToken);
 
             return await GetCommandRezult(httpResponseMessage);
         }
-        public async Task<ServiceRezult> UpdateUserPassword(UpdateUserPasswordModel updateModel)
+        public async Task<ServiceRezult> UpdatePasswordAsync(UpdateUserPasswordModel updateModel, CancellationToken cancellationToken = default)
         {
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(updateModel),
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/password", jsonContent);
+            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/password", jsonContent, cancellationToken);
 
             return await GetCommandRezult(httpResponseMessage);
         }
-        public async Task<ServiceRezult> DeleteById(int userId)
+        public async Task<ServiceRezult> DeleteByIdAsync(int userId, CancellationToken cancellationToken = default)
         {
-            var httpResponseMessage = await (await RequestClient).DeleteAsync(_baseUri + $"/{userId}");
+            var httpResponseMessage = await (await RequestClient).DeleteAsync(_baseUri + $"/{userId}", cancellationToken);
 
             return await GetCommandRezult(httpResponseMessage);
         }
 
-        public async Task<AuthorizeModel?> Authorize(string email, string password)
+        public async Task<AuthorizeModel?> AuthorizeAsync(string email, string password, CancellationToken cancellationToken = default)
         {
             var parameters = new Dictionary<string, string>();
             parameters["email"] = email;
             parameters["password"] = password;
-            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri + "/token", new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri + "/token", new FormUrlEncodedContent(parameters), cancellationToken);
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
@@ -144,7 +144,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                 {
                     PropertyNameCaseInsensitive = true
                 };
-                var token = await JsonSerializer.DeserializeAsync<AuthorizeModel>(contentStream, options);
+                var token = await JsonSerializer.DeserializeAsync<AuthorizeModel>(contentStream, options, cancellationToken);
                 return token;
             }
             return null;

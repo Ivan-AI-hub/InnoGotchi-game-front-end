@@ -1,7 +1,7 @@
 ﻿@page "/farms/{Id:int}"
 @using AuthorizationInfrastructure.Tokens;
 @using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
-
+@inherits CancellableComponent
 @attribute [Authorize]
 @inject AuthenticationStateProvider stateProvider
 @inject FarmManager farmManager
@@ -153,13 +153,13 @@
     protected override async Task OnInitializedAsync()
     {
         random = new Random();
-        Farm = await farmManager.GetFarmById(Id);
+        Farm = await farmManager.GetByIdAsync(Id, _cts.Token);
 
         var state = await stateProvider.GetAuthenticationStateAsync();
         var authUserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
 
         IsAuthUserFarm = authUserId == Farm.OwnerId;
-        var owner = await userManager.GetUserById(Farm.OwnerId);
+        var owner = await userManager.GetByIdAsync(Farm.OwnerId, _cts.Token);
         IsColaboratorFarm = owner.Collaborators.Any(x => x.Id == authUserId);
 
         DiesPets = new List<PetDTO>();

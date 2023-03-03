@@ -4,6 +4,7 @@
 @using InnoGotchiGameFrontEnd.BLL.ComandModels.Farm;
 @using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 @attribute [Authorize]
+@inherits CancellableComponent
 @inject IStorageService localStorageService;
 @inject NavigationManager navigation;
 @inject FarmManager farmManager;
@@ -59,7 +60,7 @@ else
     private async Task CreateAsync()
     {
         IsLoading = true;
-        var rezult = await farmManager.Create(Data);
+        var rezult = await farmManager.CreateAsync(Data, _cts.Token);
         if (!rezult.IsComplete)
         {
             Errors = rezult.Errors;
@@ -67,7 +68,7 @@ else
         else
         {
             var token = await localStorageService.GetAsync<SecurityToken>(nameof(SecurityToken));
-            token.FarmId = (await userManager.GetAuthodizedUser()).OwnPetFarmId;
+            token.FarmId = (await userManager.GetAuthodizedUser(_cts.Token)).OwnPetFarmId;
             await localStorageService.SetAsync<SecurityToken>(nameof(SecurityToken), token);
             navigation.NavigateTo("/");
         }

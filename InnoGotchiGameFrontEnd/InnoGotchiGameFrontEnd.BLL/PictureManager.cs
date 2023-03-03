@@ -10,31 +10,31 @@ namespace InnoGotchiGameFrontEnd.BLL
 {
     public class PictureManager
     {
-        private PictureService _service;
+        private PictureService _pictureService;
         private IMapper _mapper;
 
         public PictureManager(IAuthorizedClient client, IMapper mapper)
         {
-            _service = new PictureService(client);
+            _pictureService = new PictureService(client);
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<PictureDTO>> GetAllPictures(PictureDTOFiltrator filtrator)
+        public async Task<IEnumerable<PictureDTO>> GetAllPictures(PictureDTOFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var dataFiltrator = _mapper.Map<PictureFiltrator>(filtrator);
-            var dataPictures = await _service.GetPictures(dataFiltrator);
+            var dataPictures = await _pictureService.GetAsync(dataFiltrator, cancellationToken);
             var pictures = _mapper.Map<IEnumerable<PictureDTO>>(dataPictures);
             return pictures;
         }
 
-        public async Task<PictureDTO> GetPictureById(int id)
+        public async Task<PictureDTO> GetPictureById(int id, CancellationToken cancellationToken = default)
         {
-            var dataPsers = await _service.GetPictureById(id);
+            var dataPsers = await _pictureService.GetByIdAsync(id, cancellationToken);
             var picture = _mapper.Map<PictureDTO>(dataPsers);
             return picture;
         }
 
-        public async Task<ManagerRezult> Create(IFormFile file, string nameTemplate)
+        public async Task<ManagerRezult> Create(IFormFile file, string nameTemplate, CancellationToken cancellationToken = default)
         {
             var pictureData = new Picture()
             {
@@ -42,18 +42,18 @@ namespace InnoGotchiGameFrontEnd.BLL
                 Name = nameTemplate + "-" + Guid.NewGuid().ToString()
             };
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.Create(pictureData);
+            var serviceRezult = await _pictureService.CreateAsync(pictureData, cancellationToken);
             rezult.Errors.AddRange(serviceRezult.Errors);
 
             return rezult;
         }
 
-        public async Task<ManagerRezult> UpdatePicture(int updatedId, IFormFile file)
+        public async Task<ManagerRezult> UpdatePicture(int updatedId, IFormFile file, CancellationToken cancellationToken = default)
         {
-            var pictureData = await _service.GetPictureById(updatedId);
+            var pictureData = await _pictureService.GetByIdAsync(updatedId);
             pictureData.Image = GetByteArrayFromImage(file);
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.UpdatePicture(updatedId, pictureData);
+            var serviceRezult = await _pictureService.UpdateAsync(updatedId, pictureData,cancellationToken);
             rezult.Errors.AddRange(serviceRezult.Errors);
 
             return rezult;

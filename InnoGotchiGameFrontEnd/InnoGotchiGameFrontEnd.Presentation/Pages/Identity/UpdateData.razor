@@ -61,7 +61,7 @@ else
         IsLoading = true;
         var state = await stateProvider.GetAuthenticationStateAsync();
         var id = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
-        var user = await manager.GetUserById(id);
+        var user = await manager.GetByIdAsync(id);
         Data = new UpdateUserDTODataModel()
             {
                 UpdatedId = id,

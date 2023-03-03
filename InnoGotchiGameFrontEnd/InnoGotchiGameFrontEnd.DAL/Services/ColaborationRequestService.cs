@@ -11,40 +11,39 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             _baseUri = new Uri(client.BaseAddress, apiControllerName);
         }
 
-        public async Task<ServiceRezult> AddCollaborator(int recipientId)
+        public async Task<ServiceRezult> CreateAsync(int recipientId, CancellationToken cancellationToken = default)
         {
 
             var parameters = new Dictionary<string, string>();
             parameters["recipientId"] = recipientId.ToString();
 
-            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, new FormUrlEncodedContent(parameters), cancellationToken);
 
             return await GetCommandRezult(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> ConfirmRequest(int requestId)
+        public async Task<ServiceRezult> ConfirmAsync(int requestId, CancellationToken cancellationToken = default)
+        {
+            var parameters = new Dictionary<string, string>();
+
+            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{requestId}/confirm", new FormUrlEncodedContent(parameters), cancellationToken);
+
+            return await GetCommandRezult(httpResponseMessage);
+        }
+
+        public async Task<ServiceRezult> RejectAsync(int requestId, CancellationToken cancellationToken = default)
         {
 
             var parameters = new Dictionary<string, string>();
 
-            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{requestId}/confirm", new FormUrlEncodedContent(parameters));
+            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{requestId}/reject", new FormUrlEncodedContent(parameters), cancellationToken);
 
             return await GetCommandRezult(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> RejectRequest(int requestId)
+        public async Task<ServiceRezult> DeleteByIdAsync(int requestId, CancellationToken cancellationToken = default)
         {
-
-            var parameters = new Dictionary<string, string>();
-
-            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{requestId}/reject", new FormUrlEncodedContent(parameters));
-
-            return await GetCommandRezult(httpResponseMessage);
-        }
-
-        public async Task<ServiceRezult> DeleteById(int requestId)
-        {
-            var httpResponseMessage = await (await RequestClient).DeleteAsync(_baseUri + $"/{requestId}");
+            var httpResponseMessage = await (await RequestClient).DeleteAsync(_baseUri + $"/{requestId}", cancellationToken);
 
             return await GetCommandRezult(httpResponseMessage);
         }

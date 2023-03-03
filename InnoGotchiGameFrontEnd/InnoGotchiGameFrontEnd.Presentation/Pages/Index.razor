@@ -40,6 +40,7 @@
         Id = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId))!.Value);
         HasFarm = int.Parse(state.User.FindFirst(nameof(SecurityToken.FarmId))!.Value) != 0;
     }
+
     private void ChangeSettingState()
     {
         if (settingClass == "")

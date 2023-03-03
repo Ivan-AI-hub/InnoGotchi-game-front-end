@@ -9,13 +9,13 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
     public class PictureService : BaseService
     {
         private Uri _baseUri;
-        public PictureService(IAuthorizedClient client) : base(client)
+        public PictureService(IAuthorizedClient client, CancellationToken cancellationToken = default) : base(client)
         {
             var apiControllerName = "pictures";
             _baseUri = new Uri(client.BaseAddress, apiControllerName);
         }
 
-        public async Task<IEnumerable<Picture>?> GetPictures(PictureFiltrator filtrator)
+        public async Task<IEnumerable<Picture>?> GetAsync(PictureFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var requestUrl = new StringBuilder($"?");
 
@@ -31,7 +31,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             {
                 requestUrl.Append($"&Format={filtrator.Format}");
             }
-            var pictures = await (await RequestClient).GetFromJsonAsync<IEnumerable<Picture>>(_baseUri + requestUrl.ToString());
+            var pictures = await (await RequestClient).GetFromJsonAsync<IEnumerable<Picture>>(_baseUri + requestUrl.ToString(), cancellationToken);
 
             if (pictures == null)
             {
@@ -40,14 +40,14 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             return pictures;
         }
 
-        public async Task<Picture?> GetPictureById(int id)
+        public async Task<Picture?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            Picture? picture = await (await RequestClient).GetFromJsonAsync<Picture>(_baseUri + $"/{id}");
+            Picture? picture = await (await RequestClient).GetFromJsonAsync<Picture>(_baseUri + $"/{id}", cancellationToken);
 
             return picture;
         }
 
-        public async Task<ServiceRezult> Create(Picture picture)
+        public async Task<ServiceRezult> CreateAsync(Picture picture, CancellationToken cancellationToken = default)
         {
 
             using StringContent jsonContent = new(
@@ -55,19 +55,19 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent);
+            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
             return await GetCommandRezult(httpResponseMessage);
         }
 
-        public async Task<ServiceRezult> UpdatePicture(int updatedId, Picture picture)
+        public async Task<ServiceRezult> UpdateAsync(int updatedId, Picture picture, CancellationToken cancellationToken = default)
         {
             using StringContent jsonContent = new(
                                      JsonSerializer.Serialize(picture),
                                      Encoding.UTF8,
                                      "application/json");
 
-            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{updatedId}", jsonContent);
+            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{updatedId}", jsonContent, cancellationToken);
 
             return await GetCommandRezult(httpResponseMessage);
         }

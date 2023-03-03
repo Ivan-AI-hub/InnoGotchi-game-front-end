@@ -12,45 +12,45 @@ namespace InnoGotchiGameFrontEnd.BLL
 {
     public class PetManager
     {
-        private PetService _service;
+        private PetService _petService;
         private IMapper _mapper;
 
         public PetManager(IAuthorizedClient client, IMapper mapper)
         {
-            _service = new PetService(client);
+            _petService = new PetService(client);
             _mapper = mapper;
         }
 
 
-        public async Task<IEnumerable<PetDTO>> GetAllPets(PetDTOSorter sorter, PetDTOFiltrator filtrator)
+        public async Task<IEnumerable<PetDTO>> GetAllPets(PetDTOSorter sorter, PetDTOFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var dataSorter = _mapper.Map<PetSorter>(sorter);
             var dataFiltrator = _mapper.Map<PetFiltrator>(filtrator);
-            var dataPets = await _service.GetPets(dataSorter, dataFiltrator);
+            var dataPets = await _petService.GetAsync(dataSorter, dataFiltrator, cancellationToken);
             var pets = _mapper.Map<IEnumerable<PetDTO>>(dataPets);
             CheckHappinessStatus(pets);
             return pets;
         }
 
-        public async Task<IEnumerable<PetDTO>> GetPetsPage(int pageSize, int pageNumber, PetDTOSorter sorter, PetDTOFiltrator filtrator)
+        public async Task<IEnumerable<PetDTO>> GetPetsPage(int pageSize, int pageNumber, PetDTOSorter sorter, PetDTOFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var dataSorter = _mapper.Map<PetSorter>(sorter);
             var dataFiltrator = _mapper.Map<PetFiltrator>(filtrator);
-            var dataPets = await _service.GetPetsPage(pageSize, pageNumber, dataSorter, dataFiltrator);
+            var dataPets = await _petService.GetPageAsync(pageSize, pageNumber, dataSorter, dataFiltrator, cancellationToken);
             var pets = _mapper.Map<IEnumerable<PetDTO>>(dataPets);
             CheckHappinessStatus(pets);
             return pets;
         }
 
-        public async Task<PetDTO> GetPetById(int id)
+        public async Task<PetDTO> GetPetById(int id, CancellationToken cancellationToken = default)
         {
-            var dataPets = await _service.GetPetById(id);
+            var dataPets = await _petService.GetByIdAsync(id, cancellationToken);
             var pet = _mapper.Map<PetDTO>(dataPets);
             CheckHappinessStatus(pet);
             return pet;
         }
 
-        public async Task<ManagerRezult> Create(AddPetDTOModel addModel)
+        public async Task<ManagerRezult> Create(AddPetDTOModel addModel, CancellationToken cancellationToken = default)
         {
             var validator = new AddPetDTOValidator();
             var validationResult = validator.Validate(addModel);
@@ -58,13 +58,13 @@ namespace InnoGotchiGameFrontEnd.BLL
             if (validationResult.IsValid)
             {
                 var addDataModel = _mapper.Map<AddPetModel>(addModel);
-                var serviceRezult = await _service.Create(addDataModel);
+                var serviceRezult = await _petService.CreateAsync(addDataModel, cancellationToken);
                 rezult.Errors.AddRange(serviceRezult.Errors);
             }
             return rezult;
         }
 
-        public async Task<ManagerRezult> UpdatePet(UpdatePetDTOModel updateModel)
+        public async Task<ManagerRezult> UpdatePet(UpdatePetDTOModel updateModel, CancellationToken cancellationToken = default)
         {
             var validator = new UpdatePetDTOValidator();
             var validationResult = validator.Validate(updateModel);
@@ -72,16 +72,16 @@ namespace InnoGotchiGameFrontEnd.BLL
             if (validationResult.IsValid)
             {
                 var updateDataModel = _mapper.Map<UpdatePetModel>(updateModel);
-                var serviceRezult = await _service.UpdatePet(updateDataModel);
+                var serviceRezult = await _petService.UpdateAsync(updateDataModel, cancellationToken);
                 rezult.Errors.AddRange(serviceRezult.Errors);
             }
             return rezult;
         }
 
-        public async Task<ManagerRezult> Feed(PetDTO pet)
+        public async Task<ManagerRezult> Feed(PetDTO pet, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.Feed(pet.Id);
+            var serviceRezult = await _petService.FeedAsync(pet.Id, cancellationToken);
             rezult.Errors.AddRange(serviceRezult.Errors);
 
             if (rezult.IsComplete)
@@ -94,10 +94,10 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<ManagerRezult> GiveDrink(PetDTO pet)
+        public async Task<ManagerRezult> GiveDrink(PetDTO pet, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.GiveDrink(pet.Id);
+            var serviceRezult = await _petService.GiveDrinkAsync(pet.Id, cancellationToken);
             rezult.Errors.AddRange(serviceRezult.Errors);
 
             if (rezult.IsComplete)
@@ -115,9 +115,9 @@ namespace InnoGotchiGameFrontEnd.BLL
             var rezult = new ManagerRezult();
             ServiceRezult serviceRezult;
             if (pet.Statistic.DeadDate != null)
-                serviceRezult = await _service.SetDeadStatus(pet.Id, pet.Statistic.DeadDate.Value);
+                serviceRezult = await _petService.SetDeadStatus(pet.Id, pet.Statistic.DeadDate.Value);
             else
-                serviceRezult = await _service.SetDeadStatus(pet.Id, DateTime.Now);
+                serviceRezult = await _petService.SetDeadStatus(pet.Id, DateTime.Now);
 
             rezult.Errors.AddRange(serviceRezult.Errors);
 
@@ -144,7 +144,7 @@ namespace InnoGotchiGameFrontEnd.BLL
                 if (pet.Statistic.HungerLevel == HungerLevel.Hunger || pet.Statistic.ThirstyLevel == ThirstyLevel.Thirsty)
                 {
                     pet.Statistic.FirstHappinessDay = DateTime.UtcNow;
-                    _service.ResetHappinessDay(pet.Id);
+                    _petService.ResetHappinessDay(pet.Id);
                 }
             }
         }

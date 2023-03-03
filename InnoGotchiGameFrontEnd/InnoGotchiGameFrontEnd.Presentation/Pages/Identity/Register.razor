@@ -3,7 +3,8 @@
 @using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 @using InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models;
 @using Microsoft.AspNetCore.Http;
-@inject UserManager manager;
+@inherits CancellableComponent
+@inject UserManager userManager;
 @inject IConfiguration configuration;
 @inject NavigationManager navigation;
 
@@ -88,7 +89,7 @@
 
     private async Task RegisterAsync()
     {
-        var rezult = await manager.Create(Data);
+        var rezult = await userManager.Create(Data, _cts.Token);
         this.StateHasChanged();
         if (!rezult.IsComplete)
         {

@@ -6,17 +6,17 @@ namespace InnoGotchiGameFrontEnd.BLL
 {
     public class ColaborationRequestManager
     {
-        private ColaborationRequestService _service;
+        private ColaborationRequestService _requestService;
 
         public ColaborationRequestManager(IAuthorizedClient client)
         {
-            _service = new ColaborationRequestService(client);
+            _requestService = new ColaborationRequestService(client);
         }
 
-        public async Task<ManagerRezult> AddCollaborator(UserDTO sender, UserDTO recipient)
+        public async Task<ManagerRezult> AddCollaboratorAsync(UserDTO sender, UserDTO recipient, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.AddCollaborator(recipient.Id);
+            var serviceRezult = await _requestService.CreateAsync(recipient.Id, cancellationToken);
             rezult.Errors.AddRange(serviceRezult.Errors);
             if (rezult.IsComplete)
             {
@@ -34,10 +34,10 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<ManagerRezult> ConfirmRequest(int requestId, UserDTO recipient)
+        public async Task<ManagerRezult> ConfirmAsync(int requestId, UserDTO recipient, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.ConfirmRequest(requestId);
+            var serviceRezult = await _requestService.ConfirmAsync(requestId, cancellationToken);
             rezult.Errors.AddRange(serviceRezult.Errors);
             if (rezult.IsComplete)
             {
@@ -51,10 +51,10 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<ManagerRezult> RejectRequest(int requestId, UserDTO participant)
+        public async Task<ManagerRezult> RejectAsync(int requestId, UserDTO participant, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.RejectRequest(requestId);
+            var serviceRezult = await _requestService.RejectAsync(requestId, cancellationToken);
             rezult.Errors.AddRange(serviceRezult.Errors);
             if (rezult.IsComplete)
             {
@@ -64,10 +64,10 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<ManagerRezult> DeleteById(int requestId)
+        public async Task<ManagerRezult> DeleteByIdAsync(int requestId, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.DeleteById(requestId);
+            var serviceRezult = await _requestService.DeleteByIdAsync(requestId, cancellationToken);
             rezult.Errors.AddRange(serviceRezult.Errors);
             return rezult;
         }

@@ -13,77 +13,83 @@ namespace InnoGotchiGameFrontEnd.BLL
 {
     public class UserManager
     {
-        private UserService _service;
+        private UserService _userService;
         private IMapper _mapper;
 
         public UserManager(IAuthorizedClient client, IMapper mapper)
         {
-            _service = new UserService(client);
+            _userService = new UserService(client);
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<UserDTO>> GetAllUsers(UserDTOSorter sorter, UserDTOFiltrator filtrator)
+        public async Task<IEnumerable<UserDTO>> GetAllUsers(UserDTOSorter sorter, UserDTOFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var dataSorter = _mapper.Map<UserSorter>(sorter);
             var dataFiltrator = _mapper.Map<UserFiltrator>(filtrator);
-            var dataUsers = await _service.GetUsers(dataSorter, dataFiltrator);
+            var dataUsers = await _userService.GetAsync(dataSorter, dataFiltrator, cancellationToken);
             var users = _mapper.Map<IEnumerable<UserDTO>>(dataUsers);
             return users;
         }
 
-        public async Task<IEnumerable<UserDTO>> GetUsersPage(int pageSize, int pageNumber, UserDTOSorter sorter, UserDTOFiltrator filtrator)
+        public async Task<IEnumerable<UserDTO>> GetUsersPage(int pageSize, int pageNumber, UserDTOSorter sorter, UserDTOFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var dataSorter = _mapper.Map<UserSorter>(sorter);
             var dataFiltrator = _mapper.Map<UserFiltrator>(filtrator);
-            var dataUsers = await _service.GetUsersPage(pageSize, pageNumber, dataSorter, dataFiltrator);
+            var dataUsers = await _userService.GetPageAsync(pageSize, pageNumber, dataSorter, dataFiltrator, cancellationToken);
             var users = _mapper.Map<IEnumerable<UserDTO>>(dataUsers);
             return users;
         }
 
-        public async Task<UserDTO> GetUserById(int id)
+        public async Task<UserDTO> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            var dataUsers = await _service.GetUserById(id);
+            var dataUsers = await _userService.GetByIdAsync(id, cancellationToken);
             var user = _mapper.Map<UserDTO>(dataUsers);
             return user;
         }
 
-        public async Task<UserDTO> GetAuthodizedUser()
+        public async Task<UserDTO> GetAuthodizedUser(CancellationToken cancellationToken = default)
         {
             UserDTO user;
-            var dataUsers = await _service.GetAuthodizedUser();
+            var dataUsers = await _userService.GetAuthodizedUserAsync(cancellationToken);
             user = _mapper.Map<UserDTO>(dataUsers);
             return user;
         }
 
-        public async Task<ManagerRezult> Create(AddUserDTOModel addModel)
+        public async Task<ManagerRezult> Create(AddUserDTOModel addModel, CancellationToken cancellationToken = default)
         {
             var validator = new AddUserDTOValidator();
             var validationResult = validator.Validate(addModel);
             var rezult = new ManagerRezult(validationResult);
-            if (validationResult.IsValid)
+            if (!validationResult.IsValid)
             {
-                var addDataModel = _mapper.Map<AddUserModel>(addModel);
-                var serviceRezult = await _service.Create(addDataModel);
-                rezult.Errors.AddRange(serviceRezult.Errors);
+                return rezult;
             }
+
+            var addDataModel = _mapper.Map<AddUserModel>(addModel);
+            var serviceRezult = await _userService.CreateAsync(addDataModel, cancellationToken);
+            rezult.Errors.AddRange(serviceRezult.Errors);
+
             return rezult;
         }
 
-        public async Task<ManagerRezult> UpdateUserData(UpdateUserDTODataModel updateModel)
+        public async Task<ManagerRezult> UpdateUserData(UpdateUserDTODataModel updateModel, CancellationToken cancellationToken = default)
         {
             var validator = new UpdateUserDTODataValidator();
             var validationResult = validator.Validate(updateModel);
             var rezult = new ManagerRezult(validationResult);
-            if (validationResult.IsValid)
+            if (!validationResult.IsValid)
             {
-                var updateDataModel = _mapper.Map<UpdateUserDataModel>(updateModel);
-                var serviceRezult = await _service.UpdateUserData(updateDataModel);
-                rezult.Errors.AddRange(serviceRezult.Errors);
+                return rezult;
             }
+
+            var updateDataModel = _mapper.Map<UpdateUserDataModel>(updateModel);
+            var serviceRezult = await _userService.UpdateDataAsync(updateDataModel, cancellationToken);
+            rezult.Errors.AddRange(serviceRezult.Errors);
+
             return rezult;
         }
 
-        public async Task<ManagerRezult> UpdateUserPassword(UpdateUserDTOPasswordModel updateModel)
+        public async Task<ManagerRezult> UpdateUserPassword(UpdateUserDTOPasswordModel updateModel, CancellationToken cancellationToken = default)
         {
             var validator = new UpdateUserDTOPasswordValidator();
             var validationResult = validator.Validate(updateModel);
@@ -91,23 +97,23 @@ namespace InnoGotchiGameFrontEnd.BLL
             if (validationResult.IsValid)
             {
                 var updateDataModel = _mapper.Map<UpdateUserPasswordModel>(updateModel);
-                var serviceRezult = await _service.UpdateUserPassword(updateDataModel);
+                var serviceRezult = await _userService.UpdatePasswordAsync(updateDataModel,cancellationToken);
                 rezult.Errors.AddRange(serviceRezult.Errors);
             }
             return rezult;
         }
 
-        public async Task<ManagerRezult> DeleteById(int id)
+        public async Task<ManagerRezult> DeleteById(int id, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
-            var serviceRezult = await _service.DeleteById(id);
+            var serviceRezult = await _userService.DeleteByIdAsync(id,cancellationToken);
             rezult.Errors.AddRange(serviceRezult.Errors);
             return rezult;
         }
 
-        public async Task<AuthorizeModelDTO?> Authorize(string email, string password)
+        public async Task<AuthorizeModelDTO?> Authorize(string email, string password, CancellationToken cancellationToken = default)
         {
-            var token = await _service.Authorize(email, password);
+            var token = await _userService.AuthorizeAsync(email, password,cancellationToken);
 
             return _mapper.Map<AuthorizeModelDTO?>(token);
         }

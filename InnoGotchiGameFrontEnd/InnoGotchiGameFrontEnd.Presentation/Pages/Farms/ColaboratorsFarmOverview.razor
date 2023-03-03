@@ -2,6 +2,7 @@
 @attribute [Authorize]
 @inject AuthenticationStateProvider stateProvider;
 @inject UserManager userManager;
+@inherits CancellableComponent;
 
 @if (User != null)
 {
@@ -46,11 +47,11 @@ else
     {
         var state = await stateProvider.GetAuthenticationStateAsync();
         var authUserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
-        User = await userManager.GetUserById(authUserId);
+        User = await userManager.GetByIdAsync(authUserId);
         var colaborators = new List<UserDTO>();
         foreach (var colaborator in User.Collaborators)
         {
-            colaborators.Add(await userManager.GetUserById(colaborator.Id));
+            colaborators.Add(await userManager.GetByIdAsync(colaborator.Id, _cts.Token));
         }
         User.Collaborators = colaborators;
     }
