@@ -68,7 +68,7 @@ else
         else
         {
             var token = await localStorageService.GetAsync<SecurityToken>(nameof(SecurityToken));
-            token.FarmId = (await userManager.GetAuthodizedUser(_cts.Token)).OwnPetFarmId;
+            token.FarmId = (await userManager.GetAuthodizedUserAsync(_cts.Token)).OwnPetFarmId;
             await localStorageService.SetAsync<SecurityToken>(nameof(SecurityToken), token);
             navigation.NavigateTo("/");
         }

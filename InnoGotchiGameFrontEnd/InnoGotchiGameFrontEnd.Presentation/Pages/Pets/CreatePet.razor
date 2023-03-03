@@ -153,16 +153,16 @@
             };
         var filtrator = new PictureDTOFiltrator();
         filtrator.Description = "body";
-        BodiesPictures = (await pictureManager.GetAllPictures(filtrator, _cts.Token)).ToList();
+        BodiesPictures = (await pictureManager.GetAsync(filtrator, _cts.Token)).ToList();
 
         filtrator.Description = "eye";
-        EyesPictures = (await pictureManager.GetAllPictures(filtrator, _cts.Token)).ToList();
+        EyesPictures = (await pictureManager.GetAsync(filtrator, _cts.Token)).ToList();
 
         filtrator.Description = "mouth";
-        MouthsPictures = (await pictureManager.GetAllPictures(filtrator, _cts.Token)).ToList();
+        MouthsPictures = (await pictureManager.GetAsync(filtrator, _cts.Token)).ToList();
 
         filtrator.Description = "nose";
-        NosesPictures = (await pictureManager.GetAllPictures(filtrator, _cts.Token)).ToList();
+        NosesPictures = (await pictureManager.GetAsync(filtrator, _cts.Token)).ToList();
     }
 
     void BodyRightClick(MouseEventArgs args)
@@ -197,7 +197,7 @@
                 Description = "pet_view_picture",
                 Format = "svg"
             };
-        var rezult = await petManager.Create(AddModel, _cts.Token);
+        var rezult = await petManager.CreateAsync(AddModel, _cts.Token);
         this.StateHasChanged();
         if (!rezult.IsComplete)
         {

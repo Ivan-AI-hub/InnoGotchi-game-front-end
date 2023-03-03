@@ -57,7 +57,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
 
         public async Task<ServiceRezult> UpdateAsync(int updatedId, Picture picture, CancellationToken cancellationToken = default)
@@ -69,7 +69,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{updatedId}", jsonContent, cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
     }
 }

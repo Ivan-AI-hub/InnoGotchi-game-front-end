@@ -14,7 +14,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
             _client = client;
         }
 
-        protected async Task<ServiceRezult> GetCommandRezult(HttpResponseMessage responseMessage)
+        protected async Task<ServiceRezult> GetCommandRezultAsync(HttpResponseMessage responseMessage)
         {
             var rezult = new ServiceRezult();
             if (responseMessage.IsSuccessStatusCode)

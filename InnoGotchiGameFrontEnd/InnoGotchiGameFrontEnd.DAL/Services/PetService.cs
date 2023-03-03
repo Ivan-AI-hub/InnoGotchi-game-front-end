@@ -99,7 +99,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
 
         public async Task<ServiceRezult> UpdateAsync(UpdatePetModel updateModel, CancellationToken cancellationToken = default)
@@ -113,7 +113,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/data", jsonContent, cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
 
         public async Task<ServiceRezult> FeedAsync(int petId, CancellationToken cancellationToken = default)
@@ -123,7 +123,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{petId}/feed", new FormUrlEncodedContent(parameters), cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
 
         public async Task<ServiceRezult> GiveDrinkAsync(int petId, CancellationToken cancellationToken = default)
@@ -133,7 +133,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{petId}/drink", new FormUrlEncodedContent(parameters), cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
         public async Task<ServiceRezult> ResetHappinessDay(int petId, CancellationToken cancellationToken = default)
         {
@@ -142,7 +142,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{petId}/resetHappinessDay", new FormUrlEncodedContent(parameters), cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
         public async Task<ServiceRezult> SetDeadStatus(int petId, DateTime deadDate, CancellationToken cancellationToken = default)
         {
@@ -153,7 +153,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{petId}/dead", new FormUrlEncodedContent(parameters), cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
     }
 }

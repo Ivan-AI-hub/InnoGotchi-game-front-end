@@ -123,6 +123,6 @@
     private async Task UsersUpdate()
     {
         Data.Users = null;
-        Data.Users = await manager.GetUsersPage(Data.Page.PageSize, Data.Page.Number, Data.Sorter, Data.Filtrator, _cts.Token);
+        Data.Users = await manager.GetPageAsync(Data.Page.PageSize, Data.Page.Number, Data.Sorter, Data.Filtrator, _cts.Token);
     }
 }

@@ -122,7 +122,7 @@ else
         var request = authUser.UnconfirmedRequests.FirstOrDefault(x => x.RequestSenderId == User.Id);
         if (request != null)
         {
-            await requestManager.ConfirmAsync(request.Id, authUser);
+            await requestManager.ConfirmAsync(request.Id, authUser, _cts.Token);
             var collaborators = User.Collaborators.ToList();
             collaborators.Add(authUser);
             User.Collaborators = collaborators;

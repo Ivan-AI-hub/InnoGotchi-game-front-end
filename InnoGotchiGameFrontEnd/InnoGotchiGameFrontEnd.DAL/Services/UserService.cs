@@ -98,7 +98,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
 
         public async Task<ServiceRezult> UpdateDataAsync(UpdateUserDataModel updateModel, CancellationToken cancellationToken = default)
@@ -110,7 +110,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/data", jsonContent, cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
         public async Task<ServiceRezult> UpdatePasswordAsync(UpdateUserPasswordModel updateModel, CancellationToken cancellationToken = default)
         {
@@ -121,13 +121,13 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/password", jsonContent, cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
         public async Task<ServiceRezult> DeleteByIdAsync(int userId, CancellationToken cancellationToken = default)
         {
             var httpResponseMessage = await (await RequestClient).DeleteAsync(_baseUri + $"/{userId}", cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
 
         public async Task<AuthorizeModel?> AuthorizeAsync(string email, string password, CancellationToken cancellationToken = default)
@@ -139,7 +139,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
                 var options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true

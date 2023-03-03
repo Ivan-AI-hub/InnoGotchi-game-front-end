@@ -2,6 +2,7 @@
 @using AuthorizationInfrastructure.Tokens;
 @using InnoGotchiGameFrontEnd.BLL.ComandModels.User;
 @attribute [Authorize]
+@inherits CancellableComponent
 @inject AuthenticationStateProvider stateProvider;
 @inject UserManager manager;
 @inject IConfiguration configuration;
@@ -61,7 +62,7 @@ else
         IsLoading = true;
         var state = await stateProvider.GetAuthenticationStateAsync();
         var id = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
-        var user = await manager.GetByIdAsync(id);
+        var user = await manager.GetByIdAsync(id, _cts.Token);
         Data = new UpdateUserDTODataModel()
             {
                 UpdatedId = id,
@@ -94,7 +95,7 @@ else
     private async Task UpdateAsync()
     {
         IsLoading = true;
-        await manager.UpdateUserData(Data);
+        await manager.UpdateDataAsync(Data, _cts.Token);
         IsLoading = false;
         navigation.NavigateTo("/");
 

@@ -1,5 +1,7 @@
-﻿@inject PetManager petManager
+﻿@using InnoGotchiGameFrontEnd.Presentation.Pages;
+@inject PetManager petManager
 @inject AuthenticationStateProvider stateProvider
+@inherits CancellableComponent
 <div class="row">
     <div class="col">
         @if (Pet.Statistic.HungerLevel != HungerLevel.Full)
@@ -36,7 +38,7 @@
     }
     private async Task Feeding()
     {
-        var rez = await petManager.Feed(Pet);
+        var rez = await petManager.FeedAsync(Pet, _cts.Token);
         Errors.Clear();
         Errors.AddRange(rez.Errors);
         OnPetStatsChanges?.Invoke();
@@ -44,7 +46,7 @@
 
     private async Task GiveDrink()
     {
-        var rez = await petManager.GiveDrink(Pet);
+        var rez = await petManager.GiveDrinkAsync(Pet, _cts.Token);
         Errors.Clear();
         Errors.AddRange(rez.Errors);
         OnPetStatsChanges?.Invoke();

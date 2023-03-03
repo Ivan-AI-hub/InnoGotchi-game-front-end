@@ -22,7 +22,7 @@ namespace InnoGotchiGameFrontEnd.BLL
         }
 
 
-        public async Task<IEnumerable<PetDTO>> GetAllPets(PetDTOSorter sorter, PetDTOFiltrator filtrator, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<PetDTO>> GetAsync(PetDTOSorter sorter, PetDTOFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var dataSorter = _mapper.Map<PetSorter>(sorter);
             var dataFiltrator = _mapper.Map<PetFiltrator>(filtrator);
@@ -32,7 +32,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             return pets;
         }
 
-        public async Task<IEnumerable<PetDTO>> GetPetsPage(int pageSize, int pageNumber, PetDTOSorter sorter, PetDTOFiltrator filtrator, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<PetDTO>> GetPageAsync(int pageSize, int pageNumber, PetDTOSorter sorter, PetDTOFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var dataSorter = _mapper.Map<PetSorter>(sorter);
             var dataFiltrator = _mapper.Map<PetFiltrator>(filtrator);
@@ -42,7 +42,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             return pets;
         }
 
-        public async Task<PetDTO> GetPetById(int id, CancellationToken cancellationToken = default)
+        public async Task<PetDTO> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             var dataPets = await _petService.GetByIdAsync(id, cancellationToken);
             var pet = _mapper.Map<PetDTO>(dataPets);
@@ -50,7 +50,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             return pet;
         }
 
-        public async Task<ManagerRezult> Create(AddPetDTOModel addModel, CancellationToken cancellationToken = default)
+        public async Task<ManagerRezult> CreateAsync(AddPetDTOModel addModel, CancellationToken cancellationToken = default)
         {
             var validator = new AddPetDTOValidator();
             var validationResult = validator.Validate(addModel);
@@ -64,7 +64,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<ManagerRezult> UpdatePet(UpdatePetDTOModel updateModel, CancellationToken cancellationToken = default)
+        public async Task<ManagerRezult> UpdateAsync(UpdatePetDTOModel updateModel, CancellationToken cancellationToken = default)
         {
             var validator = new UpdatePetDTOValidator();
             var validationResult = validator.Validate(updateModel);
@@ -78,7 +78,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<ManagerRezult> Feed(PetDTO pet, CancellationToken cancellationToken = default)
+        public async Task<ManagerRezult> FeedAsync(PetDTO pet, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
             var serviceRezult = await _petService.FeedAsync(pet.Id, cancellationToken);
@@ -94,7 +94,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<ManagerRezult> GiveDrink(PetDTO pet, CancellationToken cancellationToken = default)
+        public async Task<ManagerRezult> GiveDrinkAsync(PetDTO pet, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
             var serviceRezult = await _petService.GiveDrinkAsync(pet.Id, cancellationToken);
@@ -110,14 +110,14 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<ManagerRezult> SetDeadStatus(PetDTO pet)
+        public async Task<ManagerRezult> SetDeadStatusAsync(PetDTO pet, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
             ServiceRezult serviceRezult;
             if (pet.Statistic.DeadDate != null)
-                serviceRezult = await _petService.SetDeadStatus(pet.Id, pet.Statistic.DeadDate.Value);
+                serviceRezult = await _petService.SetDeadStatus(pet.Id, pet.Statistic.DeadDate.Value, cancellationToken);
             else
-                serviceRezult = await _petService.SetDeadStatus(pet.Id, DateTime.Now);
+                serviceRezult = await _petService.SetDeadStatus(pet.Id, DateTime.Now, cancellationToken);
 
             rezult.Errors.AddRange(serviceRezult.Errors);
 

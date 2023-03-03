@@ -19,7 +19,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<PictureDTO>> GetAllPictures(PictureDTOFiltrator filtrator, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<PictureDTO>> GetAsync(PictureDTOFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var dataFiltrator = _mapper.Map<PictureFiltrator>(filtrator);
             var dataPictures = await _pictureService.GetAsync(dataFiltrator, cancellationToken);
@@ -27,14 +27,14 @@ namespace InnoGotchiGameFrontEnd.BLL
             return pictures;
         }
 
-        public async Task<PictureDTO> GetPictureById(int id, CancellationToken cancellationToken = default)
+        public async Task<PictureDTO> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             var dataPsers = await _pictureService.GetByIdAsync(id, cancellationToken);
             var picture = _mapper.Map<PictureDTO>(dataPsers);
             return picture;
         }
 
-        public async Task<ManagerRezult> Create(IFormFile file, string nameTemplate, CancellationToken cancellationToken = default)
+        public async Task<ManagerRezult> CreateAsync(IFormFile file, string nameTemplate, CancellationToken cancellationToken = default)
         {
             var pictureData = new Picture()
             {
@@ -48,9 +48,9 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<ManagerRezult> UpdatePicture(int updatedId, IFormFile file, CancellationToken cancellationToken = default)
+        public async Task<ManagerRezult> UpdateAsync(int updatedId, IFormFile file, CancellationToken cancellationToken = default)
         {
-            var pictureData = await _pictureService.GetByIdAsync(updatedId);
+            var pictureData = await _pictureService.GetByIdAsync(updatedId, cancellationToken);
             pictureData.Image = GetByteArrayFromImage(file);
             var rezult = new ManagerRezult();
             var serviceRezult = await _pictureService.UpdateAsync(updatedId, pictureData,cancellationToken);

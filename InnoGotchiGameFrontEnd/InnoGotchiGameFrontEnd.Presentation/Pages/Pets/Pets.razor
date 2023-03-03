@@ -126,6 +126,6 @@
     private async Task PetsUpdate()
     {
         Data.Pets = null;
-        Data.Pets = await manager.GetPetsPage(Data.Page.PageSize, Data.Page.Number, Data.Sorter, Data.Filtrator, _cts.Token);
+        Data.Pets = await manager.GetPageAsync(Data.Page.PageSize, Data.Page.Number, Data.Sorter, Data.Filtrator, _cts.Token);
     }
 }

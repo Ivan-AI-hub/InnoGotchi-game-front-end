@@ -19,7 +19,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, new FormUrlEncodedContent(parameters), cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
 
         public async Task<ServiceRezult> ConfirmAsync(int requestId, CancellationToken cancellationToken = default)
@@ -28,7 +28,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{requestId}/confirm", new FormUrlEncodedContent(parameters), cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
 
         public async Task<ServiceRezult> RejectAsync(int requestId, CancellationToken cancellationToken = default)
@@ -38,14 +38,14 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + $"/{requestId}/reject", new FormUrlEncodedContent(parameters), cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
 
         public async Task<ServiceRezult> DeleteByIdAsync(int requestId, CancellationToken cancellationToken = default)
         {
             var httpResponseMessage = await (await RequestClient).DeleteAsync(_baseUri + $"/{requestId}", cancellationToken);
 
-            return await GetCommandRezult(httpResponseMessage);
+            return await GetCommandRezultAsync(httpResponseMessage);
         }
     }
 }

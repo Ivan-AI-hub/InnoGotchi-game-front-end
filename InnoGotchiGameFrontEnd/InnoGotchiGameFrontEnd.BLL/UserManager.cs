@@ -22,7 +22,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<UserDTO>> GetAllUsers(UserDTOSorter sorter, UserDTOFiltrator filtrator, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<UserDTO>> GetAsync(UserDTOSorter sorter, UserDTOFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var dataSorter = _mapper.Map<UserSorter>(sorter);
             var dataFiltrator = _mapper.Map<UserFiltrator>(filtrator);
@@ -31,7 +31,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             return users;
         }
 
-        public async Task<IEnumerable<UserDTO>> GetUsersPage(int pageSize, int pageNumber, UserDTOSorter sorter, UserDTOFiltrator filtrator, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<UserDTO>> GetPageAsync(int pageSize, int pageNumber, UserDTOSorter sorter, UserDTOFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var dataSorter = _mapper.Map<UserSorter>(sorter);
             var dataFiltrator = _mapper.Map<UserFiltrator>(filtrator);
@@ -47,7 +47,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             return user;
         }
 
-        public async Task<UserDTO> GetAuthodizedUser(CancellationToken cancellationToken = default)
+        public async Task<UserDTO> GetAuthodizedUserAsync(CancellationToken cancellationToken = default)
         {
             UserDTO user;
             var dataUsers = await _userService.GetAuthodizedUserAsync(cancellationToken);
@@ -55,7 +55,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             return user;
         }
 
-        public async Task<ManagerRezult> Create(AddUserDTOModel addModel, CancellationToken cancellationToken = default)
+        public async Task<ManagerRezult> CreateAsync(AddUserDTOModel addModel, CancellationToken cancellationToken = default)
         {
             var validator = new AddUserDTOValidator();
             var validationResult = validator.Validate(addModel);
@@ -72,7 +72,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<ManagerRezult> UpdateUserData(UpdateUserDTODataModel updateModel, CancellationToken cancellationToken = default)
+        public async Task<ManagerRezult> UpdateDataAsync(UpdateUserDTODataModel updateModel, CancellationToken cancellationToken = default)
         {
             var validator = new UpdateUserDTODataValidator();
             var validationResult = validator.Validate(updateModel);
@@ -89,7 +89,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<ManagerRezult> UpdateUserPassword(UpdateUserDTOPasswordModel updateModel, CancellationToken cancellationToken = default)
+        public async Task<ManagerRezult> UpdatePasswordAsync(UpdateUserDTOPasswordModel updateModel, CancellationToken cancellationToken = default)
         {
             var validator = new UpdateUserDTOPasswordValidator();
             var validationResult = validator.Validate(updateModel);
@@ -103,7 +103,7 @@ namespace InnoGotchiGameFrontEnd.BLL
             return rezult;
         }
 
-        public async Task<ManagerRezult> DeleteById(int id, CancellationToken cancellationToken = default)
+        public async Task<ManagerRezult> DeleteByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             var rezult = new ManagerRezult();
             var serviceRezult = await _userService.DeleteByIdAsync(id,cancellationToken);
