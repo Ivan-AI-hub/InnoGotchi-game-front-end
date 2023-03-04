@@ -1,4 +1,5 @@
 ﻿using AuthorizationInfrastructure.HttpClients;
+using InnoGotchiGameFrontEnd.DAL.UrlConstructors;
 using InnoGotchiGameFrontEnd.Domain;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate.Comands;
@@ -13,24 +14,16 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
     public class FarmService : BaseService, IFarmService
     {
         private Uri _baseUri;
-        public FarmService(IAuthorizedClient client, CancellationToken cancellationToken = default) : base(client)
+        public FarmService(IAuthorizedClient client) : base(client)
         {
             var apiControllerName = "farms";
             _baseUri = new Uri(client.BaseAddress, apiControllerName);
         }
         public async Task<IEnumerable<PetFarm>> GetAsync(FarmSorter? sorter = null, FarmFiltrator? filtrator = null, CancellationToken cancellationToken = default)
         {
+            var quary = PetFarmUriConstructor.GenerateUriQuery(sorter, filtrator);
 
-            var requestUrl = new StringBuilder($"?sortField={sorter.SortRule}" +
-                                   $"&isDescendingSort={sorter.IsDescendingSort}");
-
-            if (!String.IsNullOrEmpty(filtrator.Name))
-            {
-                requestUrl.Append($"&Name={filtrator.Name}");
-            }
-
-
-            var farms = await (await RequestClient).GetFromJsonAsync<IEnumerable<PetFarm>>(_baseUri + requestUrl.ToString(), cancellationToken);
+            var farms = await (await RequestClient).GetFromJsonAsync<IEnumerable<PetFarm>>(_baseUri + quary, cancellationToken);
 
             if (farms == null)
             {
@@ -47,11 +40,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<IServiceResult> CreateAsync(AddFarmModel addModel, CancellationToken cancellationToken = default)
         {
-
-            using StringContent jsonContent = new(
-                                     JsonSerializer.Serialize(addModel),
-                                     Encoding.UTF8,
-                                     "application/json");
+            using StringContent jsonContent = new(JsonSerializer.Serialize(addModel), Encoding.UTF8, "application/json");
 
             var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
@@ -60,12 +49,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<IServiceResult> UpdateAsync(UpdateFarmModel updateModel, CancellationToken cancellationToken = default)
         {
-
-
-            using StringContent jsonContent = new(
-                                     JsonSerializer.Serialize(updateModel),
-                                     Encoding.UTF8,
-                                     "application/json");
+            using StringContent jsonContent = new(JsonSerializer.Serialize(updateModel), Encoding.UTF8, "application/json");
 
             var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri, jsonContent, cancellationToken);
 

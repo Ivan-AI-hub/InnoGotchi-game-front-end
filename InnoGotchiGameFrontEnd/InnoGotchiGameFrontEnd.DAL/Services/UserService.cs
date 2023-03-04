@@ -1,4 +1,5 @@
 ﻿using AuthorizationInfrastructure.HttpClients;
+using InnoGotchiGameFrontEnd.DAL.UriConstructors;
 using InnoGotchiGameFrontEnd.Domain;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate.Comands;
@@ -22,26 +23,8 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<IEnumerable<User>> GetAsync(UserSorter? sorter = null, UserFiltrator? filtrator = null, CancellationToken cancellationToken = default)
         {
-            var requestUrl = new StringBuilder($"?sortField={sorter.SortRule}" +
-                                               $"&isDescendingSort={sorter.IsDescendingSort}");
-
-            if (!String.IsNullOrEmpty(filtrator.FirstName))
-            {
-                requestUrl.Append($"&firstName={filtrator.FirstName}");
-            }
-            if (!String.IsNullOrEmpty(filtrator.LastName))
-            {
-                requestUrl.Append($"&lastName={filtrator.LastName}");
-            }
-            if (!String.IsNullOrEmpty(filtrator.Email))
-            {
-                requestUrl.Append($"&email={filtrator.Email}");
-            }
-            if (!String.IsNullOrEmpty(filtrator.Email))
-            {
-                requestUrl.Append($"&petFarnId={filtrator.PetFarmId}");
-            }
-            var users = await (await RequestClient).GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString(), cancellationToken);
+            var query = UserUriConstructor.GenerateUriQuery(sorter, filtrator);
+            var users = await (await RequestClient).GetFromJsonAsync<IEnumerable<User>>(_baseUri + query, cancellationToken);
 
             if (users == null)
             {
@@ -52,27 +35,9 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<IEnumerable<User>> GetPageAsync(int pageSize, int pageNumber, UserSorter sorter, UserFiltrator filtrator, CancellationToken cancellationToken = default)
         {
-            var requestUrl = new StringBuilder($"/{pageSize}/{pageNumber}" +
-                             $"?sortField={sorter.SortRule}&isDescendingSort={sorter.IsDescendingSort}");
+            var query = UserUriConstructor.GenerateUriQuery(sorter, filtrator);
 
-            if (!String.IsNullOrEmpty(filtrator.FirstName))
-            {
-                requestUrl.Append($"&firstName={filtrator.FirstName}");
-            }
-            if (!String.IsNullOrEmpty(filtrator.LastName))
-            {
-                requestUrl.Append($"&lastName={filtrator.LastName}");
-            }
-            if (!String.IsNullOrEmpty(filtrator.Email))
-            {
-                requestUrl.Append($"&email={filtrator.Email}");
-            }
-            if (!String.IsNullOrEmpty(filtrator.Email))
-            {
-                requestUrl.Append($"&petFarnId={filtrator.PetFarmId}");
-            }
-
-            var users = await (await RequestClient).GetFromJsonAsync<IEnumerable<User>>(_baseUri + requestUrl.ToString(), cancellationToken);
+            var users = await (await RequestClient).GetFromJsonAsync<IEnumerable<User>>(_baseUri + query, cancellationToken);
 
             if (users == null)
             {
@@ -82,23 +47,22 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         }
         public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            User? user = await (await RequestClient).GetFromJsonAsync<User>(_baseUri + $"/{id}", cancellationToken);
+            var requestUri = _baseUri + $"/{id}";
+            User? user = await (await RequestClient).GetFromJsonAsync<User>(requestUri, cancellationToken);
 
             return user;
         }
         public async Task<User?> GetAuthodizedUserAsync(CancellationToken cancellationToken = default)
         {
-            User? user = await (await RequestClient).GetFromJsonAsync<User>(_baseUri + $"/Authorized", cancellationToken);
+            var requestUri = _baseUri + $"/Authorized";
+            User? user = await (await RequestClient).GetFromJsonAsync<User>(requestUri, cancellationToken);
 
             return user;
         }
 
         public async Task<IServiceResult> CreateAsync(AddUserModel addModel, CancellationToken cancellationToken = default)
         {
-            using StringContent jsonContent = new(
-                                     JsonSerializer.Serialize(addModel),
-                                     Encoding.UTF8,
-                                     "application/json");
+            using StringContent jsonContent = new(JsonSerializer.Serialize(addModel),Encoding.UTF8,"application/json");
 
             var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
@@ -107,51 +71,38 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<IServiceResult> UpdateDataAsync(UpdateUserDataModel updateModel, CancellationToken cancellationToken = default)
         {
-            using StringContent jsonContent = new(
-                                     JsonSerializer.Serialize(updateModel),
-                                     Encoding.UTF8,
-                                     "application/json");
+            using StringContent jsonContent = new(JsonSerializer.Serialize(updateModel),Encoding.UTF8,"application/json");
+            var requestUri = _baseUri + $"/data";
 
-            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/data", jsonContent, cancellationToken);
+            var httpResponseMessage = await (await RequestClient).PutAsync(requestUri, jsonContent, cancellationToken);
 
             return await GetCommandResultAsync(httpResponseMessage);
         }
         public async Task<IServiceResult> UpdatePasswordAsync(UpdateUserPasswordModel updateModel, CancellationToken cancellationToken = default)
         {
-            using StringContent jsonContent = new(
-                                     JsonSerializer.Serialize(updateModel),
-                                     Encoding.UTF8,
-                                     "application/json");
+            using StringContent jsonContent = new(JsonSerializer.Serialize(updateModel),Encoding.UTF8,"application/json");
+            var requestUri = _baseUri + $"/password";
 
-            var httpResponseMessage = await (await RequestClient).PutAsync(_baseUri + "/password", jsonContent, cancellationToken);
+            var httpResponseMessage = await (await RequestClient).PutAsync(requestUri, jsonContent, cancellationToken);
 
             return await GetCommandResultAsync(httpResponseMessage);
         }
         public async Task<IServiceResult> DeleteByIdAsync(int userId, CancellationToken cancellationToken = default)
         {
-            var httpResponseMessage = await (await RequestClient).DeleteAsync(_baseUri + $"/{userId}", cancellationToken);
+            var requestUri = _baseUri + $"/{userId}";
+            var httpResponseMessage = await (await RequestClient).DeleteAsync(requestUri, cancellationToken);
 
             return await GetCommandResultAsync(httpResponseMessage);
         }
 
         public async Task<AuthorizeModel?> AuthorizeAsync(string email, string password, CancellationToken cancellationToken = default)
         {
-            var parameters = new Dictionary<string, string>();
-            parameters["email"] = email;
-            parameters["password"] = password;
-            var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri + "/token", new FormUrlEncodedContent(parameters), cancellationToken);
+            var quary = $"?{nameof(email)}={email}&{nameof(password)}={password}";
+            var requestUri = _baseUri + $"/token" + quary;
 
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken);
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                var token = await JsonSerializer.DeserializeAsync<AuthorizeModel>(contentStream, options, cancellationToken);
-                return token;
-            }
-            return null;
+            var authorizeModel = await (await RequestClient).GetFromJsonAsync<AuthorizeModel>(requestUri, cancellationToken);
+
+            return authorizeModel;
         }
     }
 }
