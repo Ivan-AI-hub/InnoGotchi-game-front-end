@@ -33,12 +33,12 @@ namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
                 return;
             }
 
-            var token = new SecurityToken(authModel.AccessToken,authModel.User.Id,$"{authModel.User.FirstName} {authModel.User.LastName}",
-                                          authModel.User.Email, authModel.User.OwnPetFarmId,DateTime.UtcNow.AddHours(1));
+            var token = new SecurityToken(authModel.AccessToken, authModel.User.Id, $"{authModel.User.FirstName} {authModel.User.LastName}",
+                                          authModel.User.Email, authModel.User.OwnPetFarmId, DateTime.UtcNow.AddHours(1));
 
             await LocalStorageService.SetAsync(nameof(SecurityToken), token);
             Navigation.NavigateTo("/", true);
-            
+
             IsLoading = false;
         }
     }

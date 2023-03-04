@@ -1,9 +1,5 @@
 ﻿using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PictureAggregate;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace InnoGotchiGameFrontEnd.DAL.UriConstructors
 {

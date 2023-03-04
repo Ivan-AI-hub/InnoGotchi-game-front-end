@@ -2,7 +2,6 @@
 using InnoGotchiGameFrontEnd.DAL.UriConstructors;
 using InnoGotchiGameFrontEnd.Domain;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PictureAggregate;
-using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -40,7 +39,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<IServiceResult> CreateAsync(Picture picture, CancellationToken cancellationToken = default)
         {
-            using StringContent jsonContent = new(JsonSerializer.Serialize(picture),Encoding.UTF8,"application/json");
+            using StringContent jsonContent = new(JsonSerializer.Serialize(picture), Encoding.UTF8, "application/json");
 
             var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
@@ -49,7 +48,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<IServiceResult> UpdateAsync(int updatedId, Picture picture, CancellationToken cancellationToken = default)
         {
-            using StringContent jsonContent = new( JsonSerializer.Serialize(picture),Encoding.UTF8,"application/json");
+            using StringContent jsonContent = new(JsonSerializer.Serialize(picture), Encoding.UTF8, "application/json");
             var requestUri = _baseUri + $"/{updatedId}";
 
             var httpResponseMessage = await (await RequestClient).PutAsync(requestUri, jsonContent, cancellationToken);

@@ -22,7 +22,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
 
         public async Task<IEnumerable<Pet>> GetAsync(PetSorter? sorter = null, PetFiltrator? filtrator = null, CancellationToken cancellationToken = default)
-        { 
+        {
             var quary = PetUriConstructor.GenerateUriQuery(sorter, filtrator);
 
             var pets = await (await RequestClient).GetFromJsonAsync<IEnumerable<Pet>>(_baseUri + quary, cancellationToken);
@@ -58,7 +58,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         public async Task<IServiceResult> CreateAsync(AddPetModel addModel, CancellationToken cancellationToken = default)
         {
 
-            using StringContent jsonContent = new(JsonSerializer.Serialize(addModel),Encoding.UTF8,"application/json");
+            using StringContent jsonContent = new(JsonSerializer.Serialize(addModel), Encoding.UTF8, "application/json");
 
             var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
@@ -67,7 +67,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<IServiceResult> UpdateAsync(UpdatePetModel updateModel, CancellationToken cancellationToken = default)
         {
-            using StringContent jsonContent = new(JsonSerializer.Serialize(updateModel),Encoding.UTF8,"application/json");
+            using StringContent jsonContent = new(JsonSerializer.Serialize(updateModel), Encoding.UTF8, "application/json");
             var requestUri = _baseUri + $"/data";
             var httpResponseMessage = await (await RequestClient).PutAsync(requestUri, jsonContent, cancellationToken);
 

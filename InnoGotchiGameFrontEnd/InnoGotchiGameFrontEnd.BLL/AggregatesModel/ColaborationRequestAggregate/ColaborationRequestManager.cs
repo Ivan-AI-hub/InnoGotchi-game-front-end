@@ -33,7 +33,7 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.ColaborationRequestAggregat
                 return new ManagerResult(serviceResult);
             }
 
-            recipient.ConfirmRequest(requestId);;
+            recipient.ConfirmRequest(requestId);
             return new ManagerResult();
         }
 

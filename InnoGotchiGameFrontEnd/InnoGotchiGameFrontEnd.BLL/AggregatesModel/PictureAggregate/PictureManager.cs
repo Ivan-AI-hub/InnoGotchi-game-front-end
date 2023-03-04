@@ -44,7 +44,7 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.PictureAggregate
         public async Task<ManagerResult> UpdateAsync(int updatedId, IFormFile file, CancellationToken cancellationToken = default)
         {
             var pictureData = await _pictureService.GetByIdAsync(updatedId, cancellationToken);
-            if (pictureData == null) 
+            if (pictureData == null)
             {
                 return new ManagerResult("wrong pictureId");
             }

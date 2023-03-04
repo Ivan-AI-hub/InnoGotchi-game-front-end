@@ -1,12 +1,6 @@
-﻿using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate.Filtrators;
-using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate.Sorters;
-using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate.Filtrators;
+﻿using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate.Filtrators;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate.Sorters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace InnoGotchiGameFrontEnd.DAL.UriConstructors
 {

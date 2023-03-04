@@ -62,7 +62,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<IServiceResult> CreateAsync(AddUserModel addModel, CancellationToken cancellationToken = default)
         {
-            using StringContent jsonContent = new(JsonSerializer.Serialize(addModel),Encoding.UTF8,"application/json");
+            using StringContent jsonContent = new(JsonSerializer.Serialize(addModel), Encoding.UTF8, "application/json");
 
             var httpResponseMessage = await (await RequestClient).PostAsync(_baseUri, jsonContent, cancellationToken);
 
@@ -71,7 +71,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
 
         public async Task<IServiceResult> UpdateDataAsync(UpdateUserDataModel updateModel, CancellationToken cancellationToken = default)
         {
-            using StringContent jsonContent = new(JsonSerializer.Serialize(updateModel),Encoding.UTF8,"application/json");
+            using StringContent jsonContent = new(JsonSerializer.Serialize(updateModel), Encoding.UTF8, "application/json");
             var requestUri = _baseUri + $"/data";
 
             var httpResponseMessage = await (await RequestClient).PutAsync(requestUri, jsonContent, cancellationToken);
@@ -80,7 +80,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         }
         public async Task<IServiceResult> UpdatePasswordAsync(UpdateUserPasswordModel updateModel, CancellationToken cancellationToken = default)
         {
-            using StringContent jsonContent = new(JsonSerializer.Serialize(updateModel),Encoding.UTF8,"application/json");
+            using StringContent jsonContent = new(JsonSerializer.Serialize(updateModel), Encoding.UTF8, "application/json");
             var requestUri = _baseUri + $"/password";
 
             var httpResponseMessage = await (await RequestClient).PutAsync(requestUri, jsonContent, cancellationToken);
