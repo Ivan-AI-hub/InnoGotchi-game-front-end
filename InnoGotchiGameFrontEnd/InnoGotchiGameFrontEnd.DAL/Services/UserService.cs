@@ -36,8 +36,8 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
         public async Task<IEnumerable<User>> GetPageAsync(int pageSize, int pageNumber, UserSorter sorter, UserFiltrator filtrator, CancellationToken cancellationToken = default)
         {
             var query = UserUriConstructor.GenerateUriQuery(sorter, filtrator);
-
-            var users = await (await RequestClient).GetFromJsonAsync<IEnumerable<User>>(_baseUri + query, cancellationToken);
+            var requestUri = _baseUri + $"/{pageSize}/{pageNumber}" + query;
+            var users = await (await RequestClient).GetFromJsonAsync<IEnumerable<User>>(requestUri, cancellationToken);
 
             if (users == null)
             {
