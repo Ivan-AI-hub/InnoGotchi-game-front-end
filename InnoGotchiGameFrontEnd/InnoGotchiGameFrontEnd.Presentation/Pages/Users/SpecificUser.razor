@@ -123,9 +123,7 @@ else
         if (request != null)
         {
             await requestManager.ConfirmAsync(request.Id, authUser, _cts.Token);
-            var collaborators = User.Collaborators.ToList();
-            collaborators.Add(authUser);
-            User.Collaborators = collaborators;
+            User.Collaborators.Add(authUser);
         }
         else
         {

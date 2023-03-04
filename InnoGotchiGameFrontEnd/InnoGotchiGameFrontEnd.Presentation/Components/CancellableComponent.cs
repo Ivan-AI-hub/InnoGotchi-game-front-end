@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace InnoGotchiGameFrontEnd.Presentation.Pages
+namespace InnoGotchiGameFrontEnd.Presentation.Components
 {
     public class CancellableComponent : ComponentBase, IDisposable
     {

@@ -4,7 +4,7 @@
 @using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 @attribute [Authorize]
 @inherits CancellableComponent
-@inject IStorageService localStorageService;
+@inject IStorageService storageService;
 @inject NavigationManager navigation;
 @inject FarmManager farmManager;
 @inject UserManager userManager;
@@ -63,14 +63,14 @@ else
         if (!result.IsComplete)
         {
             Errors = result.Errors;
+            IsLoading = false;
+            return;
         }
-        else
-        {
-            var token = await localStorageService.GetAsync<SecurityToken>(nameof(SecurityToken));
-            token.FarmId = (await userManager.GetAuthodizedUserAsync(_cts.Token)).OwnPetFarmId;
-            await localStorageService.SetAsync<SecurityToken>(nameof(SecurityToken), token);
-            navigation.NavigateTo("/");
-        }
+
+        var token = await storageService.GetAsync<SecurityToken>(nameof(SecurityToken));
+        token.FarmId = (await userManager.GetAuthodizedUserAsync(_cts.Token)).OwnPetFarmId;
+        await storageService.SetAsync<SecurityToken>(nameof(SecurityToken), token);
+        navigation.NavigateTo("/");
         IsLoading = false;
     }
 }

@@ -5,6 +5,7 @@ using InnoGotchiGameFrontEnd.BLL.AggregatesModel.PictureAggregate;
 using InnoGotchiGameFrontEnd.BLL.AggregatesModel.UserAggregate;
 using InnoGotchiGameFrontEnd.DAL.Services;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.ColaborationRequestAggregate;
+using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PictureAggregate;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.UserAggregate;
@@ -17,7 +18,7 @@ namespace InnoGotchiGameFrontEnd.Presentation.Extensios
         {
             services.AddScoped<IPetService, PetService>();
             services.AddScoped<IColaborationRequestService, ColaborationRequestService>();
-            services.AddScoped<IPetService, PetService>();
+            services.AddScoped<IFarmService, FarmService>();
             services.AddScoped<IPictureService, PictureService>();
             services.AddScoped<IUserService, UserService>();
         }

@@ -45,9 +45,7 @@ else
     private UserDTO User { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        var state = await stateProvider.GetAuthenticationStateAsync();
-        var authUserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
-        User = await userManager.GetByIdAsync(authUserId, _cts.Token);
+        User = await userManager.GetAuthodizedUserAsync(_cts.Token);
         var colaborators = new List<UserDTO>();
         foreach (var colaborator in User.Collaborators)
         {

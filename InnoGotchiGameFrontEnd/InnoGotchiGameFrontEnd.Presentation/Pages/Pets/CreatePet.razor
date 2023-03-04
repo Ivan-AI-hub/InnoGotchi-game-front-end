@@ -187,13 +187,8 @@
         string html = await referenceService.GetInnerText(svgCanvas);
         PetView = Encoding.Default.GetBytes(html);
 
-        AddModel.View.Picture = new PictureDTO()
-            {
-                Name = Guid.NewGuid().ToString(),
-                Image = PetView,
-                Description = "pet_view_picture",
-                Format = "svg"
-            };
+        AddModel.View.Picture = new PictureDTO(0, Guid.NewGuid().ToString(), "svg", "pet_view_picture", PetView);
+
         var result = await petManager.CreateAsync(AddModel, _cts.Token);
         this.StateHasChanged();
         if (!result.IsComplete)

@@ -13,6 +13,7 @@ builder.RootComponents.Add<App>("#app");
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
+builder.Services.AddScoped<FileConvertor>();
 builder.Services.AddScoped<IStorageService, LocalStorageService>();
 builder.Services.AddScoped<IElementReferenceService, ElementReferenceService>();
 builder.Services.AddScoped<AuthenticationStateProvider, TokenStateProvider>();

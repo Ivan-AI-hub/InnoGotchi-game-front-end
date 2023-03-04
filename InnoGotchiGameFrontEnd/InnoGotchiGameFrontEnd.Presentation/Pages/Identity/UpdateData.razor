@@ -1,7 +1,9 @@
 ﻿@page "/updateData"
 @using AuthorizationInfrastructure.Tokens;
+@using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
 @attribute [Authorize]
 @inherits CancellableComponent
+@inject FileConvertor fileConvertor;
 @inject AuthenticationStateProvider stateProvider;
 @inject UserManager manager;
 @inject IConfiguration configuration;
@@ -76,19 +78,9 @@ else
     }
     private async Task OnFileSelected(InputFileChangeEventArgs e)
     {
-        var stream = new MemoryStream();
-        var file = e.File;
-        string imageType = file.ContentType;
-        int imgSize = int.Parse(configuration.GetSection("ImageSizePx").Value);
-        file = await file.RequestImageFileAsync(imageType, imgSize, imgSize);
-        await file.OpenReadStream().CopyToAsync(stream);
-        Data.Picture = new PictureDTO()
-            {
-                Name = Guid.NewGuid().ToString(),
-                Description = "user_avatar",
-                Format = imageType,
-                Image = stream.ToArray()
-            };
+        string format = e.File.ContentType;
+        var image = await fileConvertor.ConvertImageToByteArrayAsync(e.File, format);
+        Data.Picture = new PictureDTO(0, Guid.NewGuid().ToString(), format, "user_avatar", image);
         this.StateHasChanged();
     }
     private async Task UpdateAsync()
