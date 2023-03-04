@@ -22,8 +22,7 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.UserAggregate
             var dataSorter = _mapper.Map<UserSorter>(sorter);
             var dataFiltrator = _mapper.Map<UserFiltrator>(filtrator);
             var dataUsers = await _userService.GetAsync(dataSorter, dataFiltrator, cancellationToken);
-            var users = _mapper.Map<IEnumerable<UserDTO>>(dataUsers);
-            return users;
+            return _mapper.Map<IEnumerable<UserDTO>>(dataUsers);
         }
 
         public async Task<IEnumerable<UserDTO>> GetPageAsync(int pageSize, int pageNumber, UserDTOSorter sorter, UserDTOFiltrator filtrator, CancellationToken cancellationToken = default)
@@ -31,23 +30,19 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.UserAggregate
             var dataSorter = _mapper.Map<UserSorter>(sorter);
             var dataFiltrator = _mapper.Map<UserFiltrator>(filtrator);
             var dataUsers = await _userService.GetPageAsync(pageSize, pageNumber, dataSorter, dataFiltrator, cancellationToken);
-            var users = _mapper.Map<IEnumerable<UserDTO>>(dataUsers);
-            return users;
+            return _mapper.Map<IEnumerable<UserDTO>>(dataUsers);
         }
 
         public async Task<UserDTO> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             var dataUsers = await _userService.GetByIdAsync(id, cancellationToken);
-            var user = _mapper.Map<UserDTO>(dataUsers);
-            return user;
+            return _mapper.Map<UserDTO>(dataUsers);
         }
 
         public async Task<UserDTO> GetAuthodizedUserAsync(CancellationToken cancellationToken = default)
         {
-            UserDTO user;
             var dataUsers = await _userService.GetAuthodizedUserAsync(cancellationToken);
-            user = _mapper.Map<UserDTO>(dataUsers);
-            return user;
+            return _mapper.Map<UserDTO>(dataUsers);
         }
 
         public async Task<ManagerResult> CreateAsync(AddUserDTOModel addModel, CancellationToken cancellationToken = default)
@@ -62,7 +57,7 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.UserAggregate
             var addDataModel = _mapper.Map<AddUserModel>(addModel);
             var serviceResult = await _userService.CreateAsync(addDataModel, cancellationToken);
 
-            return new ManagerResult(validationResult);
+            return new ManagerResult(serviceResult);
         }
 
         public async Task<ManagerResult> UpdateDataAsync(UpdateUserDTODataModel updateModel, CancellationToken cancellationToken = default)
@@ -92,6 +87,7 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.UserAggregate
 
             var updateDataModel = _mapper.Map<UpdateUserPasswordModel>(updateModel);
             var serviceResult = await _userService.UpdatePasswordAsync(updateDataModel, cancellationToken);
+
             return new ManagerResult(serviceResult);
         }
 

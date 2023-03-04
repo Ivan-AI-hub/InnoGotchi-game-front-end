@@ -14,9 +14,7 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.ColaborationRequestAggregat
 
         public async Task<ManagerResult> AddCollaboratorAsync(UserDTO sender, UserDTO recipient, CancellationToken cancellationToken = default)
         {
-
             var serviceResult = await _requestService.CreateAsync(recipient.Id, cancellationToken);
-
             if (!serviceResult.IsComplete)
             {
                 return new ManagerResult(serviceResult);
@@ -35,10 +33,7 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.ColaborationRequestAggregat
                 return new ManagerResult(serviceResult);
             }
 
-            var request = recipient.UnconfirmedRequests.First(x => x.Id == requestId);
-            recipient.UnconfirmedRequests.Remove(request);
-
-            recipient.Collaborators.Add(request.RequestSender);
+            recipient.ConfirmRequest(requestId);;
             return new ManagerResult();
         }
 
@@ -50,8 +45,7 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.ColaborationRequestAggregat
                 return new ManagerResult(serviceResult);
             }
 
-            var request = participant.UnconfirmedRequests.First(x => x.Id == requestId);
-            participant.UnconfirmedRequests.Remove(request);
+            participant.RejectRequest(requestId);
             return new ManagerResult();
         }
 

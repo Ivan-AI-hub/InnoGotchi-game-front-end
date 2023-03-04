@@ -27,5 +27,17 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.UserAggregate
             RejectedRequests = new List<ColaborationRequestDTO>();
             Collaborators = new List<UserDTO>();
         }
+
+        public void RejectRequest(int requestId)
+        {
+            var request = UnconfirmedRequests.First(x => x.Id == requestId);
+            UnconfirmedRequests.Remove(request);
+        }
+        public void ConfirmRequest(int requestId)
+        {
+            var request = UnconfirmedRequests.First(x => x.Id == requestId);
+            UnconfirmedRequests.Remove(request);
+            Collaborators.Add(request.RequestSender);
+        }
     }
 }

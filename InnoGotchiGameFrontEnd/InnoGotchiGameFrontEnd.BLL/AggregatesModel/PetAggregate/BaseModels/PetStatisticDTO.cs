@@ -2,6 +2,9 @@
 {
     public record PetStatisticDTO
     {
+        private HungerLevel? _currentHungerLevel;
+        private ThirstyLevel? _currentThirstyLevel;
+
         public string Name { get; set; }
         public DateTime BornDate { get; set; }
         internal bool IsAlive { get; set; }
@@ -15,13 +18,11 @@
 
         public int Age => _daysAliveCount / 7;
         public int HappinessDayCount => IsAlive ? (DateTime.Now - FirstHappinessDay).Days : 0;
-        public double AverageDrinkingPeriod => _daysAliveCount != 0 ? DrinkingCount / _daysAliveCount : DrinkingCount;
-        public double AverageFeedingPeriod => _daysAliveCount != 0 ? FeedingCount / _daysAliveCount : FeedingCount;
+        public double AverageDrinkingPeriod => _daysAliveCount == 0 ? DrinkingCount : DrinkingCount / _daysAliveCount;
+        public double AverageFeedingPeriod => _daysAliveCount == 0 ? FeedingCount : FeedingCount / _daysAliveCount;
 
         public HungerLevel HungerLevel { get => GetHungerLevel(); set => _currentHungerLevel = value; }
         public ThirstyLevel ThirstyLevel { get => GetThirstyLevel(); set => _currentThirstyLevel = value; }
-        private HungerLevel? _currentHungerLevel;
-        private ThirstyLevel? _currentThirstyLevel;
         private int _daysAliveCount => IsAlive ? (DateTime.Now - BornDate).Days : (DeadDate!.Value - BornDate).Days;
 
         public PetStatisticDTO()

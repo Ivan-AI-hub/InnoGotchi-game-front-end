@@ -83,24 +83,26 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.PetAggregate
         {
             var serviceResult = await _petService.FeedAsync(pet.Id, cancellationToken);
 
-            if (serviceResult.IsComplete)
+            if (!serviceResult.IsComplete)
             {
-                pet.Statistic.Feed();
+                return new ManagerResult(serviceResult);
             }
 
-            return new ManagerResult(serviceResult);
+            pet.Statistic.Feed();
+            return new ManagerResult();
         }
 
         public async Task<ManagerResult> GiveDrinkAsync(PetDTO pet, CancellationToken cancellationToken = default)
         {
             var serviceResult = await _petService.GiveDrinkAsync(pet.Id, cancellationToken);
 
-            if (serviceResult.IsComplete)
+            if (!serviceResult.IsComplete)
             {
-                pet.Statistic.GiveDrink();
+                return new ManagerResult(serviceResult);
             }
 
-            return new ManagerResult(serviceResult);
+            pet.Statistic.GiveDrink();
+            return new ManagerResult();
         }
 
         public async Task<ManagerResult> SetDeadStatusAsync(PetDTO pet, CancellationToken cancellationToken = default)
@@ -108,12 +110,13 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.PetAggregate
             pet.Statistic.DeadDate ??= DateTime.Now;
             var serviceResult = await _petService.SetDeadStatus(pet.Id, pet.Statistic.DeadDate.Value, cancellationToken);
 
-            if (serviceResult.IsComplete)
+            if (!serviceResult.IsComplete)
             {
-                pet.Statistic.SetDeadStatus();
+                return new ManagerResult(serviceResult);
             }
 
-            return new ManagerResult(serviceResult);
+            pet.Statistic.SetDeadStatus();
+            return new ManagerResult();
         }
 
         private void CheckHappinessStatus(IEnumerable<PetDTO> pets)

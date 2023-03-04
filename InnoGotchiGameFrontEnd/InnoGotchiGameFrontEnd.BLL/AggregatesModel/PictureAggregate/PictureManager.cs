@@ -19,15 +19,13 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.PictureAggregate
         {
             var dataFiltrator = _mapper.Map<PictureFiltrator>(filtrator);
             var dataPictures = await _pictureService.GetAsync(dataFiltrator, cancellationToken);
-            var pictures = _mapper.Map<IEnumerable<PictureDTO>>(dataPictures);
-            return pictures;
+            return _mapper.Map<IEnumerable<PictureDTO>>(dataPictures);
         }
 
         public async Task<PictureDTO> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            var dataPsers = await _pictureService.GetByIdAsync(id, cancellationToken);
-            var picture = _mapper.Map<PictureDTO>(dataPsers);
-            return picture;
+            var dataPictures = await _pictureService.GetByIdAsync(id, cancellationToken);
+            return _mapper.Map<PictureDTO>(dataPictures);
         }
 
         public async Task<ManagerResult> CreateAsync(IFormFile file, string nameTemplate, CancellationToken cancellationToken = default)
@@ -37,22 +35,24 @@ namespace InnoGotchiGameFrontEnd.BLL.AggregatesModel.PictureAggregate
                 Image = GetByteArrayFromImage(file),
                 Name = nameTemplate + "-" + Guid.NewGuid().ToString()
             };
-            var result = new ManagerResult();
-            var serviceResult = await _pictureService.CreateAsync(pictureData, cancellationToken);
-            result.Errors.AddRange(serviceResult.Errors);
 
-            return result;
+            var serviceResult = await _pictureService.CreateAsync(pictureData, cancellationToken);
+
+            return new ManagerResult(serviceResult);
         }
 
         public async Task<ManagerResult> UpdateAsync(int updatedId, IFormFile file, CancellationToken cancellationToken = default)
         {
             var pictureData = await _pictureService.GetByIdAsync(updatedId, cancellationToken);
-            pictureData.Image = GetByteArrayFromImage(file);
-            var result = new ManagerResult();
-            var serviceResult = await _pictureService.UpdateAsync(updatedId, pictureData, cancellationToken);
-            result.Errors.AddRange(serviceResult.Errors);
+            if (pictureData == null) 
+            {
+                return new ManagerResult("wrong pictureId");
+            }
 
-            return result;
+            pictureData.Image = GetByteArrayFromImage(file);
+            var serviceResult = await _pictureService.UpdateAsync(updatedId, pictureData, cancellationToken);
+
+            return new ManagerResult(serviceResult);
         }
 
         private byte[] GetByteArrayFromImage(IFormFile file)
