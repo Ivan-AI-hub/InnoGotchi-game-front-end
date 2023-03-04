@@ -1,6 +1,5 @@
-﻿using InnoGotchiGameFrontEnd.BLL.Filtrators;
-using InnoGotchiGameFrontEnd.BLL.Model.Pet;
-using InnoGotchiGameFrontEnd.BLL.Sorters;
+﻿using InnoGotchiGameFrontEnd.BLL.AggregatesModel.PetAggregate;
+using InnoGotchiGameFrontEnd.BLL.AggregatesModel.PetAggregate.BaseModels;
 using InnoGotchiGameFrontEnd.Presentation.Components.PageSystem;
 
 namespace InnoGotchiGameFrontEnd.Presentation.Pages.Pets.Models

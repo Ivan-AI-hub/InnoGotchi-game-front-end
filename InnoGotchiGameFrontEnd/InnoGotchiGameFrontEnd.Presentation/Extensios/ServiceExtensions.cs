@@ -1,4 +1,8 @@
-﻿using InnoGotchiGameFrontEnd.BLL;
+﻿using InnoGotchiGameFrontEnd.BLL.AggregatesModel.ColaborationRequestAggregate;
+using InnoGotchiGameFrontEnd.BLL.AggregatesModel.FarmAggregate;
+using InnoGotchiGameFrontEnd.BLL.AggregatesModel.PetAggregate;
+using InnoGotchiGameFrontEnd.BLL.AggregatesModel.PictureAggregate;
+using InnoGotchiGameFrontEnd.BLL.AggregatesModel.UserAggregate;
 using InnoGotchiGameFrontEnd.DAL.Services;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.ColaborationRequestAggregate;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.PetAggregate;

@@ -12,7 +12,7 @@ namespace InnoGotchiGameFrontEnd.DAL.Services
     public class PictureService : BaseService, IPictureService
     {
         private Uri _baseUri;
-        public PictureService(IAuthorizedClient client, CancellationToken cancellationToken = default) : base(client)
+        public PictureService(IAuthorizedClient client) : base(client)
         {
             var apiControllerName = "pictures";
             _baseUri = new Uri(client.BaseAddress, apiControllerName);

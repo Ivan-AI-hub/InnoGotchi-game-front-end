@@ -11,10 +11,13 @@
 @using InnoGotchiGameFrontEnd.Presentation.Shared
 @using Microsoft.AspNetCore.Authorization;
 @using InnoGotchiGameFrontEnd.Presentation.Components
-@using InnoGotchiGameFrontEnd.BLL.Model.Identity;
-@using InnoGotchiGameFrontEnd.BLL.Model;
 @using InnoGotchiGameFrontEnd.BLL;
+@using InnoGotchiGameFrontEnd.BLL.AggregatesModel.ColaborationRequestAggregate;
+@using InnoGotchiGameFrontEnd.BLL.AggregatesModel.FarmAggregate;
+@using InnoGotchiGameFrontEnd.BLL.AggregatesModel.PetAggregate;
+@using InnoGotchiGameFrontEnd.BLL.AggregatesModel.PetAggregate.BaseModels;
+@using InnoGotchiGameFrontEnd.BLL.AggregatesModel.PictureAggregate;
+@using InnoGotchiGameFrontEnd.BLL.AggregatesModel.UserAggregate;
 @using InnoGotchiGameFrontEnd.Presentation.Components.PageSystem;
-@using InnoGotchiGameFrontEnd.BLL.Model.Pet;
 @using AuthorizationInfrastructure;
 @using AuthorizationInfrastructure.Tokens;

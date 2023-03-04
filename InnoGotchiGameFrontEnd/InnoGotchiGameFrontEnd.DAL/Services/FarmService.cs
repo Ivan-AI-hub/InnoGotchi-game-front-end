@@ -1,5 +1,5 @@
 ﻿using AuthorizationInfrastructure.HttpClients;
-using InnoGotchiGameFrontEnd.DAL.UrlConstructors;
+using InnoGotchiGameFrontEnd.DAL.UriConstructors;
 using InnoGotchiGameFrontEnd.Domain;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate;
 using InnoGotchiGameFrontEnd.Domain.AggregatesModel.FarmAggregate.Comands;

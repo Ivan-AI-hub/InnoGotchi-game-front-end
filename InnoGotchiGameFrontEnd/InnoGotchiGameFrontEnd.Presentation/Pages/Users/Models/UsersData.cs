@@ -1,6 +1,4 @@
-﻿using InnoGotchiGameFrontEnd.BLL.Filtrators;
-using InnoGotchiGameFrontEnd.BLL.Model;
-using InnoGotchiGameFrontEnd.BLL.Sorters;
+﻿using InnoGotchiGameFrontEnd.BLL.AggregatesModel.UserAggregate;
 using InnoGotchiGameFrontEnd.Presentation.Components.PageSystem;
 
 namespace InnoGotchiGameFrontEnd.Presentation.Pages.Users.Models

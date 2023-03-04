@@ -1,6 +1,6 @@
 ﻿using AuthorizationInfrastructure;
 using AuthorizationInfrastructure.Tokens;
-using InnoGotchiGameFrontEnd.BLL;
+using InnoGotchiGameFrontEnd.BLL.AggregatesModel.UserAggregate;
 using Microsoft.AspNetCore.Components;
 
 namespace InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models
