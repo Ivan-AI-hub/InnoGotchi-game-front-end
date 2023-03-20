@@ -1,0 +1,238 @@
+﻿@page "/farms/{Id:int}"
+@using AuthorizationInfrastructure.Tokens;
+@using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
+@inherits CancellableComponent
+@attribute [Authorize]
+@inject AuthenticationStateProvider stateProvider
+@inject FarmManager farmManager
+@inject UserManager userManager
+@inject MouseService mouseSrv;
+@inject NavigationManager navigator;
+
+
+@if (IsAuthUserFarm || IsColaboratorFarm)
+{
+    <PetModal @ref="@petModal"/>
+
+    @if (DiesPets != null && IsAuthUserFarm)
+    {
+        @foreach (var pet in DiesPets)
+        {
+            <PetDiedModal Pet="pet" />
+        }
+    }
+}
+<div>
+    <div class="row">
+        @if (IsAuthUserFarm || IsColaboratorFarm)
+        {
+            <div class="col">
+                <button class="list-group-item list-group-item-action" @onclick="@ChangePetsOverViewState">@buttonForPetsOverviewValue</button>
+            </div>
+        }
+        @if (IsAuthUserFarm)
+        {
+            <div class="col">
+                <button @onclick="ToCreatePetPage" class="list-group-item list-group-item-action">Добавить питомца</button>
+            </div>
+        }
+        <div class="col">
+            <button @onclick="ToColaboratorsFarmsPage" class="list-group-item list-group-item-action">Посетить фермы друзей</button>
+        </div>
+        <div class="col">
+            <button class="list-group-item list-group-item-action" @onclick="@ChangeStatisticState">@buttonForStatisticValue</button>
+        </div>
+    </div>
+    @if (Farm != null)
+    {
+        <div class="row">
+            @if (IsAuthUserFarm || IsColaboratorFarm)
+            {
+                @*Питомцы*@
+                <div class="col overflow-auto @petsOverviewClass" style="max-height: 450px;">
+                    <h2>Питомцы</h2>
+                    @foreach (var pet in Farm.Pets.Where(x => x.Statistic.AliveState == AliveState.Alive))
+                    {
+                        <PetRow Pet="@pet">
+                            <PetMenu Pet="pet" OnPetStatsChanges="OnPetStatsChanges"/>
+                        </PetRow>
+                    }
+                </div>
+            }
+            @*Ферма*@
+            <div class="col" style="position: relative;">
+                <h2>@Farm.Name</h2>
+                <svg class="container-fluid bg-success"
+                 height="400"
+                 viewBox="0 0 1000 100"
+                 @onmousemove=@(e => mouseSrv.FireMove(this, e))
+                 @onmouseup=@(e => mouseSrv.FireUp(this, e))
+                 @oncontextmenu:preventDefault="true">
+                    @foreach (var pet in Farm.Pets)
+                    {
+                        @if (pet.Statistic.AliveState == AliveState.Alive)
+                        {
+                            <g @oncontextmenu="@(e => PetRightClick(e, pet))">
+                                <Draggable X=random.Next(0,900) Y=random.Next(0,100)>
+                                    <text x="90" y="30">@pet.Statistic.Name</text>
+                                    <ImageFromByteArray Image="pet.View.Picture.Image"
+                                            ImageType="svg+xml"
+                                            Height="200"
+                                            Width="200"
+                                            IsSvgImage="true" />
+                                </Draggable>
+                            </g>
+                        }
+                    }
+                </svg>
+            </div>
+            @*Статистика*@
+            <div class="col @statisticClass overflow-auto" style="max-height: 450px;">
+                <h2>Статистика</h2>
+                <div>
+                    Количиство живых питомцев: @Farm.AlivesPetsCount
+                </div>
+                <div>
+                    Количиство мертвых питомцев: @Farm.DeadsPetsCount
+                </div>
+                <div>
+                    Средний период кормления: @String.Format("{0:0.00}", @Farm.AverageFeedingPeriod)  раз в день
+                </div>
+                <div>
+                    Средний период поения: @String.Format("{0:0.00}", @Farm.AverageDrinkingPeriod) раз в день
+                </div>
+                <div>
+                    Средний период счастливых дней: @String.Format("{0:0.00}", @Farm.AveragePetsHappinessDaysCount) дней
+                </div>
+                <div>
+                    Средний возраст питомцев: @String.Format("{0:0.00}", @Farm.AveragePetsAge) Лет
+                </div>
+                <div class="row">
+                    @if (Farm.Pets.Any(x => x.Statistic.AliveState != AliveState.Alive))
+                    {
+                        <h3>Скорбим по</h3>
+                        @foreach (var pet in Farm.Pets)
+                        {
+                            @if (pet.Statistic.AliveState != AliveState.Alive)
+                            {
+
+                                <div class="col">
+                                    <p>@pet.Statistic.Name умер @pet.Statistic.DeadDate.Value.ToShortDateString()</p>
+                                    <ImageFromByteArray Image="pet.View.Picture.Image"
+                                        ImageType="svg+xml"
+                                        Height="200"
+                                        Width="200" />
+                                </div>
+                            }
+
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <Loading />
+    }
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Random random { get; set; }
+    private PetFarmDTO Farm { get; set; }
+    private List<PetDTO> DiesPets { get; set; }
+    private PetModal petModal { get; set; }
+    private bool IsAuthUserFarm { get; set; }
+    private bool IsColaboratorFarm { get; set; }
+    private string statisticClass = "visually-hidden";
+    private string petsOverviewClass = "visually-hidden";
+    private string buttonForStatisticValue = "Статистика";
+    private string buttonForPetsOverviewValue = "Питомцы";
+
+    protected override async Task OnInitializedAsync()
+    {
+        random = new Random();
+        Farm = await farmManager.GetByIdAsync(Id, _cts.Token);
+
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        var authUserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
+
+        IsAuthUserFarm = authUserId == Farm.OwnerId;
+        var owner = await userManager.GetByIdAsync(Farm.OwnerId, _cts.Token);
+        IsColaboratorFarm = owner.Collaborators.Any(x => x.Id == authUserId);
+
+        DiesPets = new List<PetDTO>();
+        foreach (var pet in Farm.Pets)
+        {
+            if (pet.Statistic.AliveState == AliveState.NotAnnouncedDead)
+            {
+                DiesPets.Add(pet);
+            }
+        }
+    }
+
+    private void ToCreatePetPage()
+    {
+        navigator.NavigateTo($"/pets/create");
+    }
+    private void ToColaboratorsFarmsPage()
+    {
+        navigator.NavigateTo($"/colaboratorsFarms");
+    }
+    private void PetRightClick(MouseEventArgs args, PetDTO pet)
+    {
+        if (args.Button == 2 && (IsAuthUserFarm || IsColaboratorFarm))
+        {
+            petModal.SetPet(pet);
+            petModal.Open();
+        }
+    }
+    private void ChangeStatisticState()
+    {
+        if (statisticClass == "")
+        {
+            HideStatictic();
+        }
+        else
+        {
+            ShowStatictic();
+            HidePetsOverview();
+        }
+    }
+    private void ChangePetsOverViewState()
+    {
+        if (petsOverviewClass == "")
+        {
+            HidePetsOverview();
+        }
+        else
+        {
+            ShowPetsOverview();
+            HideStatictic();
+        }
+    }
+    private void ShowStatictic()
+    {
+        statisticClass = "";
+        buttonForStatisticValue = "Скрыть";
+    }
+    private void HideStatictic()
+    {
+        statisticClass = "visually-hidden";
+        buttonForStatisticValue = "Статистика";
+    }
+    private void ShowPetsOverview()
+    {
+        petsOverviewClass = "";
+        buttonForPetsOverviewValue = "Скрыть";
+    }
+    private void HidePetsOverview()
+    {
+        petsOverviewClass = "visually-hidden";
+        buttonForPetsOverviewValue = "Питомцы";
+    }
+
+    private void OnPetStatsChanges() => StateHasChanged();
+}
+

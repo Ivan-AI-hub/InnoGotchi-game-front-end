@@ -1,0 +1,19 @@
+﻿
+@if (!IsSvgImage)
+{
+    <img src="data:image/@ImageType;base64, @Convert.ToBase64String(Image)" height="@Height" width="@Width" 
+class="@imgClass"/>
+}
+else
+{
+    <image href="data:image/@ImageType;base64, @Convert.ToBase64String(Image)" height="@Height" width="@Width" />
+}
+
+@code {
+    [Parameter] public byte[] Image { get; set; }
+    [Parameter] public string ImageType { get; set; } = "png";
+    [Parameter] public string Height { get; set; } = "auto";
+    [Parameter] public string Width { get; set; } = "auto";
+    [Parameter] public string imgClass { get; set; } = "";
+    [Parameter] public bool IsSvgImage { get; set; } = false;
+}

@@ -1,0 +1,79 @@
+﻿@inject PetManager petManager
+@inject AuthenticationStateProvider stateProvider
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay; position:absolute">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @*Modal Title*@
+            <div class="modal-header">
+                <h5 class="modal-title">@Pet.Statistic.Name</h5>
+                <button type="button" class="close" @onclick="() => Close()"
+                        data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @*Modal body*@
+            <div class="modal-body">
+                <div>
+                    @foreach (var error in Errors)
+                    {
+                        <p class="text-danger">@error</p>
+                    }
+                </div>
+                <PetRow Pet="Pet" />
+            </div>
+            <div class="modal-footer">
+                <PetMenu Pet="Pet" Errors="Errors" OnPetStatsChanges="OnPetStatsChanges"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+
+@code {
+    [Parameter] public PetDTO Pet { get; set; }
+    private List<string> Errors { get; set; }
+    private int UserId { get; set; }
+    private string ModalDisplay = "none;";
+    private string ModalClass = "";
+    private bool ShowBackdrop = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Pet = Pet ?? new PetDTO();
+        Errors = new List<string>();
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        UserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
+
+    }
+
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        ShowBackdrop = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none";
+        ModalClass = "";
+        ShowBackdrop = false;
+        StateHasChanged();
+    }
+
+    public void SetPet(PetDTO pet)
+    {
+        Pet = pet;
+        StateHasChanged();
+    }
+
+    private void OnPetStatsChanges() => StateHasChanged();
+}

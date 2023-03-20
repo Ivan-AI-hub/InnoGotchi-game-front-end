@@ -1,0 +1,130 @@
+﻿@page "/pets"
+@using InnoGotchiGameFrontEnd.Presentation.Pages.Pets.Models;
+@inherits CancellableComponent
+@inject PetManager manager
+@inject AuthenticationStateProvider stateProvider
+@attribute [Authorize]
+
+<div class="row">
+    <div class="col-sm-3">
+        <div class="position-fixed">
+            <EditForm Model="Data" OnValidSubmit="PetsUpdate">
+                <div class="container">
+                    <div class="col ">
+                        <label class="form-label">Фильтрация</label>
+                        <div class="form-group">
+                            <label class="form-label">Имя</label>
+                            <InputText @bind-Value="Data.Filtrator.Name" type="text" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">От возроста</label>
+                            <InputNumber @bind-Value="Data.Filtrator.Age" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Уровень голода</label>
+                            <InputSelect class="form-control" @bind-Value="@Data.FeedSelectValue">
+                                <option value="null">Любой</option>
+                                @foreach (var hungerLevel in Enum.GetValues<HungerLevel>())
+                                {
+                                    <option value="@hungerLevel">@hungerLevel</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Уровень жажды</label>
+                            <InputSelect class="form-control" @bind-Value="@Data.ThirstySelectValue">
+                                <option value="null">Любой</option>
+                                @foreach (var thirstyLevel in Enum.GetValues<ThirstyLevel>())
+                                {
+                                    <option value="@thirstyLevel">@thirstyLevel</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label>Сортировка</label>
+                            <InputSelect class="form-control" @bind-Value="@Data.Sorter.SortRule">
+
+                                @foreach (var sortRule in Enum.GetValues<PetDTOSortRule>())
+                                {
+
+                                    <option value="@sortRule">@sortRule</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">Обратная сортировка</label>
+                            <InputCheckbox class="form-check-input" @bind-Value="@Data.Sorter.IsDescendingSort" />
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-primary align-self-center" value="Найти" />
+                </div>
+            </EditForm>
+        </div>
+    </div>
+    <div class="col-sm">
+        @if (@Data.Pets != null)
+        {
+            <div class="row">
+                <div class="d-flex align-items-center justify-content-start col">
+                    @if (@Data.PageStatus != PageStatus.FirstPage && @Data.PageStatus != PageStatus.OnlyPage)
+                    {
+                        <button class="btn btn-info" @onclick="SetPreviousPage">←Предидущая страница</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-info disabled">←Предидущая страница</button>
+                    }
+                </div>
+                <div class="d-flex align-items-center justify-content-end col">
+                    @if (@Data.PageStatus != PageStatus.LastPage && @Data.PageStatus != PageStatus.OnlyPage)
+                    {
+                        <button class="btn btn-info" @onclick="SetNextPage">Следующая страница→</button>
+                    }
+                    else
+                    {
+                        <a href="undifinite" class="btn btn-info disabled">Следующая страница→</a>
+                    }
+                </div>
+            </div>
+            @foreach (var pet in Data.Pets)
+            {
+                <PetRow Pet="@pet" />
+            }
+        }
+        else
+        {
+            <Loading />
+        }
+    </div>
+
+</div>
+
+@code
+{
+    private PetsData Data { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Data = new PetsData();
+        await PetsUpdate();
+    }
+
+    protected async Task SetPreviousPage()
+    {
+        Data.Page.Number--;
+        await PetsUpdate();
+    }
+    protected async Task SetNextPage()
+    {
+        Data.Page.Number++;
+        await PetsUpdate();
+    }
+
+    private async Task PetsUpdate()
+    {
+        Data.Pets = null;
+        Data.Pets = await manager.GetPageAsync(Data.Page.PageSize, Data.Page.Number, Data.Sorter, Data.Filtrator, _cts.Token);
+    }
+}

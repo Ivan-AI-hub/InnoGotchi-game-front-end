@@ -1,0 +1,54 @@
+﻿@using InnoGotchiGameFrontEnd.Presentation.Pages;
+@inject PetManager petManager
+@inject AuthenticationStateProvider stateProvider
+@inherits CancellableComponent
+<div class="row">
+    <div class="col">
+        @if (Pet.Statistic.HungerLevel != HungerLevel.Full)
+        {
+            <button type="button" class="btn btn-success w-100" @onclick="Feeding">Покормить</button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-success w-100" disabled>Питомец сыт</button>
+        }
+    </div>
+    <div class="col">
+        @if (Pet.Statistic.ThirstyLevel != ThirstyLevel.Full)
+        {
+            <button type="button" class="btn btn-primary w-100" @onclick="GiveDrink">Напоить</button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-primary w-100" disabled>Питомец уталил жажду</button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public PetDTO Pet { get; set; }
+    [Parameter] public List<string> Errors { get; set; }
+    [Parameter] public Action OnPetStatsChanges { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        Pet = Pet ?? new PetDTO();
+        Errors = Errors ?? new List<string>();
+        return base.OnInitializedAsync();
+    }
+    private async Task Feeding()
+    {
+        var rez = await petManager.FeedAsync(Pet, _cts.Token);
+        Errors.Clear();
+        Errors.AddRange(rez.Errors);
+        OnPetStatsChanges?.Invoke();
+    }
+
+    private async Task GiveDrink()
+    {
+        var rez = await petManager.GiveDrinkAsync(Pet, _cts.Token);
+        Errors.Clear();
+        Errors.AddRange(rez.Errors);
+        OnPetStatsChanges?.Invoke();
+    }
+}

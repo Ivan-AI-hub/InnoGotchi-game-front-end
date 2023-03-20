@@ -1,0 +1,261 @@
+﻿@page "/pets/create";
+@using AuthorizationInfrastructure.Tokens;
+@using InnoGotchiGameFrontEnd.Presentation.Infrastructure;
+@using System.Text;
+@attribute [Authorize]
+@inherits CancellableComponent 
+@inject AuthenticationStateProvider stateProvider;
+@inject PictureManager pictureManager;
+@inject PetManager petManager;
+@inject MouseService mouseSrv;
+@inject NavigationManager navigation;
+@inject IElementReferenceService referenceService
+
+<div class="row">
+    <div>
+        @foreach (var error in Errors)
+        {
+            <p class="text-danger">@error</p>
+        }
+    </div>
+
+    <div class="row">
+        <div class="col" style="position: relative;">
+
+            <svg viewBox="0 0 350 350"
+                 @ref="svgCanvas"
+                 class="img-thumbnail rounded float-right"
+                 @onmousemove=@(e => mouseSrv.FireMove(this, e))
+                 @onmouseup=@(e => mouseSrv.FireUp(this, e))
+                 @oncontextmenu:preventDefault="true">
+
+                @if (BodiesPictures != null)
+                {
+                    <g @oncontextmenu="BodyRightClick">
+                        <ImageFromByteArray Image="BodiesPictures[SelectedBodyId].Image"
+                                        ImageType="svg+xml"
+                                        Height="400"
+                                        Width="400"
+                                        IsSvgImage="true" />
+                    </g>
+
+                }
+                @if (EyesPictures != null)
+                {
+                    <g @oncontextmenu="EyesRightClick">
+                        <Draggable X=100 Y=10>
+                            <ImageFromByteArray Image="EyesPictures[SelectedEyesId].Image"
+                                            ImageType="svg+xml"
+                                            Height="@EyesSize.ToString()"
+                                            Width="@EyesSize.ToString()"
+                                            IsSvgImage="true" />
+                        </Draggable>
+                    </g>
+                }
+                @if (MouthsPictures != null)
+                {
+                    <g @oncontextmenu="MouthRightClick">
+                        <Draggable X=100 Y=50>
+                            <ImageFromByteArray Image="MouthsPictures[SelectedMouthId].Image"
+                                            ImageType="svg+xml"
+                                            Height="@MouthSize.ToString()"
+                                            Width="@MouthSize.ToString()"
+                                            IsSvgImage="true" />
+                        </Draggable>
+                    </g>
+                }
+                @if (NosesPictures != null)
+                {
+                    <g @oncontextmenu="NoseRightClick">
+                        <Draggable X=100 Y=90>
+                            <ImageFromByteArray Image="NosesPictures[SelectedNoseId].Image"
+                                            ImageType="svg+xml"
+                                            Height="@NoseSize.ToString()"
+                                            Width="@NoseSize.ToString()"
+                                            IsSvgImage="true" />
+                        </Draggable>
+                    </g>
+                }
+            </svg>
+        </div>
+        <div class="col">
+            <div class="border rounded mb-2 row bg-light">
+                <label class="col">Тело</label>
+                <button @onclick="SetNextBody" class="btn btn-primary col">Следующий</button>
+                <button @onclick="SetPrevBody" class="btn btn-primary col">Предидущий</button>
+            </div>
+            <div class="border rounded mb-2 row bg-light">
+                <label class="col">Глаза</label>
+                <button @onclick="SetNextEyes" class="btn btn-primary col">Следующий</button>
+                <button @onclick="SetPrevEyes" class="btn btn-primary col">Предидущий</button>
+                <input @bind:event="oninput" @bind="@EyesSize" type="range" class="custom-range" min="10" max="200" />
+            </div>
+            <div class="border rounded mb-2 row bg-light">
+                <label class="col">Нос</label>
+                <button @onclick="SetNextNose" class="btn btn-primary col">Следующий</button>
+                <button @onclick="SetPrevNose" class="btn btn-primary col">Предидущий</button>
+
+                <input @bind:event="oninput" @bind="@NoseSize" type="range" class="custom-range" min="10" max="200" />
+            </div>
+            <div class="border rounded mb-2 row bg-light">
+                <label class="col">Рот</label>
+                <button @onclick="SetNextMouth" class="btn btn-primary col">Следующий</button>
+                <button @onclick="SetPrevMouth" class="btn btn-primary col">Предидущий</button>
+                <input @bind:event="oninput" @bind="@MouthSize" type="range" class="custom-range" min="10" max="200" />
+            </div>
+            @if (AddModel != null)
+            {
+                <EditForm Model="AddModel" OnValidSubmit="CreatePetAsync">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <InputText @bind-Value="AddModel.Name" />
+                    <input type="submit" value="Создать прекрасного питомца" class="btn btn-primary" />
+                </EditForm>
+            }
+        </div>
+    </div>
+
+</div>
+
+@code {
+    public int FarmId { get; set; }
+
+    private AddPetDTOModel AddModel { get; set; }
+    private List<string> Errors;
+
+    private ElementReference svgCanvas;
+    private List<PictureDTO> BodiesPictures { get; set; }
+    private List<PictureDTO> EyesPictures { get; set; }
+    private List<PictureDTO> MouthsPictures { get; set; }
+    private List<PictureDTO> NosesPictures { get; set; }
+
+    private int SelectedBodyId { get; set; } = 0;
+    private int SelectedEyesId { get; set; } = 0;
+    private int SelectedMouthId { get; set; } = 0;
+    private int SelectedNoseId { get; set; } = 0;
+
+    private int EyesSize { get; set; } = 100;
+    private int MouthSize { get; set; } = 100;
+    private int NoseSize { get; set; } = 100;
+
+    private byte[] PetView { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Errors = new List<string>();
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        FarmId = int.Parse(state.User.FindFirst(nameof(SecurityToken.FarmId)).Value);
+        AddModel = new AddPetDTOModel()
+            {
+                FarmId = FarmId
+            };
+        var filtrator = new PictureDTOFiltrator();
+        filtrator.Description = "body";
+        BodiesPictures = (await pictureManager.GetAsync(filtrator, _cts.Token)).ToList();
+
+        filtrator.Description = "eye";
+        EyesPictures = (await pictureManager.GetAsync(filtrator, _cts.Token)).ToList();
+
+        filtrator.Description = "mouth";
+        MouthsPictures = (await pictureManager.GetAsync(filtrator, _cts.Token)).ToList();
+
+        filtrator.Description = "nose";
+        NosesPictures = (await pictureManager.GetAsync(filtrator, _cts.Token)).ToList();
+    }
+
+    void BodyRightClick(MouseEventArgs args)
+    {
+        if (args.Button == 2)
+            SetNextBody();
+    }
+    void EyesRightClick(MouseEventArgs args)
+    {
+        if (args.Button == 2)
+            SetNextEyes();
+    }
+    void MouthRightClick(MouseEventArgs args)
+    {
+        if (args.Button == 2)
+            SetNextMouth();
+    }
+    void NoseRightClick(MouseEventArgs args)
+    {
+        if (args.Button == 2)
+            SetNextNose();
+    }
+    private async Task CreatePetAsync()
+    {
+        string html = await referenceService.GetInnerText(svgCanvas);
+        PetView = Encoding.Default.GetBytes(html);
+
+        AddModel.View.Picture = new PictureDTO(0, Guid.NewGuid().ToString(), "svg", "pet_view_picture", PetView);
+
+        var result = await petManager.CreateAsync(AddModel, _cts.Token);
+        this.StateHasChanged();
+        if (!result.IsComplete)
+        {
+            Errors = result.Errors;
+        }
+        else
+        {
+            navigation.NavigateTo($"/farms/{FarmId}");
+        }
+    }
+    #region imageSelecters
+    private void SetNextBody()
+    {
+        SelectedBodyId = SetNextNumber(SelectedBodyId, BodiesPictures.Count - 1);
+    }
+    private void SetPrevBody()
+    {
+        SelectedBodyId = SetPreviousNumber(SelectedBodyId, BodiesPictures.Count - 1);
+    }
+    private void SetNextEyes()
+    {
+        SelectedEyesId = SetNextNumber(SelectedEyesId, EyesPictures.Count - 1);
+    }
+    private void SetPrevEyes()
+    {
+        SelectedEyesId = SetPreviousNumber(SelectedEyesId, EyesPictures.Count - 1);
+    }
+    private void SetNextMouth()
+    {
+        SelectedMouthId = SetNextNumber(SelectedMouthId, MouthsPictures.Count - 1);
+    }
+    private void SetPrevMouth()
+    {
+        SelectedMouthId = SetPreviousNumber(SelectedMouthId, MouthsPictures.Count - 1);
+    }
+    private void SetNextNose()
+    {
+        SelectedNoseId = SetNextNumber(SelectedNoseId, NosesPictures.Count - 1);
+    }
+    private void SetPrevNose()
+    {
+        SelectedNoseId = SetPreviousNumber(SelectedNoseId, NosesPictures.Count - 1);
+    }
+
+    private int SetNextNumber(int number, int maxNumber)
+    {
+        if (number < maxNumber)
+        {
+            return number + 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    private int SetPreviousNumber(int number, int maxNumber)
+    {
+        if (number > 0)
+        {
+            return number - 1;
+        }
+        else
+        {
+            return maxNumber;
+        }
+    }
+    #endregion
+
+}

@@ -1,0 +1,150 @@
+﻿@page "/users/{Id:int}"
+@attribute [Authorize]
+@inherits CancellableComponent
+@inject AuthenticationStateProvider stateProvider
+@inject UserManager userManager;
+@inject ColaborationRequestManager requestManager;
+@inject NavigationManager navigator;
+@if (User != null)
+{
+    <div class="row">
+        @if (User.Picture != null)
+        {
+            <div class="col-3">
+                <ImageFromByteArray Image="User.Picture.Image" imgClass="img-fluid img-thumbnail" />
+            </div>
+        }
+        <div class="col">
+            <h1 style="display:inline">@User.FirstName @User.LastName</h1>
+            <p>@User.Email</p>
+            <div class="md-2" style="display:inline">
+                @if (Id != AuthUserId)
+                {
+                    @if (User.Collaborators.Any(x => x.Id == AuthUserId))
+                    {
+                        <button class="btn btn-success h1">Друг</button>
+                    }
+                    else if (User.UnconfirmedRequests.Any(x => x.RequestSenderId == AuthUserId))
+                    {
+                        <button class="btn btn-secondary h1">Заявка отправлена</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary h1" @onclick="AddToCollaborators">Добавить в друзья</button>
+                    }
+                    @if (IsColaboratorAdding)
+                    {
+                        <Loading />
+                    }
+                }
+                else if (User.MessagesCount > 0)
+                {
+
+                    <div>
+                        У вас @User.MessagesCount непрочитанных сообщений
+                        <button class="btn btn-primary" @onclick="ToMail">Перейти</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        @if (User.OwnPetFarm != null)
+        {
+            <div class="col">
+                <div>
+                    <h3>Краткая статистика о ферме "@User.OwnPetFarm.Name"</h3>
+                </div>
+                <div>
+                    <label>Дата создания: @User.OwnPetFarm.CreateDate.ToShortDateString()</label>
+                </div>
+                <div>
+                    <label>Количество живых питомцев: @User.OwnPetFarm.AlivesPetsCount</label>
+                </div>
+                <div>
+                    <label>Всего питомцев: @User.OwnPetFarm.Pets.Count</label>
+                </div>
+                <div>
+                    <button @onclick="ToFarmPage" class="btn btn-primary">Посетить ферму</button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col">
+                Фермы не наблюдается.............
+            </div>
+        }
+        <div class="col-4">
+            <h2>Друзей: @User.Collaborators.Count()</h2>
+            <div class="overflow-auto" style="max-height: 140px;">
+                @foreach (var user in @User.Collaborators)
+                {
+                    <div class="m-2">
+                        <button class="btn btn-info w-100" @onclick="@(e => ToUserPage(user.Id))">
+                            @user.FirstName @user.LastName
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        <Loading />
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private int AuthUserId { get; set; }
+    UserDTO? User { get; set; }
+    private bool IsColaboratorAdding { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        User = await userManager.GetByIdAsync(Id, _cts.Token);
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        AuthUserId = int.Parse(state.User.FindFirst(nameof(SecurityToken.UserId)).Value);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await OnInitializedAsync();
+    }
+
+    private async Task AddToCollaborators()
+    {
+        IsColaboratorAdding = true;
+        var authUser = await userManager.GetByIdAsync(AuthUserId, _cts.Token);
+        var request = authUser.UnconfirmedRequests.FirstOrDefault(x => x.RequestSenderId == User.Id);
+        if (request != null)
+        {
+            await requestManager.ConfirmAsync(request.Id, authUser, _cts.Token);
+            User.Collaborators.Add(authUser);
+        }
+        else
+        {
+            await requestManager.AddCollaboratorAsync(authUser, User, _cts.Token);
+        }
+        IsColaboratorAdding = false;
+        StateHasChanged();
+    }
+
+    private void ToFarmPage()
+    {
+        navigator.NavigateTo($"/farms/{User.OwnPetFarm.Id}");
+    }
+    private void ToMail()
+    {
+        navigator.NavigateTo($"/mail");
+    }
+    private void ToUserPage(int id)
+    {
+        User = null;
+        navigator.NavigateTo($"/users/{id}");
+    }
+
+}

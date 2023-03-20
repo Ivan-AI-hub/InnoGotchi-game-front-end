@@ -1,0 +1,30 @@
+﻿@page "/login"
+@using InnoGotchiGameFrontEnd.Presentation.Pages.Identity.Models;
+@inherits LoginModel
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h1>Enter zone</h1>
+        <p class="text-danger">@ErrorMessage</p>
+        <EditForm Model="@LoginData" OnValidSubmit="LoginAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <label for="username">Email</label>
+            <InputText id="username" @bind-Value="LoginData.Email" class="form-control" />
+            <label for="password">Password</label>
+            <InputText id="password" @bind-Value="LoginData.Password" type="password" class="form-control" />
+            @if (!IsLoading)
+            {
+                <div class="row">
+                    <div class="col-md-6 offset-md-4">
+                        <input type="submit" class="btn btn-primary" value="Войти" />
+                    </div>
+                </div>
+            }
+            else
+            {
+                <Loading />
+            }
+        </EditForm>
+    </div>
+</div>

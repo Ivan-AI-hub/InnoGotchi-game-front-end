@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\Resourses\Bodies\body1.svg" />
+    <Content Remove="wwwroot\Resourses\Bodies\body2.svg" />
+    <Content Remove="wwwroot\Resourses\Bodies\body3.svg" />
+    <Content Remove="wwwroot\Resourses\Bodies\body4.svg" />
+    <Content Remove="wwwroot\Resourses\Bodies\body5.svg" />
+    <Content Remove="wwwroot\Resourses\Eyes\eyes1.svg" />
+    <Content Remove="wwwroot\Resourses\Eyes\eyes2.svg" />
+    <Content Remove="wwwroot\Resourses\Eyes\eyes3.svg" />
+    <Content Remove="wwwroot\Resourses\Eyes\eyes4.svg" />
+    <Content Remove="wwwroot\Resourses\Eyes\eyes5.svg" />
+    <Content Remove="wwwroot\Resourses\Eyes\eyes6.svg" />
+    <Content Remove="wwwroot\Resourses\Mouths\mouth1.svg" />
+    <Content Remove="wwwroot\Resourses\Mouths\mouth2.svg" />
+    <Content Remove="wwwroot\Resourses\Mouths\mouth3.svg" />
+    <Content Remove="wwwroot\Resourses\Mouths\mouth4.svg" />
+    <Content Remove="wwwroot\Resourses\Mouths\mouth5.svg" />
+    <Content Remove="wwwroot\Resourses\Noses\nose1.svg" />
+    <Content Remove="wwwroot\Resourses\Noses\nose2.svg" />
+    <Content Remove="wwwroot\Resourses\Noses\nose3.svg" />
+    <Content Remove="wwwroot\Resourses\Noses\nose4.svg" />
+    <Content Remove="wwwroot\Resourses\Noses\nose5.svg" />
+    <Content Remove="wwwroot\Resourses\Noses\nose6.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Resourses\Bodies\body1.svg" />
+    <None Include="wwwroot\Resourses\Bodies\body2.svg" />
+    <None Include="wwwroot\Resourses\Bodies\body3.svg" />
+    <None Include="wwwroot\Resourses\Bodies\body4.svg" />
+    <None Include="wwwroot\Resourses\Bodies\body5.svg" />
+    <None Include="wwwroot\Resourses\Eyes\eyes1.svg" />
+    <None Include="wwwroot\Resourses\Eyes\eyes2.svg" />
+    <None Include="wwwroot\Resourses\Eyes\eyes3.svg" />
+    <None Include="wwwroot\Resourses\Eyes\eyes4.svg" />
+    <None Include="wwwroot\Resourses\Eyes\eyes5.svg" />
+    <None Include="wwwroot\Resourses\Eyes\eyes6.svg" />
+    <None Include="wwwroot\Resourses\Mouths\mouth1.svg" />
+    <None Include="wwwroot\Resourses\Mouths\mouth2.svg" />
+    <None Include="wwwroot\Resourses\Mouths\mouth3.svg" />
+    <None Include="wwwroot\Resourses\Mouths\mouth4.svg" />
+    <None Include="wwwroot\Resourses\Mouths\mouth5.svg" />
+    <None Include="wwwroot\Resourses\Noses\nose1.svg" />
+    <None Include="wwwroot\Resourses\Noses\nose2.svg" />
+    <None Include="wwwroot\Resourses\Noses\nose3.svg" />
+    <None Include="wwwroot\Resourses\Noses\nose4.svg" />
+    <None Include="wwwroot\Resourses\Noses\nose5.svg" />
+    <None Include="wwwroot\Resourses\Noses\nose6.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.10" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InnoGotchiGameFrontEnd.BLL\InnoGotchiGameFrontEnd.BLL.csproj" />
+    <ProjectReference Include="..\InnoGotchiGameFrontEnd.DAL\InnoGotchiGameFrontEnd.DAL.csproj" />
+  </ItemGroup>
+
+</Project>

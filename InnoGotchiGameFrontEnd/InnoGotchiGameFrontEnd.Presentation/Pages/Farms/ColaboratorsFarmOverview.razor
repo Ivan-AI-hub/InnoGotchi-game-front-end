@@ -1,0 +1,56 @@
+﻿@page "/colaboratorsFarms"
+@attribute [Authorize]
+@inject AuthenticationStateProvider stateProvider;
+@inject UserManager userManager;
+@inherits CancellableComponent;
+
+@if (User != null)
+{
+    @foreach (var user in User.Collaborators)
+    {
+        <div class="border rounded bg-light p-2">
+            <UserRow User="@user">
+                @if (user.OwnPetFarm != null)
+                {
+                    <div class="col">
+                        <div>Ферма: @user.OwnPetFarm.Name</div>
+                        <div>Всего питомцев: @user.OwnPetFarm.Pets.Count</div>
+                    </div>
+                }
+                <div class="col d-flex align-items-center justify-content-end">
+                    @if (user.OwnPetFarm != null)
+                    {
+                        <div>
+                            <NavLink class="btn btn-primary" href=@($"/farms/{user.OwnPetFarm.Id}") Match="NavLinkMatch.All">
+                                Перейти на ферму
+                            </NavLink>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="btn btn-secondary">Ферма отсутствует</div>
+
+                    }
+                </div>
+            </UserRow>
+        </div>
+    }
+}
+else
+{
+    <Loading />
+}
+
+@code {
+    private UserDTO User { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        User = await userManager.GetAuthodizedUserAsync(_cts.Token);
+        var colaborators = new List<UserDTO>();
+        foreach (var colaborator in User.Collaborators)
+        {
+            colaborators.Add(await userManager.GetByIdAsync(colaborator.Id, _cts.Token));
+        }
+        User.Collaborators = colaborators;
+    }
+}
